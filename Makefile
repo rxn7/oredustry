@@ -1,6 +1,6 @@
 OUT := bin/oredustry
 CC := g++
-DIR_SRC := src
+DIR_SRC := src src/core
 INC := -Isrc
 CFLAGS := -std=c++17
 SRC := $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
