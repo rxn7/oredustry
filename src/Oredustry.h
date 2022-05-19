@@ -1,7 +1,9 @@
 #pragma once
 #include <iostream>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
+#include <memory>
+#include "core/Core.h"
+#include "core/Scene.h"
+#define FONT_SIZE 16
 
 namespace od {
 	void Init();
@@ -9,4 +11,5 @@ namespace od {
 	void Start();
 	void Log(std::string_view text);
 	void LogError(std::string_view text);
+	void LoadScene(std::unique_ptr<Scene> scene);
 }

@@ -1,15 +1,15 @@
 #include "Oredustry.h"
+#include "SplashScreen.h"
 #include <sstream>
 #include <chrono>
-
-#define FONT_SIZE 16
 
 static ALLEGRO_DISPLAY *display = nullptr;
 static ALLEGRO_FONT *font = nullptr;
 static ALLEGRO_EVENT_QUEUE *event_queue = nullptr;
 static std::chrono::high_resolution_clock frameClock;
 static std::chrono::high_resolution_clock::time_point clockStart, clockEnd;
-static std::uint32_t deltaFrame;
+static std::unique_ptr<od::Scene> currentScene;
+static uint32_t frameDelta;
 static bool isRunning = true;
 
 static void UnregisterEvents();
@@ -19,11 +19,11 @@ static void DrawDebugText();
 
 static void DrawDebugText() {
 	std::stringstream ss;
-	ss << "fps: " << (int)(1.f / (static_cast<float>(deltaFrame) / 1000.0f));
+	ss << "fps: " << (int)(1.f / (static_cast<float>(frameDelta) / 1000.0f));
 	al_draw_text(font, al_map_rgb(0, 0, 0), 0, 0, 0, ss.str().c_str());
 
 	ss.str(std::string());
-	ss << "frame: " << deltaFrame << "ms";
+	ss << "frame: " << frameDelta << "ms";
 	al_draw_text(font, al_map_rgb(0, 0, 0), 0, FONT_SIZE, 0, ss.str().c_str());
 }
 
@@ -50,15 +50,23 @@ static void ProcessEvents() {
 
 
 void od::Start() {
+	od::LoadScene(std::unique_ptr<SplashScreenScene>(new SplashScreenScene));
+
 	while(isRunning) {
 		ProcessEvents();
 
 		clockEnd = clockStart;
 		clockStart = frameClock.now();
-
-		deltaFrame = std::chrono::duration_cast<std::chrono::milliseconds>(clockStart - clockEnd).count();
+		frameDelta = std::chrono::duration_cast<std::chrono::milliseconds>(clockStart - clockEnd).count();
 
 		al_clear_to_color(al_map_rgb(255, 255, 255));
+
+		if(currentScene != nullptr) {
+			currentScene->Update(frameDelta);
+			currentScene->Draw(display);
+			currentScene->DrawUI(display, font);
+		}
+
 		DrawDebugText();
 		al_flip_display();
 	}
@@ -75,6 +83,7 @@ void od::Shutdown(int code, std::string_view reason) {
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);
 	al_destroy_font(font);
+
 	exit(code);
 }
 
@@ -107,4 +116,9 @@ void od::Log(std::string_view text) {
 
 void od::LogError(std::string_view text) {
 	std::cout << "[Error] " << text << "\n";
+}
+
+void od::LoadScene(std::unique_ptr<Scene> scene) {
+	currentScene = std::move(scene);
+	currentScene->Awake();
 }
