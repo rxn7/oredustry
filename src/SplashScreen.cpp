@@ -21,11 +21,8 @@ void od::SplashScreenScene::Awake() {
 	od::Log("SplashScreenScene is awake");
 
 	if(!(image = al_load_bitmap("res/splashscreen.png"))) {
-		std::stringstream ss;
-		ss << "Failed to load res/splashscreen.png: " << al_get_errno();
-		od::LogError(ss.str());
-
-		delete this;
+		od::LogError("Failed to load res/splashscreen.png");
+		return;
 	}
 
 	imageWidth = al_get_bitmap_width(image);
