@@ -1,5 +1,5 @@
 #include "Oredustry.h"
-#include "SplashScreen.h"
+#include "SplashScreenScene.h"
 #include <sstream>
 #include <chrono>
 
