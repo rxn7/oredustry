@@ -3,9 +3,11 @@
 #include <sstream>
 #include <chrono>
 
-static ALLEGRO_DISPLAY *display = nullptr;
-static ALLEGRO_FONT *font = nullptr;
-static ALLEGRO_EVENT_QUEUE *event_queue = nullptr;
+SDL_Window *od::window = nullptr;
+SDL_Renderer *od::renderer = nullptr;
+TTF_Font *od::font = nullptr;
+
+static od::UI::Text debugText;
 static std::chrono::high_resolution_clock hrClock;
 static std::chrono::high_resolution_clock::time_point clockStart, clockFrameStart, clockFrameEnd;
 static std::unique_ptr<od::Scene> currentScene;
@@ -13,43 +15,37 @@ static uint32_t deltaTime = 0;
 static uint32_t timeSinceStart = 0;
 static bool isRunning = true;
 static bool showDebug = true;
+static int32_t windowWidth = 0, windowHeight = 0;
 
 static void CalculateFrameDelta();
-static void UnregisterEvents();
-static void RegisterEvents();
 static void ProcessEvents();
 static void DrawDebugText();
 
 static void DrawDebugText() {
 	if(!showDebug) return;
 
-	float frameDeltaSeconds = static_cast<float>(deltaTime) / 1000.f;
+	std::chrono::duration<float, std::milli> timeDeltaFloat = clockFrameStart - clockFrameEnd;
+	int32_t fps = static_cast<int32_t>(1000.f / timeDeltaFloat.count());
 
-	al_draw_multiline_textf(font, al_map_rgb(0, 0, 0), 0, 0, al_get_display_width(display), FONT_SIZE, 0, 
-		"frame: %fms\n"
-		"fps: %i\n"
-		"Press ~ to toggle debug", 
-		frameDeltaSeconds, static_cast<int>((1.f / frameDeltaSeconds)));
-}
+	std::stringstream ss;
+	ss << "frame: " << deltaTime << "ms\n" << "fps: " << fps << "\nPress ~ to toggle debug";
 
-static void RegisterEvents() {
-	al_register_event_source(event_queue, al_get_display_event_source(display));
-}
-
-static void UnregisterEvents() {
-	al_unregister_event_source(event_queue, al_get_display_event_source(display));
+	debugText.SetText(ss.str());
+	debugText.Render();
 }
 
 static void ProcessEvents() {
-	ALLEGRO_EVENT event;
-	while(al_peek_next_event(event_queue, &event)) {
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
 		switch(event.type) { 
-			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-				od::Shutdown(0, "Display has been closed");
+			case SDL_QUIT:
+				od::Shutdown(0, "Window has been closed");
+				break;
+				
+			case SDL_WINDOWEVENT:
+				SDL_GetWindowSize(od::window, &windowWidth, &windowHeight);
 				break;
 		}
-
-		al_drop_next_event(event_queue);
 	}
 }
 
@@ -75,20 +71,20 @@ void od::Start() {
 		od::Input::Update();
 
 		// Toggle showDebug on tilde press
-		if(od::Input::IsKeyJustPressed(ALLEGRO_KEY_TILDE))
+		if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
 			showDebug = !showDebug;
-
-		al_clear_to_color(al_map_rgb(255, 255, 255));
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
 
 		if(currentScene != nullptr) {
 			currentScene->Update(deltaTime, timeSinceStart);
-			currentScene->Draw(display);
-			currentScene->DrawUI(display, font);
+			currentScene->Draw();
+			currentScene->DrawUI();
 		}
 
 		DrawDebugText();
 
-		al_flip_display();
+		SDL_RenderPresent(renderer);
 	}
 }
 
@@ -99,44 +95,47 @@ void od::Shutdown(int code, std::string_view reason) {
 	if(code)	od::LogError(ss.str());
 	else		od::Log(ss.str());
 
-	UnregisterEvents();
-	al_destroy_event_queue(event_queue);
-	al_destroy_display(display);
-	al_destroy_font(font);
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_Quit();
+
+	TTF_Quit();
 
 	exit(code);
 }
 
 void od::Init() {
-	if(!al_init())
-		od::Shutdown(EXIT_FAILURE, "Failed to initialize allegro\n");
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+		od::Shutdown(EXIT_FAILURE, "Failed to initialize SDL");
 
-	if(!al_install_keyboard())
-		od::Shutdown(EXIT_FAILURE, "Failed to install keyboard\n");
+	if(TTF_Init() != 0)
+		od::Shutdown(EXIT_FAILURE, "Failed to initialize SDL_ttf");
 
-	if(!al_init_font_addon())
-		od::Shutdown(EXIT_FAILURE, "Failed to initialize allegro_font\n");
+	if(!IMG_Init(IMG_INIT_PNG))
+		od::Shutdown(EXIT_FAILURE, "Failed to initialize SDL_image: " + std::string(IMG_GetError()));
 
-	if(!al_init_ttf_addon())
-		od::Shutdown(EXIT_FAILURE, "Failed to initialize allegro_ttf");
+	if(!(od::window = SDL_CreateWindow("Oredustry", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL)))
+		od::Shutdown(EXIT_FAILURE, "Failed to create the window: " + std::string(SDL_GetError()));
 
-	if(!al_init_image_addon())
-		od::Shutdown(EXIT_FAILURE, "Failed to initialize allegro_image");
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-	if(!(display = al_create_display(1280, 720)))
-		od::Shutdown(EXIT_FAILURE, "Failed to create display");
+	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)))
+		od::Shutdown(EXIT_FAILURE, "Failed to create the renderer: " + std::string(SDL_GetError()));
 
-	if(!(font = al_load_ttf_font("res/font.ttf", FONT_SIZE, 0)))
-		od::Shutdown(EXIT_FAILURE, "Failed to load font, you are probably missing the font.ttf file");
-
-	if(!(event_queue = al_create_event_queue()))
-		od::Shutdown(EXIT_FAILURE, "Failed to create event queue");
-
-	al_set_window_title(display, "Oredustry");
-	RegisterEvents();
+	od::Input::Init();
+	od::font = TTF_OpenFont("res/font.ttf", FONT_SIZE);
+	debugText = od::UI::Text(od::font, 0, 0, SDL_Color{0, 0, 0, 255}, "Debug");
 }
 
 void od::LoadScene(std::unique_ptr<Scene> scene) {
 	currentScene = std::move(scene);
 	currentScene->Awake();
+}
+
+int32_t od::GetWindowWidth() {
+	return windowWidth;
+}
+
+int32_t od::GetWindowHeight() {
+	return windowHeight;
 }

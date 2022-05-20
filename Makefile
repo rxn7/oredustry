@@ -1,11 +1,11 @@
 OUT := bin/oredustry
 CC := g++
-DIR_SRC := src src/core
+DIR_SRC := src src/core src/core/ui
 INC := -Isrc
-CFLAGS := -std=c++17
+CFLAGS := -std=c++17 -g
 SRC := $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
 OBJ := $(patsubst %.cpp, %.o, $(SRC))
-LIBS := -lallegro -lallegro_ttf -lallegro_font -lallegro_image
+LIBS := -lSDL2 -lSDLmain -lSDL2_ttf -lSDL2_image
 
 .PHONY: all clean
 

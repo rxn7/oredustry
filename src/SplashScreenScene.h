@@ -9,7 +9,7 @@ namespace od {
 		~SplashScreenScene();
 		void Awake() override;
 		void Update(uint32_t deltaTime, uint32_t timeSinceEpoch) override;
-		void Draw(ALLEGRO_DISPLAY *display) override;
-		void DrawUI(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font) override;
+		void Draw() override;
+		void DrawUI() override;
 	};
 }

@@ -1,17 +1,22 @@
 #include "Input.h"
 
-static ALLEGRO_KEYBOARD_STATE state;
-static ALLEGRO_KEYBOARD_STATE oldState;
+uint8_t *state;
+uint8_t *oldState;
+
+void od::Input::Init() {
+	state = static_cast<uint8_t*>(malloc(sizeof(uint8_t) * 2048));
+	oldState = static_cast<uint8_t*>(malloc(sizeof(uint8_t) * 2048));
+}
 
 void od::Input::Update() {
-	oldState = state;
-	al_get_keyboard_state(&state);
+	memcpy(oldState, state, sizeof(uint8_t) * sizeof(SDL_KeyCode));
+	state = const_cast<uint8_t*>(SDL_GetKeyboardState(0));
 }
 
 bool od::Input::IsKeyPressed(uint8_t key) {
-	return al_key_down(&state, key);
+	return state[key];
 }
 
 bool od::Input::IsKeyJustPressed(uint8_t key) {
-	return al_key_down(&state, key) && !al_key_down(&oldState, key);
+	return state[key] && !oldState[key];
 }
