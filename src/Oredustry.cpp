@@ -72,7 +72,7 @@ void od::Start() {
 
 		// Toggle showDebug on tilde press
 		if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
-			showDebug = !showDebug;
+			showDebug ^= 1;
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
@@ -118,10 +118,10 @@ void od::Init() {
 	if(!(od::window = SDL_CreateWindow("Oredustry", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the window: " + std::string(SDL_GetError()));
 
-	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
 	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the renderer: " + std::string(SDL_GetError()));
+
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
 	od::Input::Init();
 	od::font = FC_CreateFont();
