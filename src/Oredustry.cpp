@@ -5,9 +5,9 @@
 
 SDL_Window *od::window = nullptr;
 SDL_Renderer *od::renderer = nullptr;
-TTF_Font *od::font = nullptr;
+FC_Font *od::font = nullptr;
 
-static od::UI::Text debugText;
+static std::unique_ptr<od::UI::Text> debugText;
 static std::chrono::high_resolution_clock hrClock;
 static std::chrono::high_resolution_clock::time_point clockStart, clockFrameStart, clockFrameEnd;
 static std::unique_ptr<od::Scene> currentScene;
@@ -30,8 +30,8 @@ static void DrawDebugText() {
 	std::stringstream ss;
 	ss << "frame: " << deltaTime << "ms\n" << "fps: " << fps << "\nPress ~ to toggle debug";
 
-	debugText.SetText(ss.str());
-	debugText.Render();
+	debugText->SetText(ss.str());
+	debugText->Render();
 }
 
 static void ProcessEvents() {
@@ -67,12 +67,13 @@ void od::Start() {
 
 	while(isRunning) {
 		CalculateFrameDelta();
-		ProcessEvents();
 		od::Input::Update();
+		ProcessEvents();
 
 		// Toggle showDebug on tilde press
 		if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
 			showDebug = !showDebug;
+
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 
@@ -119,12 +120,13 @@ void od::Init() {
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)))
+	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the renderer: " + std::string(SDL_GetError()));
 
 	od::Input::Init();
-	od::font = TTF_OpenFont("res/font.ttf", FONT_SIZE);
-	debugText = od::UI::Text(od::font, 0, 0, SDL_Color{0, 0, 0, 255}, "Debug");
+	od::font = FC_CreateFont();
+	FC_LoadFont(od::font, od::renderer, "res/font.ttf", FONT_SIZE, SDL_Color{0,0,0,255}, TTF_STYLE_NORMAL);
+	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::font, 0, 0, SDL_Color{0, 0, 0, 255}, "Debug"));
 }
 
 void od::LoadScene(std::unique_ptr<Scene> scene) {

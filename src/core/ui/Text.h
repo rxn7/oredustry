@@ -4,25 +4,28 @@
 #include "../Core.h"
 
 namespace od::UI {
+	enum class TextAlign {
+		Left = FC_ALIGN_LEFT,
+		Center = FC_ALIGN_CENTER,
+		Righ = FC_ALIGN_RIGHT
+	};
+
 	class Text {
 	public:
-		Text() {}
-		Text(TTF_Font *font, float x, float y, const SDL_Color &color, std::string_view text);
+		Text(FC_Font *font, float x, float y, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left);
 		virtual ~Text();
 		void Render();
-		void SetText(std::string_view text, bool renderTexture=true);
-		void SetPosition(float x, float y, bool renderTexture=true);
-		void SetColor(const SDL_Color &color, bool renderTexture=true);
+		void SetText(std::string_view text);
+		void SetPosition(float x, float y);
+		void SetColor(const SDL_Color &color);
 		inline std::string_view GetText() const { return m_Text; }
-	
-	private:
-		void RenderTexture();
 
 	private:
+		TextAlign m_Align;
 		std::string m_Text = "";
-		SDL_Rect m_Rect = {0};
+		float m_X, m_Y;
 		SDL_Color m_Color;
 		SDL_Texture *m_Texture = nullptr;
-		TTF_Font *m_Font = nullptr;
+		FC_Font *m_Font = nullptr;
 	};
 }

@@ -8,7 +8,7 @@
 namespace od {
 	extern SDL_Renderer *renderer;
 	extern SDL_Window *window;
-	extern TTF_Font *font;
+	extern FC_Font *font;
 	void Init();
 	void Shutdown(int code = EXIT_SUCCESS, std::string_view reason = "");
 	void Start();

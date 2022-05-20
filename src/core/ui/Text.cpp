@@ -6,48 +6,25 @@ od::UI::Text::~Text() {
 		SDL_DestroyTexture(m_Texture);
 }
 
-od::UI::Text::Text(TTF_Font *font, float x, float y, const SDL_Color &color, std::string_view text) : m_Font(font)  {
-	SetColor(color, false);
-	SetPosition(x, y, false);
+od::UI::Text::Text(FC_Font *font, float x, float y, const SDL_Color &color, std::string_view text, od::UI::TextAlign align) : m_Font(font), m_Align(align)  {
+	SetColor(color);
+	SetPosition(x, y);
 	SetText(text);
 }
 
-void od::UI::Text::SetPosition(float x, float y, bool renderTexture) {
-	m_Rect.x = x;
-	m_Rect.y = y;
-	if(renderTexture)
-		RenderTexture();
+void od::UI::Text::SetPosition(float x, float y) {
+	m_X = x;
+	m_Y = y;
 }
 
-void od::UI::Text::SetText(std::string_view text, bool renderTexture) {
+void od::UI::Text::SetText(std::string_view text) {
 	m_Text = text;
-	if(renderTexture)
-		RenderTexture();
 }
 
-void od::UI::Text::SetColor(const SDL_Color &color, bool renderTexture) {
+void od::UI::Text::SetColor(const SDL_Color &color) {
 	m_Color = color;
-	if(renderTexture)
-		RenderTexture();
 }
 
 void od::UI::Text::Render() {
-	SDL_RenderCopy(od::renderer, m_Texture, nullptr, &m_Rect);
-}
-
-void od::UI::Text::RenderTexture() {
-	SDL_Surface *surface = TTF_RenderText_Solid_Wrapped(font, m_Text.c_str(), m_Color, 0); 
-	if(!surface) {
-		od::LogError("Failed to create text surface");
-		return;
-	}
-
-	m_Texture = SDL_CreateTextureFromSurface(od::renderer, surface);
-	if(!m_Texture) {
-		od::LogError("Failed to create text texture");
-		return;
-	}
-
-	SDL_FreeSurface(surface);
-	SDL_QueryTexture(m_Texture, nullptr, nullptr, &m_Rect.w, &m_Rect.h);
+	FC_DrawAlign(m_Font, od::renderer, m_X, m_Y, (FC_AlignEnum)m_Align, m_Text.c_str());
 }

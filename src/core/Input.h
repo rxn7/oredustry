@@ -5,6 +5,6 @@
 namespace od::Input {
 	void Init();
 	void Update();
-	bool IsKeyPressed(uint8_t key);
-	bool IsKeyJustPressed(uint8_t key);
+	bool IsKeyPressed(SDL_KeyCode key);
+	bool IsKeyJustPressed(SDL_KeyCode key);
 }
