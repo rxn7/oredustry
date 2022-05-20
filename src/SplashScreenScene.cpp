@@ -1,6 +1,5 @@
-#include "SplashScreen.h"
+#include "SplashScreenScene.h"
 #include "Oredustry.h"
-#include <spng.h>
 #include <cmath>
 
 #define NEW_DOT_INTERVAL 500
@@ -32,22 +31,18 @@ void od::SplashScreenScene::Awake() {
 void od::SplashScreenScene::Update(uint32_t deltaTime, uint32_t timeSinceStart) {
 	newDotTimer += deltaTime;
 	if(newDotTimer >= NEW_DOT_INTERVAL) {
-		if(dots.size() >= 3)
-			dots.clear();
-
-		else 
-			dots.push_back('.');
-
+		if(dots.size() >= 3)	dots.clear();
+		else			dots.push_back('.');
 		newDotTimer = 0;
 	}
 
-	angle = cosf(timeSinceStart / 1000.f) * od::Math::Deg2Rad(30);
+	angle = cosf(timeSinceStart / 1000.f) * 30;
 }
 
 void od::SplashScreenScene::Draw(ALLEGRO_DISPLAY *display) {
 	float x = al_get_display_width(display) / 2;
 	float y = al_get_display_height(display) / 2;
-	al_draw_rotated_bitmap(image, imageWidth / 2, imageHeight / 2, x, y, angle, 0);
+	al_draw_rotated_bitmap(image, imageWidth / 2, imageHeight / 2, x, y, od::Math::Deg2Rad(angle), 0);
 }
 
 void od::SplashScreenScene::DrawUI(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font) {
