@@ -5,8 +5,8 @@
 #include <cmath>
 #include <sstream>
 
-#define NEW_DOT_INTERVAL 500
-#define FAKE_LOADING_TIME 1500
+#define NEW_DOT_INTERVAL 500000
+#define FAKE_LOADING_TIME 2500000
 
 od::SplashScreenScene::SplashScreenScene() :
 m_LoadingText(new od::UI::Text(od::font, od::Vector2i(0, FONT_SIZE*2.5f), SDL_Color{0,0,0,255}, "Loading", od::UI::TextAlign::Center, {od::UI::Anchor::Center, od::UI::Anchor::End})),

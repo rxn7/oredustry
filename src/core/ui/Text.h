@@ -8,24 +8,32 @@
 
 namespace od::UI {
 	enum class TextAlign {
-		Left = FC_ALIGN_LEFT,
-		Center = FC_ALIGN_CENTER,
-		Righ = FC_ALIGN_RIGHT
+		Left,
+		Center,
+		Right
 	};
 
 	class Text : public UIElement {
 	public:
-		Text(FC_Font *font, const Vector2i &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, Anchors anchors = ANCHORS_CENTER);
+		Text(TTF_Font *font, const Vector2i &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, Anchors anchors = ANCHORS_CENTER);
 		virtual ~Text();
 		void Render() override;
 		void SetText(std::string_view text);
 		void SetColor(const SDL_Color &color);
+		void SetPosition(const Vector2i &position);
+		void RenderTexture();
+		void CalculateRect();
+
+		inline od::Vector2i GetSize() const { return m_Size; }
 		inline std::string_view GetText() const { return m_Text; }
 
 	private:
 		TextAlign m_Align;
+		od::Vector2i m_Size;
 		std::string m_Text = "";
+		TTF_Font *m_Font = nullptr;
 		SDL_Color m_Color;
-		FC_Font *m_Font = nullptr;
+		SDL_Texture *m_Texture;
+		SDL_Rect m_Rect;
 	};
 }

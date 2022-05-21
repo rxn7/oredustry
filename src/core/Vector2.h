@@ -18,6 +18,14 @@ namespace od {
 			this->y = 0;
 		}
 
+		inline bool operator==(Vector2 &other) {
+			return x == other.x && y == other.y;
+		}
+
+		inline bool operator!=(Vector2 &other) {
+			return x != other.x || y != other.y;
+		}
+
 		inline float Length() const {
 			return sqrtf(x*x + y*y);
 		}

@@ -7,7 +7,7 @@
 
 SDL_Window *od::window = nullptr;
 SDL_Renderer *od::renderer = nullptr;
-FC_Font *od::font = nullptr;
+TTF_Font *od::font = nullptr;
 
 static std::unique_ptr<od::UI::Text> debugText;
 static std::chrono::high_resolution_clock hrClock;
@@ -31,7 +31,7 @@ static void DrawDebugText() {
 	int32_t fps = static_cast<int32_t>(1000.f / timeDeltaFloat.count());
 
 	std::stringstream ss;
-	ss << "frame: " << deltaTime << "ms\n" << "fps: " << fps << "\nPress ~ to toggle debug";
+	ss << "frame: " << deltaTime << "μs\n" << "fps: " << fps << "\nPress ~ to toggle debug";
 
 	debugText->SetText(ss.str());
 	debugText->Render();
@@ -62,7 +62,7 @@ static void CalculateFrameDelta() {
 		clockFrameEnd = hrClock.now();
 
 	clockFrameStart = hrClock.now();
-	deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(clockFrameStart - clockFrameEnd).count();
+	deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(clockFrameStart - clockFrameEnd).count();
 	if(deltaTime < 0) deltaTime = 0; 
 	timeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(clockFrameStart - clockStart).count();
 }
@@ -106,7 +106,6 @@ void od::Shutdown(int code, std::string_view reason) {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
-	FC_FreeFont(font);
 	TTF_Quit();
 
 	exit(code);
@@ -125,15 +124,14 @@ void od::Init() {
 	if(!(od::window = SDL_CreateWindow("Oredustry", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the window: " + std::string(SDL_GetError()));
 
-	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
+	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the renderer: " + std::string(SDL_GetError()));
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	SDL_SetWindowIcon(window, IMG_Load("res/logo.png"));
 
 	od::Input::Init();
-	od::font = FC_CreateFont();
-	FC_LoadFont(od::font, od::renderer, "res/font.ttf", FONT_SIZE, SDL_Color{0,0,0,255}, TTF_STYLE_NORMAL);
+	od::font = TTF_OpenFont("res/font.ttf", FONT_SIZE);
 	debugText = std::make_unique<od::UI::Text>(od::font, od::Vector2i(), SDL_Color{0, 0, 0, 255}, "Debug");
 }
 

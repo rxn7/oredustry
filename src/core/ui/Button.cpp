@@ -22,7 +22,8 @@ void od::UI::Button::Update(uint32_t deltaTime) {
 	m_Rect.x = m_AnchoredPosition.x - m_Rect.w * 0.5f;
 	m_Rect.y = m_AnchoredPosition.y - m_Rect.h * 0.5f;
 
-	m_Text->m_AnchoredPosition = od::Vector2i(m_AnchoredPosition.x, m_AnchoredPosition.y - FONT_SIZE * 0.5f);
+	m_Text->m_AnchoredPosition = od::Vector2i(m_AnchoredPosition.x, m_AnchoredPosition.y - m_Text->GetSize().y * 0.5f);
+	m_Text->CalculateRect();
 
 	od::Vector2i pointer = od::GetPointerPosition();
 	m_Hovered = pointer.x >= m_Rect.x && pointer.x <= m_Rect.x + m_Rect.w && pointer.y >= m_Rect.y && pointer.y <= m_Rect.y + m_Rect.h;

@@ -10,7 +10,7 @@
 namespace od {
 	extern SDL_Renderer *renderer;
 	extern SDL_Window *window;
-	extern FC_Font *font;
+	extern TTF_Font *font;
 
 	void Init();
 	void Start();
