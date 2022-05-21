@@ -1,5 +1,7 @@
 #include "Oredustry.h"
-#include "SplashScreenScene.h"
+#include "core/Input.h"
+#include "core/Log.h"
+#include "scenes/SplashScreenScene.h"
 #include <sstream>
 #include <chrono>
 
@@ -46,6 +48,9 @@ static void ProcessEvents() {
 				SDL_GetWindowSize(od::window, &windowWidth, &windowHeight);
 				break;
 		}
+
+		if(currentScene)
+			currentScene->ProcessEvent(event);
 	}
 }
 
@@ -63,7 +68,7 @@ static void CalculateFrameDelta() {
 
 void od::Start() {
 	clockStart = hrClock.now();
-	od::LoadScene(std::unique_ptr<SplashScreenScene>(new SplashScreenScene));
+	od::SetScene(std::unique_ptr<SplashScreenScene>(new SplashScreenScene));
 
 	while(isRunning) {
 		CalculateFrameDelta();
@@ -99,7 +104,7 @@ void od::Shutdown(int code, std::string_view reason) {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
-
+	FC_FreeFont(font);
 	TTF_Quit();
 
 	exit(code);
@@ -115,21 +120,22 @@ void od::Init() {
 	if(!IMG_Init(IMG_INIT_PNG))
 		od::Shutdown(EXIT_FAILURE, "Failed to initialize SDL_image: " + std::string(IMG_GetError()));
 
-	if(!(od::window = SDL_CreateWindow("Oredustry", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL)))
+	if(!(od::window = SDL_CreateWindow("Oredustry", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the window: " + std::string(SDL_GetError()));
 
 	if(!(od::renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
 		od::Shutdown(EXIT_FAILURE, "Failed to create the renderer: " + std::string(SDL_GetError()));
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	SDL_SetWindowIcon(window, IMG_Load("res/logo.png"));
 
 	od::Input::Init();
 	od::font = FC_CreateFont();
 	FC_LoadFont(od::font, od::renderer, "res/font.ttf", FONT_SIZE, SDL_Color{0,0,0,255}, TTF_STYLE_NORMAL);
-	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::font, 0, 0, SDL_Color{0, 0, 0, 255}, "Debug"));
+	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::font, od::Vector2(), SDL_Color{0, 0, 0, 255}, "Debug"));
 }
 
-void od::LoadScene(std::unique_ptr<Scene> scene) {
+void od::SetScene(std::unique_ptr<Scene> scene) {
 	currentScene = std::move(scene);
 	currentScene->Awake();
 }
