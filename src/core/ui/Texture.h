@@ -9,18 +9,17 @@
 namespace od::UI {
 	class Texture : public UIElement {
 	public:
-		Texture(SDL_Texture *texture, const od::Vector2 &position, const od::Vector2 &size = Vector2(), bool centered=true);
-		Texture(std::string_view path, const od::Vector2 &position, const od::Vector2 &size, bool centered=true);
+		Texture(SDL_Texture *texture, const od::Vector2i &position, const od::Vector2i &size = od::Vector2i(), Anchors anchors = ANCHORS_CENTER);
+		Texture(std::string_view path, const od::Vector2i &position, const od::Vector2i &size, Anchors anchors = ANCHORS_CENTER);
 		virtual ~Texture();
 		void Render() override;
 
 	public:
-		float m_Rotation;
-		bool m_Centered;
+		float m_Rotation = 0;
 
 	protected:
 		bool m_IsTextureOwner;
-		od::Vector2 m_Size;
+		od::Vector2i m_Size;
 		SDL_Texture *m_Texture;
 	};
 }

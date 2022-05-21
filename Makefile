@@ -13,7 +13,7 @@ LIBS := -lSDL2 -lSDLmain -lSDL2_ttf -lSDL2_image
 all: $(OBJ) $(OUT)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) $(GDB_FLAGS) $(INC) -c $< -o $@
 
 $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) $(LIBS) $(OBJ) -o $@

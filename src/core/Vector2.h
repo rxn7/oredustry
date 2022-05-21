@@ -1,13 +1,14 @@
 #pragma once
 
+#include <cstdint>
 #include <cmath>
-#include "Oredustry.h"
 
 namespace od {
+	template<typename T>
 	struct Vector2 {
-		float x, y;
+		T x, y;
 
-		Vector2(float x, float y) {
+		Vector2(T x, T y) {
 			this->x = x;
 			this->y = y;
 		}
@@ -17,12 +18,12 @@ namespace od {
 			this->y = 0;
 		}
 
-		inline static Vector2 ScreenCenter() {
-			return Vector2(od::ScreenCenterX(), od::ScreenCenterY());
-		}
-
 		inline float Length() const {
 			return sqrtf(x*x + y*y);
 		}
 	};
+
+	typedef Vector2<float> Vector2f;
+	typedef Vector2<int32_t> Vector2i;
+	typedef Vector2<uint32_t> Vector2u;
 }

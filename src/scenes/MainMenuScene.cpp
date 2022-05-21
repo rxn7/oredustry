@@ -1,26 +1,14 @@
 #include "MainMenuScene.h"
 
-od::MainMenuScene::MainMenuScene() : 
-m_TitleTexture(new od::UI::Texture("res/title.png", od::Vector2(od::ScreenCenterX(), 64), {512, 128}, true)) {
+od::MainMenuScene::MainMenuScene() {
+	AddUiElement(std::unique_ptr<od::UI::Texture>(new od::UI::Texture("res/title.png", od::Vector2i(0, 64), {512, 128}, {od::UI::Anchor::Center, od::UI::Anchor::Start})));
+	AddUiElement(std::unique_ptr<od::UI::Button>(new od::UI::Button("Start Game", std::bind(&MainMenuScene::StartGame, this), od::Vector2i(0, 200), {150, 60}, {od::UI::Anchor::Center, od::UI::Anchor::Start})));
+	AddUiElement(std::unique_ptr<od::UI::Button>(new od::UI::Button("Exit", std::bind(&MainMenuScene::ExitGame, this), od::Vector2i(0, 300), {150, 60}, {od::UI::Anchor::Center, od::UI::Anchor::Start})));
 }
 
-od::MainMenuScene::~MainMenuScene() {
+void od::MainMenuScene::StartGame() {
 }
 
-void od::MainMenuScene::Awake() {
-}
-
-void od::MainMenuScene::Update(uint32_t deltaTime, uint32_t timeSinceStart) {
-}
-
-void od::MainMenuScene::ProcessEvent(const SDL_Event &event) {
-	if(event.type == SDL_WINDOWEVENT) 
-			m_TitleTexture->m_Position.x = od::ScreenCenterX();
-}
-
-void od::MainMenuScene::Draw() {
-}
-
-void od::MainMenuScene::DrawUI() {
-	m_TitleTexture->Render();
+void od::MainMenuScene::ExitGame() {
+	od::Shutdown(0, "You pressed the Exit Game button");
 }

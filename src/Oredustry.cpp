@@ -13,6 +13,7 @@ static std::unique_ptr<od::UI::Text> debugText;
 static std::chrono::high_resolution_clock hrClock;
 static std::chrono::high_resolution_clock::time_point clockStart, clockFrameStart, clockFrameEnd;
 static std::unique_ptr<od::Scene> currentScene;
+static od::Vector2i pointerPosition;
 static uint32_t deltaTime = 0;
 static uint32_t timeSinceStart = 0;
 static bool isRunning = true;
@@ -44,8 +45,8 @@ static void ProcessEvents() {
 				od::Shutdown(0, "Window has been closed");
 				break;
 				
-			case SDL_WINDOWEVENT:
-				SDL_GetWindowSize(od::window, &windowWidth, &windowHeight);
+			case SDL_MOUSEMOTION:
+				SDL_GetMouseState(&pointerPosition.x, &pointerPosition.y);
 				break;
 		}
 
@@ -68,12 +69,13 @@ static void CalculateFrameDelta() {
 
 void od::Start() {
 	clockStart = hrClock.now();
-	od::SetScene(std::unique_ptr<SplashScreenScene>(new SplashScreenScene));
+	od::SetScene(std::unique_ptr<od::Scene>(new SplashScreenScene()));
 
 	while(isRunning) {
 		CalculateFrameDelta();
 		od::Input::Update();
 		ProcessEvents();
+		SDL_GetWindowSize(od::window, &windowWidth, &windowHeight);
 
 		// Toggle showDebug on tilde press
 		if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
@@ -83,7 +85,7 @@ void od::Start() {
 		SDL_RenderClear(renderer);
 
 		if(currentScene != nullptr) {
-			currentScene->Update(deltaTime, timeSinceStart);
+			currentScene->Update(deltaTime);
 			currentScene->Draw();
 			currentScene->DrawUI();
 		}
@@ -132,12 +134,16 @@ void od::Init() {
 	od::Input::Init();
 	od::font = FC_CreateFont();
 	FC_LoadFont(od::font, od::renderer, "res/font.ttf", FONT_SIZE, SDL_Color{0,0,0,255}, TTF_STYLE_NORMAL);
-	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::font, od::Vector2(), SDL_Color{0, 0, 0, 255}, "Debug"));
+	debugText = std::make_unique<od::UI::Text>(od::font, od::Vector2i(), SDL_Color{0, 0, 0, 255}, "Debug");
 }
 
 void od::SetScene(std::unique_ptr<Scene> scene) {
 	currentScene = std::move(scene);
 	currentScene->Awake();
+}
+
+od::Vector2i od::GetPointerPosition() {
+	return pointerPosition;
 }
 
 int32_t od::GetWindowWidth() {
@@ -146,4 +152,8 @@ int32_t od::GetWindowWidth() {
 
 int32_t od::GetWindowHeight() {
 	return windowHeight;
+}
+
+uint32_t od::GetTimeSinceStart() {
+	return timeSinceStart;
 }

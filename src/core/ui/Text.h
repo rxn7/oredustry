@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string_view>
+#include <string>
 #include "UIElement.h"
 #include "../Vector2.h"
 #include "../Core.h"
@@ -14,7 +15,7 @@ namespace od::UI {
 
 	class Text : public UIElement {
 	public:
-		Text(FC_Font *font, const Vector2 &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left);
+		Text(FC_Font *font, const Vector2i &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, Anchors anchors = ANCHORS_CENTER);
 		virtual ~Text();
 		void Render() override;
 		void SetText(std::string_view text);
