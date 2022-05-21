@@ -1,4 +1,5 @@
 #include "MainMenuScene.h"
+#include "GameScene.h"
 
 od::MainMenuScene::MainMenuScene() {
 	AddUiElement(std::unique_ptr<od::UI::Texture>(new od::UI::Texture("res/title.png", od::Vector2i(0, 64), {512, 128}, {od::UI::Anchor::Center, od::UI::Anchor::Start})));
@@ -7,8 +8,9 @@ od::MainMenuScene::MainMenuScene() {
 }
 
 void od::MainMenuScene::StartGame() {
+	od::Core::SetScene(std::unique_ptr<od::Scene>(new GameScene()));
 }
 
 void od::MainMenuScene::ExitGame() {
-	od::Shutdown(0, "You pressed the Exit Game button");
+	od::Core::Shutdown(0, "You pressed the Exit Game button");
 }

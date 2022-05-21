@@ -1,10 +1,10 @@
 #include "UIElement.h"
-#include "Oredustry.h"
+#include "core/Core.h"
 
 void od::UI::UIElement::Update(uint32_t deltaTime) {
 	switch(m_Anchors[0]) {
 		case Anchor::Center:
-			m_AnchoredPosition.x = od::ScreenCenterX() + m_Position.x;
+			m_AnchoredPosition.x = od::Core::ScreenCenterX() + m_Position.x;
 			break;
 
 		case Anchor::Start:
@@ -12,13 +12,13 @@ void od::UI::UIElement::Update(uint32_t deltaTime) {
 			break;
 
 		case Anchor::End:
-			m_AnchoredPosition.x = od::GetWindowWidth() - m_Position.x;
+			m_AnchoredPosition.x = od::Core::GetScreenWidth() - m_Position.x;
 			break;
 	}
 
 	switch(m_Anchors[1]) {
 		case Anchor::Center:
-			m_AnchoredPosition.y = od::ScreenCenterY() + m_Position.y;
+			m_AnchoredPosition.y = od::Core::ScreenCenterY() + m_Position.y;
 			break;
 
 		case Anchor::Start:
@@ -26,7 +26,7 @@ void od::UI::UIElement::Update(uint32_t deltaTime) {
 			break;
 
 		case Anchor::End:
-			m_AnchoredPosition.y = od::GetWindowHeight() - m_Position.y;
+			m_AnchoredPosition.y = od::Core::GetScreenHeight() - m_Position.y;
 			break;
 	}
 }

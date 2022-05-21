@@ -1,9 +1,8 @@
 #pragma once
 
-#include "ui/UIElement.h"
-#include "Core.h"
 #include <memory>
 #include <vector>
+#include "ui/UIElement.h"
 
 namespace od {
 	class Scene {

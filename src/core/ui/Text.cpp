@@ -1,5 +1,4 @@
 #include "Text.h"
-#include "../../Oredustry.h"
 
 od::UI::Text::Text(TTF_Font *font, const od::Vector2i &position, const SDL_Color &color, std::string_view text, od::UI::TextAlign align, Anchors anchors) : 
 m_Font(font),
@@ -31,7 +30,7 @@ void od::UI::Text::RenderTexture() {
 		SDL_DestroyTexture(m_Texture);
 
 	SDL_Surface *surface = TTF_RenderUTF8_Solid_Wrapped(m_Font, m_Text.c_str(), m_Color, 0);
-	m_Texture = SDL_CreateTextureFromSurface(od::renderer, surface);
+	m_Texture = SDL_CreateTextureFromSurface(od::Core::renderer, surface);
 
 	m_Size.x = surface->w;
 	m_Size.y = surface->h;
@@ -59,5 +58,5 @@ void od::UI::Text::CalculateRect() {
 
 void od::UI::Text::Render() {
 	if(m_Texture)
-		SDL_RenderCopy(od::renderer, m_Texture, 0, &m_Rect);
+		SDL_RenderCopy(od::Core::renderer, m_Texture, 0, &m_Rect);
 }

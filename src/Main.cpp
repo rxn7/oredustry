@@ -2,7 +2,6 @@
 
 int main(int argc, const char **argv) {
 	std::ios::sync_with_stdio(false);
-	od::Init();
-	od::Start();
-	od::Shutdown();
+	od::Core::Init();
+	od::Core::Start();
 }

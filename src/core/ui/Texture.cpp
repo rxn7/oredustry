@@ -1,5 +1,4 @@
 #include "Texture.h"
-#include "Oredustry.h"
 
 od::UI::Texture::Texture(SDL_Texture *texture, const Vector2i &position, const Vector2i &size, std::array<Anchor, 2> axisPositions) :
 m_IsTextureOwner(false),
@@ -16,7 +15,7 @@ m_Rotation(0),
 m_Size(size) {
 	m_Anchors = axisPositions;
 	m_Position = position;
-	m_Texture = IMG_LoadTexture(od::renderer, path.data());
+	m_Texture = od::Core::LoadTexture(path);
 }
 
 od::UI::Texture::~Texture() {
@@ -29,5 +28,5 @@ void od::UI::Texture::Render() {
 	dest.x = m_AnchoredPosition.x - dest.w * 0.5f;
 	dest.y = m_AnchoredPosition.y - dest.h * 0.5f;
 	
-	SDL_RenderCopyEx(od::renderer, m_Texture, 0, &dest, m_Rotation, 0, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(od::Core::renderer, m_Texture, 0, &dest, m_Rotation, 0, SDL_FLIP_NONE);
 }
