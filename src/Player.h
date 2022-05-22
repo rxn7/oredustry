@@ -1,15 +1,12 @@
 #pragma once
 
 #include "core/Core.h"
+#include "core/Sprite.h"
 
 namespace od {
-	class Player {
+	class Player : public od::Sprite {
 	public:
 		Player();
 		void Update(uint32_t deltaTime);
-		void Render();
-
-	private:
-		SDL_Texture *m_Texture; // TODO: Sprite class
 	};
 }

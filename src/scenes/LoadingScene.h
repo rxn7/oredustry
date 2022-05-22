@@ -6,9 +6,9 @@
 #include "core/ui/Text.h"
 
 namespace od {
-	class SplashScreenScene : public Scene {
+	class LoadingScene : public Scene {
 	public:
-		SplashScreenScene();
+		LoadingScene();
 		void Update(uint32_t deltaTime) override;
 
 	private:

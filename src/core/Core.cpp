@@ -11,7 +11,7 @@ TTF_Font *od::Core::font = nullptr;
 static std::unique_ptr<od::Scene> nextScene, currentScene;
 static std::chrono::high_resolution_clock::time_point clockStart, clockFrameStart, clockFrameEnd;
 static od::Vector2i pointerPosition;
-static uint32_t timeSinceStart, deltaTime;
+static uint32_t timeSinceStart = 0, deltaTime = 0;
 static od::Vector2i screenSize;
 
 static void CalculateFrameDelta();
@@ -60,8 +60,8 @@ void od::Core::Start() {
 	od::Oredustry::Start();
 
 	while(true) {
-		timeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(clockFrameStart - clockStart).count();
 		CalculateFrameDelta();
+		timeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(clockFrameStart - clockStart).count();
 
 		// If next scene is queued, change the currentScene to the nextScene
 		if(nextScene) {
@@ -73,7 +73,6 @@ void od::Core::Start() {
 		ProcessEvents();
 
 		SDL_GetWindowSize(od::Core::window, &screenSize.x, &screenSize.y);
-
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);

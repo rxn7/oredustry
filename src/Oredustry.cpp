@@ -1,6 +1,7 @@
 #include "Oredustry.h"
 #include "core/Input.h"
 #include "scenes/MainMenuScene.h"
+#include "scenes/LoadingScene.h"
 
 static std::unique_ptr<od::UI::Text> debugText;
 static bool showDebug = true;
@@ -20,6 +21,7 @@ static void DrawDebugText() {
 
 void od::Oredustry::Start() {
 	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::Core::font, od::Vector2i(), SDL_Color{0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
+
 	od::Core::SetScene(std::unique_ptr<od::Scene>(new MainMenuScene()));
 }
 
