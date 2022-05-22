@@ -6,7 +6,7 @@ m_Texture(nullptr),
 m_Align(align)  {
 	m_Anchors = anchors;
 	m_Position = position;
-	SetColor(color);
+	m_Color = color;
 	SetText(text);
 }
 
@@ -23,6 +23,7 @@ void od::UI::Text::SetText(std::string_view text) {
 
 void od::UI::Text::SetColor(const SDL_Color &color) {
 	m_Color = color;
+	RenderTexture();
 }
 
 void od::UI::Text::RenderTexture() {
