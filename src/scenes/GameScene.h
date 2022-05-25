@@ -2,6 +2,7 @@
 
 #include "core/Scene.h"
 #include "Player.h"
+#include "core/ui/ColorRect.h"
 
 namespace od {
 	class GameScene : public Scene {
@@ -12,5 +13,7 @@ namespace od {
 	
 	private:
 		std::unique_ptr<Player> m_Player;
+		std::shared_ptr<od::UI::ColorRect> m_PauseRect;
+		bool m_Paused;
 	};
 }

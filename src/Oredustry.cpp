@@ -21,16 +21,12 @@ static void DrawDebugText() {
 
 void od::Oredustry::Start() {
 	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::Core::font, od::Vector2i(), SDL_Color{0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
-
 	od::Core::SetScene(std::unique_ptr<od::Scene>(new MainMenuScene()));
 }
 
 void od::Oredustry::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
 		showDebug ^= 1;
-
-	if(showDebug)
-		debugText->Update(deltaTime);
 }
 
 void od::Oredustry::Draw() {

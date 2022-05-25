@@ -12,7 +12,7 @@ namespace od::UI {
 
 	class Text : public UIElement {
 	public:
-		Text(TTF_Font *font, const Vector2i &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, Anchors anchors = ANCHORS_CENTER);
+		Text(TTF_Font *font, const Vector2i &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER);
 		virtual ~Text();
 		void Render() override;
 		void SetText(std::string_view text);
@@ -26,7 +26,6 @@ namespace od::UI {
 
 	private:
 		TextAlign m_Align;
-		od::Vector2i m_Size;
 		std::string m_Text = "";
 		TTF_Font *m_Font = nullptr;
 		SDL_Color m_Color;

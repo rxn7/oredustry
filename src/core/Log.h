@@ -4,11 +4,6 @@
 #include <sstream>
 
 namespace od::Log {
-	inline void Info(std::string_view text) {
-		std::cout << "[Info] " << text << "\n";
-	}
-
-	inline void Error(std::string_view text) {
-		std::cout << "[Error] " << text << "\n";
-	}
+#define OD_LOG_INFO(text) (std::cout << "[Info] " << text << "\n")
+#define OD_LOG_ERROR(text) (std::cout << "[Error] " << text << "\n")
 }

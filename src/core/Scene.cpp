@@ -1,20 +1,43 @@
 #include "Scene.h"
 
+void od::Scene::Awake() {
+	for(auto &uiElement : m_UiElements)
+		uiElement->UpdateAnchoredPosition();
+}
+
 void od::Scene::ProcessEvent(const SDL_Event &event) {
 	for(auto &uiElement : m_UiElements)
 		uiElement->ProcessEvent(event);
 }
 
-void od::Scene::AddUiElement(std::unique_ptr<od::UI::UIElement> uiElement) {
-	m_UiElements.push_back(std::move(uiElement));
+void od::Scene::AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement) {
+	m_UiElements.push_back(uiElement);
+	uiElement->Awake();
+}
+
+void od::Scene::AddEntity(std::shared_ptr<od::Entity> ent) {
+	m_Entities.push_back(ent);
+	ent->Awake();
 }
 
 void od::Scene::Update(uint32_t deltaTime) {
-	for(auto &uiElement : m_UiElements)
+	for(auto &entity : m_Entities) 
+		entity->Update(deltaTime);
+
+	for(auto &uiElement : m_UiElements) {
 		uiElement->Update(deltaTime);
+		uiElement->UpdateChildren(deltaTime);
+	}
 }
 
 void od::Scene::DrawUI() {
-	for(auto &uiElement : m_UiElements)
+	for(auto &uiElement : m_UiElements) {
 		uiElement->Render();
+		uiElement->RenderChildren();
+	}
+}
+
+void od::Scene::Draw() {
+	for(auto &entity : m_Entities) 
+		entity->Render();
 }

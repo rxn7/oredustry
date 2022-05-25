@@ -1,5 +1,8 @@
 #/bin/sh
 
-pushd bin
+pushd bin/linux>/dev/null
 ./oredustry
-popd
+if [ "$?" -ne 0 ]; then
+	echo "Failed to run oredustry!"
+fi
+popd>/dev/null

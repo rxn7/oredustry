@@ -1,11 +1,10 @@
 #include "Text.h"
 
-od::UI::Text::Text(TTF_Font *font, const od::Vector2i &position, const SDL_Color &color, std::string_view text, od::UI::TextAlign align, Anchors anchors) : 
+od::UI::Text::Text(TTF_Font *font, const od::Vector2i &position, const SDL_Color &color, std::string_view text, od::UI::TextAlign align, const Anchors &anchors) : 
 m_Font(font),
 m_Texture(nullptr),
-m_Align(align)  {
-	m_Anchors = anchors;
-	m_Position = position;
+m_Align(align),
+od::UI::UIElement(position, {0,0}, anchors) {
 	m_Color = color;
 	SetText(text);
 }
@@ -58,6 +57,10 @@ void od::UI::Text::CalculateRect() {
 }
 
 void od::UI::Text::Render() {
+	ENSURE_VISIBLE
+
 	if(m_Texture)
 		SDL_RenderCopy(od::Core::renderer, m_Texture, 0, &m_Rect);
+
+	od::UI::UIElement::Render();
 }

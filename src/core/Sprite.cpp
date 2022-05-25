@@ -1,7 +1,8 @@
 #include "Sprite.h"
 
-od::Sprite::Sprite(std::string_view texturePath, od::Vector2f size, od::Vector2f position) :
+od::Sprite::Sprite(std::string_view texturePath, const od::Vector2f &size, const od::Vector2f &position) :
 m_Size(size),
+od::Entity(position),
 m_IsTextureOwner(true) {
 	m_Texture = od::Core::LoadTexture(texturePath);
 	if(m_Size.x < 0 || m_Size.y < 0) {
@@ -12,8 +13,9 @@ m_IsTextureOwner(true) {
 	}
 }
 
-od::Sprite::Sprite(SDL_Texture *texture, od::Vector2f size, od::Vector2f position) :
+od::Sprite::Sprite(SDL_Texture *texture, const od::Vector2f &size, const od::Vector2f &position) :
 m_Texture(texture),
+od::Entity(position),
 m_IsTextureOwner(false) {
 	if(m_Size.x < 0 || m_Size.y < 0)
 		SDL_QueryTexture(m_Texture, 0, 0, reinterpret_cast<int32_t*>(&m_Size.x), reinterpret_cast<int32_t*>(&m_Size.y));

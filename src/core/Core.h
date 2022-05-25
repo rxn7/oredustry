@@ -25,7 +25,7 @@ namespace od::Core {
 	int32_t GetScreenWidth();
 	int32_t GetScreenHeight();
 	od::Vector2i GetPointerPosition();
-	inline float ScreenCenterX() { return od::Core::GetScreenWidth() * 0.5f; }
-	inline float ScreenCenterY() { return od::Core::GetScreenHeight() * 0.5f; }
-	inline static od::Vector2i ScreenCenter() { return od::Vector2i(od::Core::ScreenCenterX(), od::Core::ScreenCenterY()); }
+	inline float GetScreenCenterX() { return od::Core::GetScreenWidth() * 0.5f; }
+	inline float GetScreenCenterY() { return od::Core::GetScreenHeight() * 0.5f; }
+	inline static od::Vector2i ScreenCenter() { return od::Vector2i(od::Core::GetScreenCenterX(), od::Core::GetScreenCenterY()); }
 }

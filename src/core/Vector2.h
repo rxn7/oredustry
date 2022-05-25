@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <iostream>
 
 namespace od {
 	template<typename T>
@@ -16,6 +17,21 @@ namespace od {
 		Vector2() {
 			this->x = 0;
 			this->y = 0;
+		}
+
+		inline float Length() const {
+			return sqrtf(x*x + y*y);
+		}
+
+		inline void Normalize() {
+			float len = Length();
+			if(len != 0) {
+				x /= len;
+				y /= len;
+			} else {
+				x = 0;
+				y = 0;
+			}
 		}
 
 		inline bool operator==(Vector2 &other) const {
@@ -80,19 +96,8 @@ namespace od {
 			y /= value;
 		}
 
-		inline float Length() const {
-			return sqrtf(x*x + y*y);
-		}
-
-		inline void Normalize() {
-			float len = Length();
-			if(len != 0) {
-				x /= len;
-				y /= len;
-			} else {
-				x = 0;
-				y = 0;
-			}
+		friend inline std::ostream &operator<<(std::ostream &str, const Vector2 &v) {
+			return str << "[X: " << v.x << ", Y: " << v.y << "]";
 		}
 	};
 
