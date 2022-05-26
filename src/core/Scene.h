@@ -17,7 +17,11 @@ namespace od {
 		void AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement);
 		void AddEntity(std::shared_ptr<od::Entity> ent);
 
+	protected:
+		Scene(const SDL_Color &clearColor);
+
 	public:
+		SDL_Color m_ClearColor;
 		std::vector<std::shared_ptr<od::UI::UIElement>> m_UiElements;
 		std::vector<std::shared_ptr<od::Entity>> m_Entities;
 	};

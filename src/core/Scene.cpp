@@ -1,5 +1,8 @@
 #include "Scene.h"
 
+od::Scene::Scene(const SDL_Color &clearColor) : m_ClearColor(clearColor) {
+}
+
 void od::Scene::Awake() {
 	for(auto &uiElement : m_UiElements)
 		uiElement->UpdateAnchoredPosition();

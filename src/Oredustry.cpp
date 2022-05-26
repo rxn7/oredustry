@@ -1,38 +1,46 @@
 #include "Oredustry.h"
 #include "core/Input.h"
 #include "scenes/MainMenuScene.h"
-#include "scenes/LoadingScene.h"
+#include "core/assets/Font.h"
 
-static std::unique_ptr<od::UI::Text> debugText;
-static bool showDebug = true;
+static const od::WindowParameters WINDOW_PARAMS = {
+	.title = "Oredustry",
+	.width = 1680,
+	.height = 960,
+	.iconPath = "res/logo.png"
+};
 
-static void DrawDebugText() {
-	if(!showDebug) return;
+Oredustry::Oredustry() : od::Game(WINDOW_PARAMS) {
+	m_Font = od::Asset::Load<od::Font>("res/font.ttf", 16);
+	// TODO: Load all textures in a loading screen
+	od::Asset::Load<od::Texture>("res/player.png");
+}
 
-	float timeDeltaFloat = od::Core::CalculateFrameDeltaTimeMilliFloat();
-	int32_t fps = static_cast<int32_t>(1000.f / timeDeltaFloat);
+void Oredustry::OnShutdown() {
+}
+
+void Oredustry::DrawDebug() {
+	if(!m_DebugText->m_Visible) return;
+
+	int32_t fps = static_cast<int32_t>(10000.f / static_cast<std::chrono::duration<float, std::micro>>(m_FrameEndTimePoint - m_FrameStartTimePoint).count());
 
 	std::stringstream ss;
-	ss << "frame: " << od::Core::GetFrameDeltaTime() << "μs\n" << "fps: " << fps << "\nPress ~ to toggle debug";
+	ss << "frame: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\nPress ~ to toggle debug";
 
-	debugText->SetText(ss.str());
-	debugText->Render();
+	m_DebugText->SetText(ss.str());
+	m_DebugText->Render();
 }
 
-void od::Oredustry::Start() {
-	debugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::Core::font, od::Vector2i(), SDL_Color{0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
-	od::Core::SetScene(std::unique_ptr<od::Scene>(new MainMenuScene()));
+void Oredustry::Awake() {
+	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(m_Font->GetTTFFont(), {}, {0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
+	SetScene(std::make_unique<MainMenuScene>());
 }
 
-void od::Oredustry::Update(uint32_t deltaTime) {
+void Oredustry::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
-		showDebug ^= 1;
+		m_DebugText->m_Visible ^= 1;
 }
 
-void od::Oredustry::Draw() {
-}
-
-void od::Oredustry::DrawUI() {
-	if(showDebug)
-		DrawDebugText();
+void Oredustry::DrawUI() {
+	DrawDebug();
 }

@@ -1,32 +1,14 @@
 #include "Sprite.h"
 
-od::Sprite::Sprite(std::string_view texturePath, const od::Vector2f &size, const od::Vector2f &position) :
+od::Sprite::Sprite(std::shared_ptr<od::Texture> texture, const glm::f32vec2 &size, const glm::f32vec2 &position) :
 m_Size(size),
-od::Entity(position),
-m_IsTextureOwner(true) {
-	m_Texture = od::Core::LoadTexture(texturePath);
+m_Texture(texture),
+od::Entity(position) {
 	if(m_Size.x < 0 || m_Size.y < 0) {
-		int w, h;
-		SDL_QueryTexture(m_Texture, 0, 0, &w, &h);
-		m_Size.x = w;
-		m_Size.y = h;
+		m_Size.x = texture->GetWidth();
+		m_Size.y = texture->GetHeight();
 	}
 }
 
-od::Sprite::Sprite(SDL_Texture *texture, const od::Vector2f &size, const od::Vector2f &position) :
-m_Texture(texture),
-od::Entity(position),
-m_IsTextureOwner(false) {
-	if(m_Size.x < 0 || m_Size.y < 0)
-		SDL_QueryTexture(m_Texture, 0, 0, reinterpret_cast<int32_t*>(&m_Size.x), reinterpret_cast<int32_t*>(&m_Size.y));
-}
-
-od::Sprite::~Sprite() {
-	if(m_IsTextureOwner)
-		SDL_DestroyTexture(m_Texture);
-}
-
 void od::Sprite::Render() {
-	SDL_FRect rect = {.x = m_Position.x - m_Size.x * 0.5f, .y = m_Position.y - m_Size.y * 0.5f, .w = m_Size.x, .h = m_Size.y };
-	SDL_RenderCopyF(od::Core::renderer, m_Texture, 0, &rect);
 }

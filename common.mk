@@ -1,5 +1,5 @@
 INC := -Isrc
-DIR_SRC := src src/core src/core/ui src/scenes
+DIR_SRC := src src/core src/core/ui src/core/assets src/scenes
 SRC := $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
 OBJ := $(patsubst src/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
