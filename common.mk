@@ -1,7 +1,7 @@
-INC := -Isrc
-DIR_SRC := src src/core src/core/ui src/core/assets src/scenes
-SRC := $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
-OBJ := $(patsubst src/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+INC += -Isrc -Iinclude
+DIR_SRC += src src/core src/core/ui src/core/assets src/scenes
+SRC += $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
+OBJ += $(patsubst src/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 all: create_obj_dir $(OBJ) $(OUT)
 
@@ -16,5 +16,4 @@ $(OUT): $(OBJ)
 create_obj_dir:
 	@mkdir -p $(OBJ_DIR)
 
-clean:
-	rm $(OBJ) $(OUT)
+clean: rm $(OBJ) $(OUT)

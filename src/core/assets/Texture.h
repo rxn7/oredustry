@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Libs.h"
-#include "Asset.h"
+#include "core/Libs.h"
+#include "core/Asset.h"
 
 namespace od {
 	enum class TextureFilter {

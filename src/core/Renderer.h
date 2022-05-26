@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Texture.h"
+#include "Libs.h"
 
 namespace od::Renderer {
 	void Init();

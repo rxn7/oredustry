@@ -2,7 +2,7 @@
 
 #include <string_view>
 #include "UIElement.h"
-#include "../Texture.h"
+#include "core/assets/Texture.h"
 
 namespace od::UI {
 	class Image : public UIElement {

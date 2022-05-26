@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include "Log.h"
+#include "core/Log.h"
 
 od::Texture::Texture(TextureFilter filter) : m_Filter(filter) {
 }

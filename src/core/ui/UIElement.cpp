@@ -65,7 +65,7 @@ void od::UI::UIElement::UpdateAnchoredPosition() {
 	}
 }
 
-void od::UI::UIElement::AddChildElement(std::shared_ptr<od::UI::UIElement> element) {
+void od::UI::UIElement::AddChildElement(const std::shared_ptr<od::UI::UIElement> &element) {
 	m_Children.push_back(element);
 }
 

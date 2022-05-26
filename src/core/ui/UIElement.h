@@ -12,7 +12,7 @@ namespace od::UI {
 	public:
 		UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors);
 		void UpdateAnchoredPosition();
-		void AddChildElement(std::shared_ptr<od::UI::UIElement> element);
+		void AddChildElement(const std::shared_ptr<od::UI::UIElement> &element);
 		virtual void Awake() {}
 		virtual void Render() {}
 		virtual void Update(uint32_t deltaTime) {}

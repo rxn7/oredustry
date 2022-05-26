@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/Entity.h"
-#include "core/Texture.h"
+#include "core/assets/Texture.h"
 
 namespace od {
 	class Sprite : public od::Entity {

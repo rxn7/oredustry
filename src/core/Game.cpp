@@ -19,11 +19,14 @@ od::Game::Game(const od::WindowParameters &params) {
 	if(!IMG_Init(IMG_INIT_PNG))
 		Shutdown(true, "Failed to initialize SDL_image: " + std::string(IMG_GetError()));
 
+
 	m_Window = std::make_unique<Window>(params);
 
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY); // TODO: Move to core profile
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
 	m_GLCtx = SDL_GL_CreateContext(m_Window->GetSDLWindow());
 	glClearColor(0, 0, 0, 255);
 
@@ -114,11 +117,7 @@ void od::Game::PollEvents() {
 }
 
 void od::Game::UpdateViewport() {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
 	glViewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
-	glOrtho(0.0f, m_Window->GetWidth(), m_Window->GetHeight(), 0.0f, 0.0f, 1.0f);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void od::Game::SwapScenes() {
