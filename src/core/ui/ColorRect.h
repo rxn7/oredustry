@@ -5,7 +5,7 @@
 namespace od::UI {
 	class ColorRect : public UIElement {
 	public:
-		ColorRect(const SDL_Colour &color, const od::Vector2i &position={0,0}, const od::Vector2i &size={10,10}, const Anchors &anchors = ANCHORS_CENTER);
+		ColorRect(const SDL_Colour &color, const glm::i32vec2 &position={0,0}, const glm::i32vec2 &size={10,10}, const Anchors &anchors = ANCHORS_CENTER);
 		void Render() override;
 
 	private:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Libs.h"
 
 namespace od::Input {
 	void Init();

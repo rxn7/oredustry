@@ -3,7 +3,6 @@
 #include <vector>
 #include <array>
 #include "../Libs.h"
-#include "../Vector2.h"
 #include "Anchor.h"
 
 #define ENSURE_VISIBLE if(!m_Visible) return;
@@ -11,7 +10,7 @@
 namespace od::UI {
 	class UIElement {
 	public:
-		UIElement(const od::Vector2i &position, const od::Vector2i &size, const Anchors &anchors);
+		UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors);
 		void UpdateAnchoredPosition();
 		void AddChildElement(std::shared_ptr<od::UI::UIElement> element);
 		virtual void Awake() {}
@@ -26,8 +25,8 @@ namespace od::UI {
 		std::vector<std::shared_ptr<od::UI::UIElement>> m_Children;
 		bool m_Visible = true;
 		Anchors m_Anchors;
-		od::Vector2i m_Position;
-		od::Vector2i m_AnchoredPosition;
-		od::Vector2i m_Size;
+		glm::i32vec2 m_Position;
+		glm::i32vec2 m_AnchoredPosition;
+		glm::i32vec2 m_Size;
 	};
 }

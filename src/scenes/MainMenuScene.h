@@ -1,16 +1,14 @@
 #pragma once
 
 #include "Oredustry.h"
-#include "core/ui/Texture.h"
+#include "core/ui/Image.h"
 #include "core/ui/Button.h"
 
-namespace od {
-	class MainMenuScene : public Scene {
-	public:
-		MainMenuScene();
+class MainMenuScene : public od::Scene {
+public:
+	MainMenuScene();
 
-	private:
-		void StartGame();
-		void ExitGame();
-	};
-}
+private:
+	void StartGame();
+	void ExitGame();
+};

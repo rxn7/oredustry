@@ -1,17 +1,20 @@
 #pragma once
-#include <iostream>
-#include <memory>
-#include <string_view>
-#include "core/Core.h"
-#include "core/Scene.h"
-#include "core/Vector2.h"
 
-namespace od::Oredustry {
-	extern TTF_Font *font;
+#include "core/Game.h"
+#include "core/ui/Text.h"
 
-	void SetScene(std::unique_ptr<Scene> scene);
-	void Start();
-	void Update(uint32_t deltaTime);
-	void Draw();
-	void DrawUI();
-}
+class Oredustry : public od::Game {
+public:
+	Oredustry();
+
+	void OnShutdown() override;
+	void Awake() override;
+	void Update(uint32_t deltaTime) override;
+	void DrawUI() override;
+
+private:
+	void DrawDebug();
+
+private:
+	std::shared_ptr<od::UI::Text> m_DebugText;
+};

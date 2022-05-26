@@ -1,14 +1,14 @@
 #include "UIElement.h"
-#include "core/Core.h"
+#include "core/Game.h"
 
-od::UI::UIElement::UIElement(const od::Vector2i &position, const od::Vector2i &size, const Anchors &anchors) : 
+od::UI::UIElement::UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors) : 
 m_Position(position), m_Size(size), m_Anchors(anchors) {
 }
 
 void od::UI::UIElement::UpdateAnchoredPosition() {
 	switch(m_Anchors[0]) {
 		case Anchor::Center:
-			m_AnchoredPosition.x = od::Core::GetScreenCenterX() + m_Position.x;
+			m_AnchoredPosition.x = od::Game::GetInstance()->GetWindow().GetHalfWidth() + m_Position.x;
 			break;
 
 		case Anchor::Start:
@@ -16,13 +16,13 @@ void od::UI::UIElement::UpdateAnchoredPosition() {
 			break;
 
 		case Anchor::End:
-			m_AnchoredPosition.x = od::Core::GetScreenWidth() - m_Position.x;
+			m_AnchoredPosition.x = od::Game::GetInstance()->GetWindow().GetWidth() - m_Position.x;
 			break;
 	}
 
 	switch(m_Anchors[1]) {
 		case Anchor::Center:
-			m_AnchoredPosition.y = od::Core::GetScreenCenterY() + m_Position.y;
+			m_AnchoredPosition.y = od::Game::GetInstance()->GetWindow().GetHalfHeight() + m_Position.y;
 			break;
 
 		case Anchor::Start:
@@ -30,7 +30,7 @@ void od::UI::UIElement::UpdateAnchoredPosition() {
 			break;
 
 		case Anchor::End:
-			m_AnchoredPosition.y = od::Core::GetScreenHeight() - m_Position.y;
+			m_AnchoredPosition.y = od::Game::GetInstance()->GetWindow().GetHeight() - m_Position.y;
 			break;
 	}
 

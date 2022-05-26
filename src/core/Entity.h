@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Vector2.h"
+#include "Libs.h"
 
 namespace od {
 	class Entity {
 	public:
-		Entity(const Vector2f &position = {0,0});
+		Entity(const glm::f32vec2 &position = {0,0});
 		virtual void Awake() {}
 		virtual void Update(uint32_t deltaTime) {}
 		virtual void Render() {}
 
 	protected:
-		Vector2f m_Position;
+		glm::f32vec2 m_Position;
 	};
 }
