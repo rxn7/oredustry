@@ -8,7 +8,7 @@ static od::Game *s_Instance;
 od::Game::Game(const od::WindowParameters &params) {
 	s_Instance = this;
 
-	m_ClockStart = std::chrono::high_resolution_clock::now();
+	m_StartTimePoint = std::chrono::high_resolution_clock::now();
 
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
 		Shutdown(true, "Failed to initialize SDL");
@@ -62,7 +62,7 @@ void od::Game::Start() {
 
 	while(m_IsRunning) { UpdateViewport();
 		CalculateDeltaTime();
-		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_ClockFrameStart - m_ClockStart).count();
+		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_FrameStartTimePoint - m_StartTimePoint).count();
 		SwapScenes();
 
 		if(m_LastWindowSize != m_Window->GetSize() && m_Scene)
@@ -132,12 +132,12 @@ void od::Game::SwapScenes() {
 
 void od::Game::CalculateDeltaTime() {
 	if(m_TimeSinceStart != 0)
-		m_ClockFrameEnd = m_ClockFrameStart;
+		m_FrameEndTimePoint = m_FrameStartTimePoint;
 	else
-		m_ClockFrameEnd = std::chrono::high_resolution_clock::now();
+		m_FrameEndTimePoint = std::chrono::high_resolution_clock::now();
 
-	m_ClockFrameStart = std::chrono::high_resolution_clock::now();
+	m_FrameStartTimePoint = std::chrono::high_resolution_clock::now();
 
-	m_DeltaTime = std::chrono::duration_cast<std::chrono::microseconds>(m_ClockFrameStart - m_ClockFrameEnd).count();
+	m_DeltaTime = std::chrono::duration_cast<std::chrono::microseconds>(m_FrameStartTimePoint - m_FrameEndTimePoint).count();
 	if(m_DeltaTime < 0) m_DeltaTime = 0; 
 }

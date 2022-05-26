@@ -5,6 +5,8 @@
 #include "Scene.h"
 
 namespace od {
+	typedef std::chrono::high_resolution_clock::time_point TimePoint;
+
 	class Game {
 	public:
 		static Game *GetInstance();
@@ -36,7 +38,7 @@ namespace od {
 		bool m_IsRunning = true;
 		uint32_t m_TimeSinceStart = 0, m_DeltaTime = 0;
 		TTF_Font *m_Font;
-		std::chrono::high_resolution_clock::time_point m_ClockStart, m_ClockFrameStart, m_ClockFrameEnd;
+		TimePoint m_StartTimePoint, m_FrameStartTimePoint, m_FrameEndTimePoint;
 		std::unique_ptr<od::Window> m_Window;
 		glm::i32vec2 m_CursorPosition;
 

@@ -20,7 +20,7 @@ void Oredustry::OnShutdown() {
 void Oredustry::DrawDebug() {
 	if(!m_DebugText->m_Visible) return;
 
-	int32_t fps = static_cast<int32_t>(10000.f / static_cast<std::chrono::duration<float, std::micro>>(m_ClockFrameEnd - m_ClockFrameStart).count());
+	int32_t fps = static_cast<int32_t>(10000.f / static_cast<std::chrono::duration<float, std::micro>>(m_FrameEndTimePoint - m_FrameStartTimePoint).count());
 
 	std::stringstream ss;
 	ss << "frame: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\nPress ~ to toggle debug";
