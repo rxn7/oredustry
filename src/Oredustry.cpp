@@ -1,6 +1,7 @@
 #include "Oredustry.h"
 #include "core/Input.h"
 #include "scenes/MainMenuScene.h"
+#include "core/assets/Font.h"
 
 static const od::WindowParameters WINDOW_PARAMS = {
 	.title = "Oredustry",
@@ -10,11 +11,12 @@ static const od::WindowParameters WINDOW_PARAMS = {
 };
 
 Oredustry::Oredustry() : od::Game(WINDOW_PARAMS) {
-	m_Font = TTF_OpenFont("res/font.ttf", 16);
+	m_Font = od::Asset::Load<od::Font>("res/font.ttf", 16);
+	// TODO: Load all textures in a loading screen
+	od::Asset::Load<od::Texture>("res/player.png");
 }
 
 void Oredustry::OnShutdown() {
-	TTF_CloseFont(m_Font);
 }
 
 void Oredustry::DrawDebug() {
@@ -30,7 +32,7 @@ void Oredustry::DrawDebug() {
 }
 
 void Oredustry::Awake() {
-	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(m_Font, {}, {0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
+	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(m_Font->GetTTFFont(), {}, {0, 0, 0, 255}, "Debug", od::UI::TextAlign::Left, ANCHORS_START));
 	SetScene(std::make_unique<MainMenuScene>());
 }
 

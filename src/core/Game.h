@@ -3,6 +3,7 @@
 #include "Libs.h"
 #include "Window.h"
 #include "Scene.h"
+#include "assets/Font.h"
 
 namespace od {
 	typedef std::chrono::high_resolution_clock::time_point TimePoint;
@@ -16,8 +17,8 @@ namespace od {
 		void SetScene(std::unique_ptr<od::Scene> scene);
 
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
-		inline od::Window &GetWindow() { return *m_Window; }
-		inline TTF_Font *GetFont() { return m_Font; }
+		inline const od::Window &GetWindow() const { return *m_Window; }
+		inline const od::Font &GetFont() const { return *m_Font; }
 
 	protected:
 		Game(const od::WindowParameters &params);
@@ -37,7 +38,7 @@ namespace od {
 	protected:
 		bool m_IsRunning = true;
 		uint32_t m_TimeSinceStart = 0, m_DeltaTime = 0;
-		TTF_Font *m_Font;
+		std::shared_ptr<od::Font> m_Font;
 		TimePoint m_StartTimePoint, m_FrameStartTimePoint, m_FrameEndTimePoint;
 		std::unique_ptr<od::Window> m_Window;
 		glm::i32vec2 m_CursorPosition;

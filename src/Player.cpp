@@ -3,7 +3,7 @@
 
 #define MOVE_SPEED 0.0002f
 
-Player::Player() : od::Sprite(std::make_shared<od::Texture>("res/player.png")) {
+Player::Player() : od::Sprite(od::Asset::GetAsset<od::Texture>("res/player.png")) {
 }
 
 void Player::Update(uint32_t deltaTime) {

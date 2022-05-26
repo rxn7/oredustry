@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Libs.h"
+#include "Asset.h"
 
 namespace od {
 	enum class TextureFilter {
@@ -8,10 +9,11 @@ namespace od {
 		Linear,
 	};
 
-	class Texture {
+	class Texture : public od::Asset {
 	public:
-		Texture(std::string_view path, TextureFilter filter = TextureFilter::Nearest);
+		Texture(TextureFilter filter = TextureFilter::Nearest);
 
+		bool OnLoad() override;
 		void Bind();
 
 		inline std::string GetPath() const { return m_Path; }
@@ -19,7 +21,7 @@ namespace od {
 		inline int32_t GetHeight() const { return m_Height; }
 
 	private:
-		std::string m_Path;
+		TextureFilter m_Filter;
 		uint32_t m_Width, m_Height;
 		uint32_t m_GLTexture;
 	};
