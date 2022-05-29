@@ -9,11 +9,11 @@ build() {
 	JOBS=$(printf %.0f $JOBS)
 	echo "Cores: $CPUS"
 	echo "Jobs: $JOBS"
-	make -f "$PLATFORM.mk" -j "$CPUS"
+	make -f "$PLATFORM.mk" -j "$JOBS"
 	cp ./res ./bin/$PLATFORM -r
 }
 
-PLATFORMS=("linux" "windows")
+PLATFORMS=("linux")
 if [ "$#" -eq 1 ]; then
 	PLATFORM=$1
 else 
