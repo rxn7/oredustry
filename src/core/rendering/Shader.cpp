@@ -38,12 +38,10 @@ uint32_t od::Shader::GetLocation(const std::string &name) {
 	return location;
 }
 
-// TODO: Cache the names
 void od::Shader::SetUniformMat4(const std::string &name, const glm::f32mat4 &value) {
 	glUniformMatrix4fv(GetLocation(name), 1, false, &value[0][0]);
 }
 
-// TODO: Cache the names
 void od::Shader::SetUniformVec2(const std::string &name, const glm::f32vec2 &value) {
 	glUniform2f(GetLocation(name), value.x, value.y);
 }
