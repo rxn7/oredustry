@@ -3,7 +3,13 @@
 PLATFORM=""
 
 build() {
-	make -f "$PLATFORM.mk"
+	echo "Building for $PLATFORM..."
+	CPUS=$(grep '^core id' /proc/cpuinfo | sort -u | wc -l)
+	JOBS=$(echo "$CPUS * 1.5" | bc)
+	JOBS=$(printf %.0f $JOBS)
+	echo "Cores: $CPUS"
+	echo "Jobs: $JOBS"
+	make -f "$PLATFORM.mk" -j "$CPUS"
 	cp ./res ./bin/$PLATFORM -r
 }
 

@@ -80,13 +80,13 @@ void od::Renderer::BeginUI() {
 void od::Renderer::EndUI() {
 }
 
-void od::Renderer::RenderQuad(const glm::i32vec2 &position, const glm::i32vec2 &size, const od::Color &color) {
+void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
 	s_Shader->Bind();
 	s_QuadVa->Bind();
 
 	glm::f32mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+	model = glm::translate(model, glm::f32vec3(position, 0.0f));
+	model = glm::scale(model, glm::f32vec3(size, 1.0f));
 
 	s_Shader->SetUniformMat4("u_Model", model);
 	s_Shader->SetUniformColor("u_Color", color);
@@ -94,13 +94,13 @@ void od::Renderer::RenderQuad(const glm::i32vec2 &position, const glm::i32vec2 &
 	s_QuadVa->Render();
 }
 
-void RenderQuadTextured(const glm::i32vec2 &position, const glm::i32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color) {
+void RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color) {
 	s_Shader->Bind();
 	s_QuadVa->Bind();
 
 	glm::f32mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+	model = glm::translate(model, glm::f32vec3(position, 0.0f));
+	model = glm::scale(model, glm::f32vec3(size, 1.0f));
 
 	s_Shader->SetUniformMat4("u_Model", model);
 	s_Shader->SetUniformColor("u_Color", color);
