@@ -10,9 +10,15 @@ static const od::WindowParameters WINDOW_PARAMS = {
 	.iconPath = "res/logo.png"
 };
 
+static const std::string TEXTURES_TO_LOAD[] = {
+	"res/player.png",
+	"res/logo.png",
+	"res/title.png",
+};
+
 Oredustry::Oredustry() : od::Game(WINDOW_PARAMS) {
-	// TODO: Load all assets during loading screen
-	od::Asset::Load<od::Texture>("res/player.png");
+	for(const std::string &texture : TEXTURES_TO_LOAD)
+		od::Asset::Load<od::Texture>(texture);
 
 	SDL_ShowCursor(false);
 }

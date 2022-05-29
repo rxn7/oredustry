@@ -12,5 +12,5 @@ od::Entity(position) {
 }
 
 void od::Sprite::Render() {
-	od::Renderer::RenderQuad(m_Position, m_Size, {255,0,255,255});
+	od::Renderer::RenderQuadTextured(m_Position, m_Size, m_Texture, {1.0f,1.0f,1.0f,1.0f});
 }

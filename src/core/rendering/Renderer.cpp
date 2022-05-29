@@ -5,41 +5,11 @@
 #include "core/assets/Texture.h"
 #include "core/Log.h"
 #include <glm/gtc/matrix_transform.hpp>
-
-// TODO: Separate header files for each shaders
-
-static const std::string s_VertexShaderSrc = R"(
-#version 330 core
-
-layout(location = 0) in vec2 a_Position;
-layout(location = 1) in vec2 a_TexCoord;
-
-uniform mat4 u_Projection;
-uniform mat4 u_Model;
-
-out vec2 v_TexCoord;
-
-void main() {
-	gl_Position = u_Projection * u_Model * vec4(a_Position, 0.0, 1.0);
-	v_TexCoord = a_TexCoord;
-}
-)";
-
-static const std::string s_FragmentShaderSrc = R"(
-#version 330 core
-
-in vec2 v_TexCoord;
-out vec4 f_Color;
-
-uniform vec4 u_Color;
-
-void main() {
-	f_Color = u_Color;
-}
-)";
+#include "core/shaders/ColorShader.h"
+#include "core/shaders/TextureShader.h"
 
 static std::unique_ptr<od::VertexArray> s_QuadVa;
-static std::unique_ptr<od::Shader> s_Shader;
+static std::unique_ptr<od::Shader> s_ColorShader, s_TextureShader;
 static std::vector<od::Vertex> s_QuadVertices = {
 	{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
 	{ { 0.5f, -0.5f}, {1.0f, 0.0f} },
@@ -59,51 +29,62 @@ void od::Renderer::Init() {
 
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	s_Shader = std::make_unique<od::Shader>(s_VertexShaderSrc, s_FragmentShaderSrc);
+	s_ColorShader = std::make_unique<od::Shader>(od::Shaders::ColorShader::VertexSrc, od::Shaders::ColorShader::FragmentSrc);
+	s_TextureShader = std::make_unique<od::Shader>(od::Shaders::TextureShader::VertexSrc, od::Shaders::TextureShader::FragmentSrc);
+
 	s_QuadVa = std::make_unique<od::VertexArray>(s_QuadVertices);
 }
 
 void od::Renderer::Begin2D() {
-	s_Shader->Bind();
-	s_Shader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetProjection());
+	s_ColorShader->Bind();
+	s_ColorShader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetProjection());
+
+	s_TextureShader->Bind();
+	s_ColorShader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetProjection());
 }
 
 void od::Renderer::End2D() {
 }
 
 void od::Renderer::BeginUI() {
-	s_Shader->Bind();
-	s_Shader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetUIProjection());
+	s_ColorShader->Bind();
+	s_ColorShader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetUIProjection());
+
+	s_TextureShader->Bind();
+	s_ColorShader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetUIProjection());
 }
 
 void od::Renderer::EndUI() {
 }
 
 void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
-	s_Shader->Bind();
-	s_QuadVa->Bind();
-
 	glm::f32mat4 model = glm::mat4(1);
 	model = glm::translate(model, glm::f32vec3(position, 0.0f));
 	model = glm::scale(model, glm::f32vec3(size, 1.0f));
 
-	s_Shader->SetUniformMat4("u_Model", model);
-	s_Shader->SetUniformColor("u_Color", color);
+	s_ColorShader->Bind();
+	s_ColorShader->SetUniformMat4("u_Model", model);
+	s_ColorShader->SetUniformColor("u_Color", color);
 
+	s_QuadVa->Bind();
 	s_QuadVa->Render();
 }
 
-void RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color) {
-	s_Shader->Bind();
-	s_QuadVa->Bind();
-
+void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color) {
 	glm::f32mat4 model = glm::mat4(1);
 	model = glm::translate(model, glm::f32vec3(position, 0.0f));
 	model = glm::scale(model, glm::f32vec3(size, 1.0f));
 
-	s_Shader->SetUniformMat4("u_Model", model);
-	s_Shader->SetUniformColor("u_Color", color);
+	texture->Bind();
 
+	s_TextureShader->Bind();
+	s_TextureShader->SetUniformMat4("u_Model", model);
+	s_TextureShader->SetUniformColor("u_Color", color);
+
+	s_QuadVa->Bind();
 	s_QuadVa->Render();
 }

@@ -1,38 +1,38 @@
 #include "Texture.h"
 #include "core/Log.h"
 
-od::Texture::Texture(TextureFilter filter) : m_Filter(filter) {
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+od::Texture::Texture(uint32_t filter) : m_Filter(filter) {
 }
 
 bool od::Texture::OnLoad() {
-	SDL_Surface *surface = IMG_Load(m_Path.c_str());
-	if(!surface) {
-		OD_LOG_ERROR("Failed to load texture '" << m_Path << "', reason: " << IMG_GetError());
-		return false;
-	}
+	int32_t channels = 0;
 
-	m_Width = surface->w;
-	m_Height = surface->h;
+	uint8_t *img = stbi_load(m_Path.data(), &m_Width, &m_Height, &channels, 0);
+	if(!img)
+		return false;
 
 	glGenTextures(1, &m_GLTexture);
-	glBindTexture(GL_TEXTURE_2D, m_GLTexture);
+	Bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int32_t>(m_Filter));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int32_t>(m_Filter));
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Filter);
 
-	SDL_LockSurface(surface);
+	int32_t internalFormat = channels == 4 ? GL_RGBA : GL_RGB;
 
-	uint32_t internalFormat = SDL_ISPIXELFORMAT_ALPHA(surface->format->format) ? GL_RGBA : GL_RGB;
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+	stbi_image_free(img);
 
-	SDL_UnlockSurface(surface);
-	SDL_FreeSurface(surface);
+	Unbind();
 
 	return true;
 }
 
 void od::Texture::Bind() const {
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_GLTexture);
 }
 

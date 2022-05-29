@@ -10,8 +10,7 @@ od::UI::UIElement(position, size, anchors) {
 void od::UI::Image::Render() {
 	ENSURE_VISIBLE
 
-	// TODO: Use custom renderer
-	// SDL_RenderCopyEx(od::Core::renderer, m_Texture, 0, &dest, m_Rotation, 0, SDL_FLIP_NONE);
+	od::Renderer::RenderQuadTextured(m_AnchoredPosition, m_Size, m_Texture, {1.0f, 1.0f, 1.0f, 1.0f});
 
 	od::UI::UIElement::Render();
 }

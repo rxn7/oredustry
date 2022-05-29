@@ -6,7 +6,7 @@
 namespace od {
 	class Sprite : public od::Entity {
 	public:
-		Sprite(std::shared_ptr<od::Texture> texture, const glm::f32vec2 &size = {-1,-1}, const glm::f32vec2 &position = {0,0});
+		Sprite(std::shared_ptr<od::Texture> texture, const glm::f32vec2 &size = {-1,-1}, const glm::f32vec2 &position = {200,200});
 		void Render() override;
 	
 	public:

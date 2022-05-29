@@ -44,6 +44,5 @@ void od::VertexArray::Unbind() {
 }
 
 void od::VertexArray::Render() {
-	Bind();
 	glDrawArrays(GL_TRIANGLES, 0, m_VertexCount);
 }

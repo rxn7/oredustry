@@ -10,7 +10,9 @@ m_Width(params.width), m_Height(params.height) {
 	}
 
 	if(params.iconPath != "") {
-		SDL_Surface *iconSurface = IMG_Load(params.iconPath.c_str());
+		// TODO: Load icon without SDL_IMG
+		/*
+		SDL_Surface *iconSurface = ;
 		if(!iconSurface) {
 			OD_LOG_ERROR("Failed to load icon '" << params.iconPath << "', reason: " << IMG_GetError());
 			return;
@@ -18,6 +20,7 @@ m_Width(params.width), m_Height(params.height) {
 
 		SDL_SetWindowIcon(m_SDLWindow, iconSurface);
 		SDL_FreeSurface(iconSurface);
+		*/
 	}
 }
 

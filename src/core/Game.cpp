@@ -14,9 +14,6 @@ od::Game::Game(const od::WindowParameters &params) {
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
 		Shutdown(true, "Failed to initialize SDL");
 
-	if(!IMG_Init(IMG_INIT_PNG))
-		Shutdown(true, "Failed to initialize SDL_image: " + std::string(IMG_GetError()));
-
 	m_Window = std::make_unique<Window>(params);
 
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);

@@ -4,14 +4,9 @@
 #include "core/Asset.h"
 
 namespace od {
-	enum class TextureFilter {
-		Nearest,
-		Linear,
-	};
-
 	class Texture : public od::Asset {
 	public:
-		Texture(TextureFilter filter = TextureFilter::Nearest);
+		Texture(uint32_t filter = GL_NEAREST);
 
 		bool OnLoad() override;
 		void Bind() const;
@@ -22,8 +17,8 @@ namespace od {
 		inline int32_t GetHeight() const { return m_Height; }
 
 	private:
-		TextureFilter m_Filter;
-		uint32_t m_Width, m_Height;
+		uint32_t m_Filter;
+		int32_t m_Width, m_Height;
 		uint32_t m_GLTexture;
 	};
 }
