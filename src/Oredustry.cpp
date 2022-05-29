@@ -16,7 +16,9 @@ static const std::string TEXTURES_TO_LOAD[] = {
 	"res/title.png",
 };
 
-Oredustry::Oredustry() : od::Game(WINDOW_PARAMS) {
+Oredustry::Oredustry() : 
+m_Cursor(std::make_unique<Cursor>(50)),
+od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
 
@@ -24,13 +26,6 @@ Oredustry::Oredustry() : od::Game(WINDOW_PARAMS) {
 }
 
 void Oredustry::OnShutdown() {
-}
-
-void Oredustry::DrawCursor() {
-	float r = static_cast<float>(m_CursorPosition.x) / static_cast<float>(m_Window->GetWidth());
-	float g = static_cast<float>(m_CursorPosition.y) / static_cast<float>(m_Window->GetHeight());
-	float b = 1.f - g;
-	od::Renderer::RenderQuad(m_CursorPosition, {20,20}, {r,g,b,1.0f});
 }
 
 void Oredustry::DrawDebug() {
@@ -63,5 +58,5 @@ void Oredustry::Update(uint32_t deltaTime) {
 
 void Oredustry::DrawUI() {
 	DrawDebug();
-	DrawCursor();
+	m_Cursor->Render();
 }
