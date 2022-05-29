@@ -16,8 +16,6 @@ namespace od::UI {
 		virtual void Awake() {}
 		virtual void Render() {}
 		virtual void Update(uint32_t deltaTime) {}
-		virtual void ProcessEvent(const SDL_Event &event) {}
-		void ProcessEventChildren(const SDL_Event &event);
 		void UpdateChildren(uint32_t deltaTime);
 		void RenderChildren();
 

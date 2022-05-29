@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIElement.h"
+#include "core/Color.h"
 
 // TODO: Text rendering!!!
 namespace od::UI {
@@ -12,7 +13,7 @@ namespace od::UI {
 
 	class Text : public UIElement {
 	public:
-		Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const SDL_Color &color = {255,255,255,255}, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER); virtual ~Text();
+		Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color = od::Colors::WHITE, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER); virtual ~Text();
 		void Render() override;
 		void SetText(std::string_view text);
 
@@ -24,7 +25,7 @@ namespace od::UI {
 
 	public:
 		TextAlign m_Align;
-		SDL_Color m_Color;
+		od::Color m_Color;
 		float m_Scale;
 
 	private:

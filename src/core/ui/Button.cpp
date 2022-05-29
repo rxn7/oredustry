@@ -2,18 +2,12 @@
 #include "core/Game.h"
 #include "core/rendering/Renderer.h"
 #include "core/Color.h"
+#include "core/Input.h"
 
 od::UI::Button::Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
 m_ClickCallback(clickCallback),
-m_Text(new od::UI::Text({}, text, 16, SDL_Color{0,0,0,255}, od::UI::TextAlign::Center)),
+m_Text(new od::UI::Text({}, text, 16, od::Colors::BLACK, od::UI::TextAlign::Center)),
 od::UI::UIElement(position, size, anchors) {
-}
-
-void od::UI::Button::ProcessEvent(const SDL_Event &event) {
-	od::UI::UIElement::ProcessEvent(event);
-
-	if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT && m_ClickCallback && IsHovered())
-		m_ClickCallback();
 }
 
 void od::UI::Button::Update(uint32_t deltaTime) {
@@ -24,6 +18,9 @@ void od::UI::Button::Update(uint32_t deltaTime) {
 
 	glm::i32vec2 cursorPosition = od::Game::GetInstance()->GetCursorPosition();
 	m_Hovered = cursorPosition.x >= m_AnchoredPosition.x - halfWidth && cursorPosition.x <= m_AnchoredPosition.x + halfWidth && cursorPosition.y >= m_AnchoredPosition.y - halfHeight && cursorPosition.y <= m_AnchoredPosition.y + halfHeight;
+
+	if(m_Hovered && od::Input::IsButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT))
+		m_ClickCallback();
 }
 
 void od::UI::Button::Render() {

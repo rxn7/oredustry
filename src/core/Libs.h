@@ -6,6 +6,6 @@
 #include <chrono>
 #include <sstream>
 #include <array>
-#include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>

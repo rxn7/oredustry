@@ -13,10 +13,9 @@ namespace od {
 	class Window {
 	public:
 		Window(const WindowParameters &params);
-
 		~Window();
 
-		void ProcessWindowEvent(const SDL_WindowEvent &event);
+		inline void SetSize(int32_t width, int32_t height) { m_Width = width; m_Height = height; }
 		inline int32_t GetStartWidth() const { return m_StartWidth; }
 		inline int32_t GetStartHeight() const { return m_StartHeight; }
 		inline int32_t GetHalfWidth() const { return m_Width * 0.5f; }
@@ -25,11 +24,11 @@ namespace od {
 		inline int32_t GetHeight() const { return m_Height; } 
 		inline glm::i32vec2 GetSize() const { return {m_Width, m_Height}; }
 		inline glm::i32vec2 GetCenter() const { return {GetHalfWidth(), GetHalfHeight()}; }
-		inline SDL_Window *GetSDLWindow() const { return m_SDLWindow; };
+		inline GLFWwindow *GetGLFWWindow() const { return m_GLFWWindow; };
 
 	private:
 		int32_t m_Width, m_Height;
 		int32_t m_StartWidth,  m_StartHeight;
-		SDL_Window *m_SDLWindow;
+		GLFWwindow *m_GLFWWindow;
 	};
 }

@@ -22,7 +22,7 @@ od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
 
-	SDL_ShowCursor(false);
+	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 void Oredustry::OnShutdown() {
@@ -54,7 +54,7 @@ void Oredustry::Awake() {
 }
 
 void Oredustry::Update(uint32_t deltaTime) {
-	if(od::Input::IsKeyJustPressed(SDLK_BACKQUOTE))
+	if(od::Input::IsKeyJustPressed(GLFW_KEY_GRAVE_ACCENT))
 		m_DebugText->m_Visible ^= 1;
 
 	m_DebugTextUpdateCounter += deltaTime;

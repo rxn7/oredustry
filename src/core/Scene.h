@@ -4,6 +4,7 @@
 #include <vector>
 #include "ui/UIElement.h"
 #include "Entity.h"
+#include "core/Color.h"
 
 namespace od {
 	class Scene {
@@ -13,15 +14,14 @@ namespace od {
 		virtual void Update(uint32_t frameDelta);
 		virtual void Draw();
 		virtual void DrawUI();
-		virtual void ProcessEvent(const SDL_Event &event);
 		void AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement);
 		void AddEntity(std::shared_ptr<od::Entity> ent);
 
 	protected:
-		Scene(const SDL_Color &clearColor);
+		Scene(const od::Color &clearColor);
 
 	public:
-		SDL_Color m_ClearColor;
+		od::Color m_ClearColor;
 		std::vector<std::shared_ptr<od::UI::UIElement>> m_UiElements;
 		std::vector<std::shared_ptr<od::Entity>> m_Entities;
 	};

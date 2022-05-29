@@ -9,10 +9,10 @@ Player::Player() : od::Sprite(od::Asset::GetAsset<od::Texture>("res/player.png")
 
 void Player::Update(uint32_t deltaTime) {
 	glm::f32vec2 moveDir{0,0};
-	if(od::Input::IsKeyPressed(SDLK_s)) moveDir.y++;
-	if(od::Input::IsKeyPressed(SDLK_w)) moveDir.y--;
-	if(od::Input::IsKeyPressed(SDLK_d)) moveDir.x++;
-	if(od::Input::IsKeyPressed(SDLK_a)) moveDir.x--;
+	if(od::Input::IsKeyPressed(GLFW_KEY_W)) moveDir.y--;
+	if(od::Input::IsKeyPressed(GLFW_KEY_S)) moveDir.y++;
+	if(od::Input::IsKeyPressed(GLFW_KEY_D)) moveDir.x++;
+	if(od::Input::IsKeyPressed(GLFW_KEY_A)) moveDir.x--;
 
 	float moveDirLen = moveDir.length();
 	if(moveDirLen != 0) {

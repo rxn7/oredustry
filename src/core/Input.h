@@ -4,7 +4,9 @@
 
 namespace od::Input {
 	void Init();
-	void Update();
-	bool IsKeyPressed(SDL_KeyCode key);
-	bool IsKeyJustPressed(SDL_KeyCode key);
+	void EndFrame();
+	bool IsKeyPressed(int key);
+	bool IsKeyJustPressed(int key);
+	bool IsButtonPressed(int btn);
+	bool IsButtonJustPressed(int btn);
 }

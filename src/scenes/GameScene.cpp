@@ -16,7 +16,7 @@ od::Scene({255,255,255,255}) {
 void GameScene::Update(uint32_t deltaTime) {
 	od::Scene::Update(deltaTime);
 
-	if(od::Input::IsKeyJustPressed(SDLK_ESCAPE))
+	if(od::Input::IsKeyJustPressed(GLFW_KEY_ESCAPE))
 		m_PauseRect->m_Visible ^= 1;
 
 	if(m_PauseRect->m_Visible) return;

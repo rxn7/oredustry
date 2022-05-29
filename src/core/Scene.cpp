@@ -1,18 +1,11 @@
 #include "Scene.h"
 
-od::Scene::Scene(const SDL_Color &clearColor) : m_ClearColor(clearColor) {
+od::Scene::Scene(const od::Color &clearColor) : m_ClearColor(clearColor) {
 }
 
 void od::Scene::Awake() {
 	for(auto &uiElement : m_UiElements)
 		uiElement->UpdateAnchoredPosition();
-}
-
-void od::Scene::ProcessEvent(const SDL_Event &event) {
-	for(auto &uiElement : m_UiElements) {
-		uiElement->ProcessEvent(event);
-		uiElement->ProcessEventChildren(event);
-	}
 }
 
 void od::Scene::AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement) {

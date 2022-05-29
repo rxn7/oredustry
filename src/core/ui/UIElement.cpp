@@ -82,8 +82,3 @@ void od::UI::UIElement::RenderChildren() {
 	for(std::shared_ptr<UIElement> element : m_Children)
 		element->Render();
 }
-
-void od::UI::UIElement::ProcessEventChildren(const SDL_Event &event) {
-	for(std::shared_ptr<UIElement> element : m_Children)
-		element->ProcessEvent(event);
-}

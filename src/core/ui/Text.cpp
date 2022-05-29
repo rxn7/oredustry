@@ -2,7 +2,7 @@
 #include "core/Game.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-od::UI::Text::Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const SDL_Color &color, TextAlign align, const Anchors &anchors) :
+od::UI::Text::Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color, TextAlign align, const Anchors &anchors) :
 m_Align(align),
 m_Scale(scale),
 od::UI::UIElement(position, {0,0}, anchors) {

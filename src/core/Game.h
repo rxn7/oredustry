@@ -15,20 +15,21 @@ namespace od {
 		void Shutdown(bool error=false, std::string_view reason="");
 		void ShutdownWithoutReason();
 		void SetScene(std::unique_ptr<od::Scene> scene);
+		void HandleWindowResize(int32_t width, int32_t height);
 
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
-		inline const od::Window &GetWindow() const { return *m_Window; }
+		inline od::Window &GetWindow() const { return *m_Window; }
 		inline const glm::mat4 &GetProjection() const { return m_Projection; }
 		inline const glm::mat4 &GetUIProjection() const { return m_UIProjection; }
+		inline void SetCursorPosition(const glm::f32vec2 &pos) { m_CursorPosition = pos; }
 		inline void SetCameraPosition(const glm::f32vec2 &pos) { m_CameraPosition = pos; }
 		inline void MoveCamera(const glm::f32vec2 &offset) { m_CameraPosition += offset; }
-		inline glm::f32vec2 GetUIViewport() const { return {m_Window->GetStartWidth(), m_Window->GetStartHeight() * m_AspectRatio}; }
 
 	protected:
 		Game(const od::WindowParameters &params);
-		virtual void ProcessEvent(SDL_Event &event) {}
 		virtual void Awake() {}
 		virtual void Update(uint32_t deltaTime) {}
+		virtual void DrawNuklear() {}
 		virtual void DrawUI() {}
 		virtual void Draw() {}
 		virtual void OnShutdown() {}
@@ -38,22 +39,17 @@ namespace od {
 		void UpdateViewport();
 		void SwapScenes();
 		void CalculateDeltaTime();
-		void PollEvents();
 
 	protected:
-		glm::f32vec2 m_CameraPosition{0,0};
-		bool m_IsRunning = true;
 		uint32_t m_TimeSinceStart = 0, m_DeltaTime = 0;
 		TimePoint m_StartTimePoint, m_FrameStartTimePoint, m_FrameEndTimePoint;
 		std::unique_ptr<od::Window> m_Window;
-		glm::i32vec2 m_CursorPosition;
+		glm::f32vec2 m_CameraPosition{0,0};
+		glm::i32vec2 m_CursorPosition{0,0};
 
 	private:
-		float m_AspectRatio;
 		glm::mat4 m_Projection;
 		glm::mat4 m_UIProjection;
-		SDL_GLContext m_GLCtx;
 		std::unique_ptr<od::Scene> m_NextScene, m_Scene;
-		glm::i32vec2 m_LastWindowSize;
 	};
 }
