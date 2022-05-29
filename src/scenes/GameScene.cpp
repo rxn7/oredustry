@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "core/Input.h"
+#include "core/rendering/Renderer.h"
 
 GameScene::GameScene() :
 m_Player(new Player()),
@@ -21,5 +22,8 @@ void GameScene::Update(uint32_t deltaTime) {
 }
 
 void GameScene::Draw() {
+	// Reference object
+	od::Renderer::RenderQuad({0,0}, {50,50}, {0.5f, 0.2f, 0.9f, 1.0f});
+
 	m_Player->Render();
 }

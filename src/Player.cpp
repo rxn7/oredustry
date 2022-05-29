@@ -24,4 +24,6 @@ void Player::Update(uint32_t deltaTime) {
 
 	moveDir *= deltaTime * MOVE_SPEED;
 	m_Position += moveDir;
+
+	od::Game::GetInstance()->SetCameraPosition(m_Position);
 }

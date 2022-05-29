@@ -32,6 +32,7 @@ namespace od {
 		virtual void OnShutdown() {}
 
 	private:
+		void UpdateProjections();
 		void UpdateViewport();
 		void SwapScenes();
 		void CalculateDeltaTime();

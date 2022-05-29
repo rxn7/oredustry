@@ -79,10 +79,8 @@ void od::Game::Start() {
 		od::Input::Update();
 		PollEvents();
 
-		m_Projection = glm::ortho(m_CameraPosition.x, m_CameraPosition.x + static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), m_CameraPosition.y + static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), m_CameraPosition.y, 0.0f, 1.0f);
-		m_UIProjection = glm::ortho(0.0f, static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), 0.0f, 0.0f, 1.0f);
-
 		// Update
+		UpdateProjections();
 		Update(m_DeltaTime);	
 		if(m_Scene)
 			m_Scene->Update(m_DeltaTime);
@@ -106,6 +104,15 @@ void od::Game::Start() {
 		SDL_GL_SwapWindow(m_Window->GetSDLWindow());
 	}
 }
+
+void od::Game::UpdateProjections() {
+	float halfWidth = static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()) * 0.5f;
+	float halfHeight = static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()) * 0.5f;
+
+	m_Projection = glm::ortho(m_CameraPosition.x - halfWidth, m_CameraPosition.x + halfWidth, m_CameraPosition.y + halfHeight, m_CameraPosition.y - halfHeight, 0.0f, 1.0f);
+	m_UIProjection = glm::ortho(0.0f, static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), 0.0f, 0.0f, 1.0f);
+}
+
 
 void od::Game::PollEvents() {
 	SDL_Event event;
