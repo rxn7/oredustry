@@ -1,5 +1,5 @@
 #include "Image.h"
-#include "../Renderer.h"
+#include "core/rendering/Renderer.h"
 
 od::UI::Image::Image(std::shared_ptr<od::Texture> texture, const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors) :
 m_Rotation(0),

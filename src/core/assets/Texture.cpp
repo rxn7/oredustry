@@ -23,7 +23,8 @@ bool od::Texture::OnLoad() {
 
 	SDL_LockSurface(surface);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	uint32_t internalFormat = SDL_ISPIXELFORMAT_ALPHA(surface->format->format) ? GL_RGBA : GL_RGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
 
 	SDL_UnlockSurface(surface);
 	SDL_FreeSurface(surface);
@@ -31,6 +32,10 @@ bool od::Texture::OnLoad() {
 	return true;
 }
 
-void od::Texture::Bind() {
+void od::Texture::Bind() const {
 	glBindTexture(GL_TEXTURE_2D, m_GLTexture);
+}
+
+void od::Texture::Unbind() const {
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

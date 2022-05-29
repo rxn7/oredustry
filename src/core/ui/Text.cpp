@@ -1,38 +1,37 @@
 #include "Text.h"
+#include "core/Game.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-od::UI::Text::Text(TTF_Font *font, const glm::i32vec2 &position, const SDL_Color &color, std::string_view text, od::UI::TextAlign align, const Anchors &anchors) : 
-m_Font(font),
+od::UI::Text::Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const SDL_Color &color, TextAlign align, const Anchors &anchors) :
 m_Align(align),
+m_Scale(scale),
 od::UI::UIElement(position, {0,0}, anchors) {
 	m_Color = color;
 	SetText(text);
+	// m_GltText = gltCreateText();
 }
 
 od::UI::Text::~Text() {
+	// gltDeleteText(m_GltText);
 }
-
 
 void od::UI::Text::SetText(std::string_view text) {
-	m_Text = text;
-	RenderTexture();
-}
-
-void od::UI::Text::SetColor(const SDL_Color &color) {
-	m_Color = color;
-	RenderTexture();
-}
-
-void od::UI::Text::RenderTexture() {
-	SDL_Surface *surface = TTF_RenderUTF8_Solid_Wrapped(m_Font, m_Text.c_str(), m_Color, 0);
-
-	m_Size.x = surface->w;
-	m_Size.y = surface->h;
-
-	SDL_FreeSurface(surface);
+	// gltSetText(m_GltText, text.data());
 }
 
 void od::UI::Text::Render() {
 	ENSURE_VISIBLE
+
+
+	/*
+	glm::mat4 modelProjection = od::Game::GetInstance()->GetProjection() * m_ModelMatrix;
+
+	gltBeginDraw();
+	// gltColor(static_cast<float>(m_Color.r) / 255.0f, static_cast<float>(m_Color.g) / 255.0f, static_cast<float>(m_Color.b) / 255.0f, static_cast<float>(m_Color.a) / 255.0f);
+	gltColor(0.0f, 0.0f, 0.0f, 1.0f);
+	gltDrawText(m_GltText, &modelProjection[0][0]);
+	gltEndDraw();
+	*/
 
 	od::UI::UIElement::Render();
 }

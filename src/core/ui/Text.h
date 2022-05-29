@@ -2,30 +2,33 @@
 
 #include "UIElement.h"
 
+// TODO: Text rendering!!!
 namespace od::UI {
 	enum class TextAlign {
 		Left,
 		Center,
-		Right
+		Right,
 	};
 
 	class Text : public UIElement {
 	public:
-		Text(TTF_Font *font, const glm::i32vec2 &position, const SDL_Color &color, std::string_view text, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER);
-		virtual ~Text();
+		Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const SDL_Color &color = {255,255,255,255}, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER); virtual ~Text();
 		void Render() override;
 		void SetText(std::string_view text);
-		void SetColor(const SDL_Color &color);
-		void SetPosition(const glm::i32vec2 &position);
-		void RenderTexture();
 
 		inline glm::i32vec2 GetSize() const { return m_Size; }
-		inline std::string_view GetText() const { return m_Text; }
+		// inline std::string_view GetText() const { return gltGetText(m_GltText); }
 
 	private:
+		void UpdateModelMatrix();
+
+	public:
 		TextAlign m_Align;
-		std::string m_Text = "";
-		TTF_Font *m_Font = nullptr;
 		SDL_Color m_Color;
+		float m_Scale;
+
+	private:
+		glm::f32mat4 m_ModelMatrix;
+		// GLTtext *m_GltText = nullptr;
 	};
 }

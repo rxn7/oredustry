@@ -14,7 +14,9 @@ public:
 
 private:
 	void DrawDebug();
+	void DrawCursor();
 
 private:
 	std::shared_ptr<od::UI::Text> m_DebugText;
+	uint32_t m_DebugTextUpdateCounter = 0;
 };

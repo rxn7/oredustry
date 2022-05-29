@@ -14,7 +14,8 @@ namespace od {
 		Texture(TextureFilter filter = TextureFilter::Nearest);
 
 		bool OnLoad() override;
-		void Bind();
+		void Bind() const;
+		void Unbind() const;
 
 		inline std::string GetPath() const { return m_Path; }
 		inline int32_t GetWidth() const { return m_Width; }

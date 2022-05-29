@@ -1,5 +1,5 @@
 INC += -Isrc -Iinclude
-DIR_SRC += src src/core src/core/ui src/core/assets src/scenes
+DIR_SRC += src src/core src/scenes src/core/rendering src/core/assets src/core/ui
 SRC += $(wildcard $(addsuffix /*.cpp, $(DIR_SRC)))
 OBJ += $(patsubst src/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 

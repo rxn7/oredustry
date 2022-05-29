@@ -1,7 +1,8 @@
 #include "Game.h"
 #include "Input.h"
-#include "Renderer.h"
+#include "rendering/Renderer.h"
 #include "Log.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 static od::Game *s_Instance;
 
@@ -13,12 +14,8 @@ od::Game::Game(const od::WindowParameters &params) {
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
 		Shutdown(true, "Failed to initialize SDL");
 
-	if(TTF_Init() != 0)
-		Shutdown(true, "Failed to initialize SDL_ttf");
-
 	if(!IMG_Init(IMG_INIT_PNG))
 		Shutdown(true, "Failed to initialize SDL_image: " + std::string(IMG_GetError()));
-
 
 	m_Window = std::make_unique<Window>(params);
 
@@ -28,6 +25,15 @@ od::Game::Game(const od::WindowParameters &params) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	m_GLCtx = SDL_GL_CreateContext(m_Window->GetSDLWindow());
+	if(!m_GLCtx)
+		Shutdown(true, "Failed to create OpenGL context");
+
+	glewExperimental = true;
+	if(glewInit() != GLEW_OK)
+		Shutdown(true, "Failed to initialize GLEW");
+
+	SDL_GL_SetSwapInterval(0);
+
 	glClearColor(0, 0, 0, 255);
 
 	od::Input::Init();
@@ -51,7 +57,6 @@ void od::Game::Shutdown(bool error, std::string_view reason) {
 
 	SDL_GL_DeleteContext(m_GLCtx);
 	SDL_Quit();
-	TTF_Quit();
 
 	exit(error);
 }
@@ -63,7 +68,8 @@ void od::Game::SetScene(std::unique_ptr<od::Scene> scene) {
 void od::Game::Start() {
 	Awake();
 
-	while(m_IsRunning) { UpdateViewport();
+	while(m_IsRunning) {
+		UpdateViewport();
 		CalculateDeltaTime();
 		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_FrameStartTimePoint - m_StartTimePoint).count();
 		SwapScenes();
@@ -76,18 +82,29 @@ void od::Game::Start() {
 		od::Input::Update();
 		PollEvents();
 
+		m_Projection = glm::ortho(m_CameraPosition.x, m_CameraPosition.x + static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), m_CameraPosition.y + static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), m_CameraPosition.y, 0.0f, 1.0f);
+		m_UIProjection = glm::ortho(0.0f, static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), 0.0f, 0.0f, 1.0f);
+
+		// Update
+		Update(m_DeltaTime);	
+		if(m_Scene)
+			m_Scene->Update(m_DeltaTime);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Update(m_DeltaTime);	
-
-		if(m_Scene.get() != nullptr) {
-			m_Scene->Update(m_DeltaTime);
+		// 2D Rendering
+		od::Renderer::Begin2D();
+		if(m_Scene)
 			m_Scene->Draw();
-			m_Scene->DrawUI();
-		}
-
 		Draw();
+		od::Renderer::End2D();
+
+		// UI Renderign
+		od::Renderer::BeginUI();
+		if(m_Scene)
+			m_Scene->DrawUI();
 		DrawUI();
+		od::Renderer::EndUI();
 
 		SDL_GL_SwapWindow(m_Window->GetSDLWindow());
 	}

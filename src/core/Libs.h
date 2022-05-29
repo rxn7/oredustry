@@ -7,7 +7,6 @@
 #include <sstream>
 #include <array>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
-#include <epoxy/gl.h>
+#include <GL/glew.h>

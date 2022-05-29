@@ -10,7 +10,7 @@ namespace od::UI {
 
 	class Button : public UIElement {
 	public:
-		Button(std::string_view text, TTF_Font *font, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchor = ANCHORS_CENTER);
+		Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchor = ANCHORS_CENTER);
 		void ProcessEvent(const SDL_Event &event) override;
 		void Render() override;
 		void Update(uint32_t deltaTime) override;

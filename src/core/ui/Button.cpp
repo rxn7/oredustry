@@ -1,10 +1,10 @@
 #include "Button.h"
 #include "core/Game.h"
-#include "core/Renderer.h"
+#include "core/rendering/Renderer.h"
 
-od::UI::Button::Button(std::string_view text, TTF_Font *font, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
+od::UI::Button::Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
 m_ClickCallback(clickCallback),
-m_Text(new od::UI::Text(font, glm::i32vec2(), SDL_Color{0,0,0,255}, text, od::UI::TextAlign::Center)),
+m_Text(new od::UI::Text({}, text, 16, SDL_Color{0,0,0,255}, od::UI::TextAlign::Center)),
 od::UI::UIElement(position, size, anchors) {
 }
 

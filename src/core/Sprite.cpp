@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include "core/rendering/Renderer.h"
 
 od::Sprite::Sprite(std::shared_ptr<od::Texture> texture, const glm::f32vec2 &size, const glm::f32vec2 &position) :
 m_Size(size),
@@ -11,4 +12,5 @@ od::Entity(position) {
 }
 
 void od::Sprite::Render() {
+	od::Renderer::RenderQuad(m_Position, m_Size, {255,0,255,255});
 }
