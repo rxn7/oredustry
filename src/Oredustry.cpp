@@ -21,10 +21,10 @@ void Oredustry::OnShutdown() {
 }
 
 void Oredustry::DrawCursor() {
-	uint8_t r = static_cast<uint8_t>(static_cast<float>(m_CursorPosition.x) / static_cast<float>(m_Window->GetWidth()) * 255);
-	uint8_t g = static_cast<uint8_t>(static_cast<float>(m_CursorPosition.y) / static_cast<float>(m_Window->GetHeight()) * 255);
-	uint8_t b = 255 - g;
-	od::Renderer::RenderQuad(m_CursorPosition, {20,20}, {r,g,b,255});
+	float r = static_cast<float>(m_CursorPosition.x) / static_cast<float>(m_Window->GetWidth());
+	float g = static_cast<float>(m_CursorPosition.y) / static_cast<float>(m_Window->GetHeight());
+	float b = 1.f - g;
+	od::Renderer::RenderQuad(m_CursorPosition, {20,20}, {r,g,b,1.0f});
 }
 
 void Oredustry::DrawDebug() {

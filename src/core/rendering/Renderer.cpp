@@ -80,7 +80,7 @@ void od::Renderer::BeginUI() {
 void od::Renderer::EndUI() {
 }
 
-void od::Renderer::RenderQuad(const glm::i32vec2 &position, const glm::i32vec2 &size, const SDL_Color &color) {
+void od::Renderer::RenderQuad(const glm::i32vec2 &position, const glm::i32vec2 &size, const od::Color &color) {
 	s_Shader->Bind();
 	s_QuadVa->Bind();
 
@@ -94,7 +94,7 @@ void od::Renderer::RenderQuad(const glm::i32vec2 &position, const glm::i32vec2 &
 	s_QuadVa->Render();
 }
 
-void RenderQuadTextured(const glm::i32vec2 &position, const glm::i32vec2 &size, const std::shared_ptr<od::Texture> &texture, const SDL_Color &color) {
+void RenderQuadTextured(const glm::i32vec2 &position, const glm::i32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color) {
 	s_Shader->Bind();
 	s_QuadVa->Bind();
 

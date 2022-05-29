@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/Libs.h"
+#include "core/Color.h"
 #include <unordered_map>
 
 namespace od {
@@ -11,7 +12,7 @@ namespace od {
 
 		void SetUniformMat4(const std::string &name, const glm::f32mat4 &value);
 		void SetUniformVec2(const std::string &name, const glm::f32vec2 &value);
-		void SetUniformColor(const std::string &name, const SDL_Color &color);
+		void SetUniformColor(const std::string &name, const od::Color &color);
 		void Bind() const;
 		void Unbind() const;
 		inline uint32_t GetID() const { return m_ID; }

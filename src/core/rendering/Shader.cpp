@@ -48,13 +48,9 @@ void od::Shader::SetUniformVec2(const std::string &name, const glm::f32vec2 &val
 	glUniform2f(GetLocation(name), value.x, value.y);
 }
 
-void od::Shader::SetUniformColor(const std::string &name, const SDL_Color &color) {
+void od::Shader::SetUniformColor(const std::string &name, const od::Color &color) {
 	uint32_t location = glGetUniformLocation(m_ID, name.data());
-	float r = static_cast<float>(color.r) / 255.0f;
-	float g = static_cast<float>(color.g) / 255.0f;
-	float b = static_cast<float>(color.b) / 255.0f;
-	float a = static_cast<float>(color.a) / 255.0f;
-	glUniform4f(location, r, g, b, a);
+	glUniform4f(location, color.x, color.y, color.z, color.w);
 }
 
 void od::Shader::Bind() const {

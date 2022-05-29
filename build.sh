@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-PLATFORMS=("linux" "windows")
+PLATFORM=""
 
+build() {
+	make -f "$PLATFORM.mk"
+	cp ./res ./bin/$PLATFORM -r
+}
+
+PLATFORMS=("linux" "windows")
 if [ "$#" -eq 1 ]; then
 	PLATFORM=$1
 else 
@@ -20,5 +26,5 @@ else
 	read -p "Platform: " PLATFORM
 fi
 
-make -f "$PLATFORM.mk"
-cp ./res ./bin/$PLATFORM -r
+time build
+

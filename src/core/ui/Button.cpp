@@ -1,6 +1,7 @@
 #include "Button.h"
 #include "core/Game.h"
 #include "core/rendering/Renderer.h"
+#include "core/Color.h"
 
 od::UI::Button::Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
 m_ClickCallback(clickCallback),
@@ -26,11 +27,11 @@ void od::UI::Button::Update(uint32_t deltaTime) {
 }
 
 void od::UI::Button::Render() {
-	SDL_Color color;
+	od::Color color;
 	if(IsHovered())
-		color = {200, 200, 200, 255};
+		color = {0.6f, 0.6f, 0.6f, 1.0f};
 	else
-		color = {220, 220, 220, 255};
+		color = {0.8f, 0.8f, 0.8f, 1.0f};
 
 	od::Renderer::RenderQuad(m_AnchoredPosition, m_Size, color);
 

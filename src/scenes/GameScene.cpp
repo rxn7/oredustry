@@ -3,7 +3,7 @@
 
 GameScene::GameScene() :
 m_Player(new Player()),
-m_PauseRect(new od::UI::ColorRect({200, 30, 50, 100}, {0,0}, {500,800}, ANCHORS_CENTER)),
+m_PauseRect(new od::UI::ColorRect({0.3f, 0.3f, 0.3f, 0.4f}, {0,0}, {500,800}, ANCHORS_CENTER)),
 od::Scene({255,255,255,255}) {
 	m_PauseRect->m_Visible = false;
 	AddUiElement(m_PauseRect);
