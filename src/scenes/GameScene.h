@@ -11,6 +11,9 @@ public:
 	void Draw() override;
 
 private:
+	void ExitGame();
+
+private:
 	std::unique_ptr<Player> m_Player;
 	std::shared_ptr<od::UI::ColorRect> m_PauseRect;
 	bool m_Paused;

@@ -31,17 +31,21 @@ void Oredustry::OnShutdown() {
 void Oredustry::DrawDebug() {
 	if(!m_DebugText->m_Visible) return;
 
-	if(m_DebugTextUpdateCounter < 5000) return;
+	if(m_DebugTextUpdateCounter < 2000000) return;
 	m_DebugTextUpdateCounter = 0;
 
 	float deltaFloat = static_cast<std::chrono::duration<float, std::milli>>(m_FrameStartTimePoint - m_FrameEndTimePoint).count() / 1000.0f;
 	int32_t fps = static_cast<int32_t>(1.f / deltaFloat);
 
 	std::stringstream ss;
-	ss << "frame: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\n\n";
+	ss << "==FRAME DEBUG INGO==\n" << "time: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\n";
 
+	OD_LOG_INFO(ss.str());
+
+	/*
 	m_DebugText->SetText(ss.str());
 	m_DebugText->Render();
+	*/
 }
 
 void Oredustry::Awake() {

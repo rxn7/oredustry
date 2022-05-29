@@ -42,8 +42,10 @@ od::Game *od::Game::GetInstance() {
 }
 
 void od::Game::Shutdown(bool error, std::string_view reason) {
-	if(error)	OD_LOG_ERROR("Quitting, error: " << reason);
-	else		OD_LOG_INFO("Quitting, reason: " << reason);
+	if(reason != "") {
+		if(error)	OD_LOG_ERROR("Quitting, error: " << reason);
+		else		OD_LOG_INFO("Quitting, reason: " << reason);
+	}
 
 	m_IsRunning = false;
 
@@ -56,6 +58,10 @@ void od::Game::Shutdown(bool error, std::string_view reason) {
 	SDL_Quit();
 
 	exit(error);
+}
+
+void od::Game::ShutdownWithoutReason() {
+	Shutdown(false);
 }
 
 void od::Game::SetScene(std::unique_ptr<od::Scene> scene) {
@@ -106,11 +112,14 @@ void od::Game::Start() {
 }
 
 void od::Game::UpdateProjections() {
-	float halfWidth = static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()) * 0.5f;
-	float halfHeight = static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()) * 0.5f;
+	float width = static_cast<float>(m_Window->GetWidth());
+	float height = static_cast<float>(m_Window->GetHeight());
+	float halfWidth = width * 0.5f;
+	float halfHeight = height * 0.5f;
+	float aspectRatio = width / height;
 
 	m_Projection = glm::ortho(m_CameraPosition.x - halfWidth, m_CameraPosition.x + halfWidth, m_CameraPosition.y + halfHeight, m_CameraPosition.y - halfHeight, 0.0f, 1.0f);
-	m_UIProjection = glm::ortho(0.0f, static_cast<float>(od::Game::GetInstance()->GetWindow().GetWidth()), static_cast<float>(od::Game::GetInstance()->GetWindow().GetHeight()), 0.0f, 0.0f, 1.0f);
+	m_UIProjection = glm::ortho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
 }
 
 

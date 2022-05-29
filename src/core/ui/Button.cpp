@@ -27,6 +27,8 @@ void od::UI::Button::Update(uint32_t deltaTime) {
 }
 
 void od::UI::Button::Render() {
+	ENSURE_VISIBLE;
+
 	od::Color color;
 	if(IsHovered())
 		color = {0.6f, 0.6f, 0.6f, 1.0f};
@@ -34,7 +36,6 @@ void od::UI::Button::Render() {
 		color = {0.8f, 0.8f, 0.8f, 1.0f};
 
 	od::Renderer::RenderQuad(m_AnchoredPosition, m_Size, color);
-
 	m_Text->Render();
 }
 

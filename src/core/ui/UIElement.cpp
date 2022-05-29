@@ -6,6 +6,9 @@ m_Position(position), m_Size(size), m_Anchors(anchors) {
 }
 
 void od::UI::UIElement::UpdateAnchoredPosition() {
+	float width = od::Game::GetInstance()->GetWindow().GetStartWidth();
+	float height = od::Game::GetInstance()->GetWindow().GetStartHeight();
+
 	switch(m_Anchors[0]) {
 		case Anchor::Center:
 			m_AnchoredPosition.x = od::Game::GetInstance()->GetWindow().GetHalfWidth() + m_Position.x;
@@ -34,32 +37,32 @@ void od::UI::UIElement::UpdateAnchoredPosition() {
 			break;
 	}
 
-	for(std::shared_ptr<od::UI::UIElement> element : m_Children) {
-		switch(element->m_Anchors[0]) {
+	for(std::shared_ptr<od::UI::UIElement> child : m_Children) {
+		switch(child->m_Anchors[0]) {
 			case Anchor::Center:
-				element->m_AnchoredPosition.x = m_AnchoredPosition.x - m_Size.x * 0.5f + m_Position.x;
+				child->m_AnchoredPosition.x = m_AnchoredPosition.x + child->m_Position.x;
 				break;
 
 			case Anchor::Start:
-				element->m_AnchoredPosition.x = m_AnchoredPosition.x + element->m_Position.x;
+				child->m_AnchoredPosition.x = m_AnchoredPosition.x - m_Size.x * 0.5f + child->m_Position.x + child->m_Size.x * 0.5f;
 				break;
 
 			case Anchor::End:
-				element->m_AnchoredPosition.x = m_AnchoredPosition.x + m_Size.x - element->m_Position.x;
+				child->m_AnchoredPosition.x = m_AnchoredPosition.x + m_Size.x * 0.5f - child->m_Position.x - child->m_Size.x * 0.5f;
 				break;
 		}
 
-		switch(element->m_Anchors[1]) {
+		switch(child->m_Anchors[1]) {
 			case Anchor::Center:
-				element->m_AnchoredPosition.y = m_AnchoredPosition.y - m_Size.y * 0.5f + m_Position.y;
+				child->m_AnchoredPosition.y = m_AnchoredPosition.y + child->m_Position.y;
 				break;
 
 			case Anchor::Start:
-				element->m_AnchoredPosition.y = m_AnchoredPosition.y + element->m_Position.y;
+				child->m_AnchoredPosition.y = m_AnchoredPosition.y - m_Size.y * 0.5f + child->m_Position.y + child->m_Size.y * 0.5f;
 				break;
 
 			case Anchor::End:
-				element->m_AnchoredPosition.y = m_AnchoredPosition.y + m_Size.y - element->m_Position.y;
+				child->m_AnchoredPosition.y = m_AnchoredPosition.y + m_Size.y * 0.5f - child->m_Position.y - child->m_Size.y * 0.5f;
 				break;
 		}
 	}
@@ -75,6 +78,7 @@ void od::UI::UIElement::UpdateChildren(uint32_t deltaTime) {
 }
 
 void od::UI::UIElement::RenderChildren() {
+	ENSURE_VISIBLE;
 	for(std::shared_ptr<UIElement> element : m_Children)
 		element->Render();
 }

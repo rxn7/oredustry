@@ -13,6 +13,7 @@ namespace od {
 
 		void Start();
 		void Shutdown(bool error=false, std::string_view reason="");
+		void ShutdownWithoutReason();
 		void SetScene(std::unique_ptr<od::Scene> scene);
 
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
@@ -21,6 +22,7 @@ namespace od {
 		inline const glm::mat4 &GetUIProjection() const { return m_UIProjection; }
 		inline void SetCameraPosition(const glm::f32vec2 &pos) { m_CameraPosition = pos; }
 		inline void MoveCamera(const glm::f32vec2 &offset) { m_CameraPosition += offset; }
+		inline glm::f32vec2 GetUIViewport() const { return {m_Window->GetStartWidth(), m_Window->GetStartHeight() * m_AspectRatio}; }
 
 	protected:
 		Game(const od::WindowParameters &params);
@@ -47,6 +49,7 @@ namespace od {
 		glm::i32vec2 m_CursorPosition;
 
 	private:
+		float m_AspectRatio;
 		glm::mat4 m_Projection;
 		glm::mat4 m_UIProjection;
 		SDL_GLContext m_GLCtx;

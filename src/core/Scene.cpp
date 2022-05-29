@@ -9,8 +9,10 @@ void od::Scene::Awake() {
 }
 
 void od::Scene::ProcessEvent(const SDL_Event &event) {
-	for(auto &uiElement : m_UiElements)
+	for(auto &uiElement : m_UiElements) {
 		uiElement->ProcessEvent(event);
+		uiElement->ProcessEventChildren(event);
+	}
 }
 
 void od::Scene::AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement) {

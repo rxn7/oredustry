@@ -17,6 +17,8 @@ namespace od {
 		~Window();
 
 		void ProcessWindowEvent(const SDL_WindowEvent &event);
+		inline int32_t GetStartWidth() const { return m_StartWidth; }
+		inline int32_t GetStartHeight() const { return m_StartHeight; }
 		inline int32_t GetHalfWidth() const { return m_Width * 0.5f; }
 		inline int32_t GetHalfHeight() const { return m_Height * 0.5f; }
 		inline int32_t GetWidth() const { return m_Width; } 
@@ -27,6 +29,7 @@ namespace od {
 
 	private:
 		int32_t m_Width, m_Height;
+		int32_t m_StartWidth,  m_StartHeight;
 		SDL_Window *m_SDLWindow;
 	};
 }

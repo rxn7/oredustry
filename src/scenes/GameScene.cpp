@@ -1,12 +1,15 @@
 #include "GameScene.h"
 #include "core/Input.h"
+#include "core/ui/Button.h"
+#include "core/Game.h"
 #include "core/rendering/Renderer.h"
 
 GameScene::GameScene() :
 m_Player(new Player()),
-m_PauseRect(new od::UI::ColorRect({0.3f, 0.3f, 0.3f, 0.4f}, {0,0}, {500,800}, ANCHORS_CENTER)),
+m_PauseRect(new od::UI::ColorRect({0.5f, 0.5f, 0.5f, 0.6f}, {0,0}, {500,800}, ANCHORS_CENTER)),
 od::Scene({255,255,255,255}) {
 	m_PauseRect->m_Visible = false;
+	m_PauseRect->AddChildElement(std::shared_ptr<od::UI::Button>(new od::UI::Button("Exit", std::bind(&od::Game::ShutdownWithoutReason, od::Game::GetInstance()), {0, 20}, {150, 60}, {od::UI::Anchor::Center, od::UI::Anchor::End})));
 	AddUiElement(m_PauseRect);
 }
 

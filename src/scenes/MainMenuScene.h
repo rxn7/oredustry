@@ -10,5 +10,4 @@ public:
 
 private:
 	void StartGame();
-	void ExitGame();
 };
