@@ -12,7 +12,6 @@ od::Game::Game(const od::WindowParameters &params) {
 	s_Instance = this;
 
 	m_StartTimePoint = std::chrono::high_resolution_clock::now();
-
 	glfwInitHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwInitHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwInitHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -34,6 +33,11 @@ od::Game::Game(const od::WindowParameters &params) {
 
 	od::Input::Init();
 	od::Renderer::Init();
+
+	// Set initial cursor position
+	double mx, my;
+	glfwGetCursorPos(m_Window->GetGLFWWindow(), &mx, &my);
+	SetCursorPosition({mx, my});
 }
 
 od::Game *od::Game::GetInstance() {
