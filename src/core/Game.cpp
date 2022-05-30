@@ -163,9 +163,10 @@ void od::Game::TakeScreenshot(const std::string_view &path) const {
 	glReadPixels(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 	stbi_flip_vertically_on_write(true);
-	if(!stbi_write_png(path.data(), m_Window->GetWidth(), m_Window->GetHeight(), 4, pixels, m_Window->GetWidth() * 4)) {
+	if(!stbi_write_png(path.data(), m_Window->GetWidth(), m_Window->GetHeight(), 4, pixels, m_Window->GetWidth() * 4))
 		OD_LOG_ERROR("Failed to save screenshot to file '" << path << "'");
-	}
+	else
+		OD_LOG_INFO("Screenshot saved to file '" << path << "'");
 
 	delete[] pixels;
 }
