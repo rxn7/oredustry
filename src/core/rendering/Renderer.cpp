@@ -8,6 +8,7 @@
 #include "core/shaders/ColorShader.h"
 #include "core/shaders/TextureShader.h"
 #include "core/shaders/ColorSwapShader.h"
+#include "core/shaders/TextShader.h"
 
 static std::vector<od::Vertex> s_QuadVertices = {
 	{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
@@ -19,7 +20,13 @@ static std::vector<od::Vertex> s_QuadVertices = {
 };
 
 static std::unique_ptr<od::VertexArray> s_QuadVa;
-static std::shared_ptr<od::Shader> s_ColorShader, s_TextureShader, s_ColorSwapShader;
+static std::unique_ptr<od::VertexArray> s_GlyphVa;
+
+static std::shared_ptr<od::Shader> s_ColorShader;
+static std::shared_ptr<od::Shader> s_TextureShader;
+static std::shared_ptr<od::Shader> s_ColorSwapShader;
+static std::shared_ptr<od::Shader> s_TextShader;
+
 static std::vector<std::shared_ptr<od::Shader>> m_Shaders;
 
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
@@ -41,6 +48,8 @@ void od::Renderer::Init() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	m_Shaders.clear();
+
 	s_ColorShader = std::make_unique<od::Shader>(od::Shaders::ColorShader::VertexSrc, od::Shaders::ColorShader::FragmentSrc);
 	m_Shaders.push_back(s_ColorShader);
 
@@ -50,8 +59,11 @@ void od::Renderer::Init() {
 	s_ColorSwapShader = std::make_unique<od::Shader>(od::Shaders::ColorSwapShader::VertexSrc, od::Shaders::ColorSwapShader::FragmentSrc);
 	m_Shaders.push_back(s_ColorSwapShader);
 
+	s_TextShader = std::make_unique<od::Shader>(od::Shaders::TextShader::VertexSrc, od::Shaders::TextShader::FragmentSrc);
+	m_Shaders.push_back(s_TextShader);
 
-	s_QuadVa = std::make_unique<od::VertexArray>(s_QuadVertices);
+	s_QuadVa = std::make_unique<od::VertexArray>(s_QuadVertices, GL_STATIC_DRAW);
+	s_GlyphVa = std::make_unique<od::VertexArray>(6, GL_DYNAMIC_DRAW);
 }
 
 void od::Renderer::Begin2D() {
@@ -86,7 +98,7 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 	s_QuadVa->Render();
 }
 
-void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::Texture> &texture, const od::Color &color, TextureShaderType shaderType) {
+void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::GLTexture> &texture, const od::Color &color, TextureShaderType shaderType) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
 
@@ -108,4 +120,44 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 
 	s_QuadVa->Bind();
 	s_QuadVa->Render();
+}
+
+// TODO: Horizontal and vertical alignment
+glm::f32vec2 od::Renderer::RenderText(const std::string &text, const std::shared_ptr<od::Font> &font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
+	s_TextShader->Bind();
+	s_TextShader->SetUniformColor("u_Color", color);
+
+	glm::f32vec2 size = {0,0};
+
+	float offsetX = position.x;
+	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
+		const Character &c = font->GetCharacter(*it);
+
+		float x = offsetX + c.bearing.x * scale;
+		float y = position.y - (c.size.y - c.bearing.y) * scale;
+		float w = c.size.x * scale;
+		float h = c.size.y * scale;
+
+		size.x += w;
+		size.y = h;
+
+		std::vector<od::Vertex> vertices = {
+			{ {x,     y + h},   {0.0f, 0.0f} },            
+			{ {x,     y},       {0.0f, 1.0f} },
+			{ {x + w, y},       {1.0f, 1.0f} },
+
+			{ {x,     y + h},   {0.0f, 0.0f} },
+			{ {x + w, y},       {1.0f, 1.0f} },
+			{ {x + w, y + h},   {1.0f, 0.0f} }    
+		};
+
+		c.texture->Bind();
+		s_GlyphVa->Bind();
+		s_GlyphVa->SubData(vertices);
+		s_GlyphVa->Render();
+
+		offsetX += (c.advance >> 6) * scale;
+	}
+
+	return size;
 }

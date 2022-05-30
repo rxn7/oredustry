@@ -19,6 +19,7 @@ namespace od {
 
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
 		inline od::Window &GetWindow() const { return *m_Window; }
+		inline FT_Library &GetFT() { return m_Ft; }
 		inline const glm::mat4 &GetProjection() const { return m_Projection; }
 		inline const glm::mat4 &GetUIProjection() const { return m_UIProjection; }
 		inline void SetCursorPosition(const glm::f32vec2 &pos) { m_CursorPosition = pos; }
@@ -44,6 +45,7 @@ namespace od {
 		uint32_t m_TimeSinceStart = 0, m_DeltaTime = 0;
 		TimePoint m_StartTimePoint, m_FrameStartTimePoint, m_FrameEndTimePoint;
 		std::unique_ptr<od::Window> m_Window;
+		FT_Library m_Ft;
 		glm::f32vec2 m_CameraPosition{0,0};
 		glm::i32vec2 m_CursorPosition{0,0};
 
