@@ -21,12 +21,14 @@ od::Game::Game(const od::WindowParameters &params) {
 
 	m_Window = std::make_unique<Window>(params);
 	glfwSetCursorPosCallback(m_Window->GetGLFWWindow(), s_CursorPosCallback);
+	glfwSwapInterval(0);
 
 	glewExperimental = true;
 	if(glewInit() != GLEW_OK)
 		Shutdown(true, "Failed to initialize GLEW");
 
-	glfwSwapInterval(0);
+	if(FT_Init_FreeType(&m_Ft) != 0)
+		Shutdown(true, "Failed to initialize FreeType");
 
 	glClearColor(0, 0, 0, 255);
 
@@ -52,6 +54,7 @@ void od::Game::Shutdown(bool error, std::string_view reason) {
 	m_Scene.reset();
 
 	glfwTerminate();
+	FT_Done_FreeType(m_Ft);
 
 	exit(error);
 }

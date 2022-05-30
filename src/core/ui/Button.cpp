@@ -6,12 +6,12 @@
 
 od::UI::Button::Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
 m_ClickCallback(clickCallback),
-m_Text(new od::UI::Text({}, text, 16, od::Colors::BLACK, od::UI::TextAlign::Center)),
+m_Text(new od::UI::Text(od::Asset::GetAsset<od::Font>("res/font.ttf"), position, text, 1, od::Colors::BLACK)),
 od::UI::UIElement(position, size, anchors) {
 }
 
 void od::UI::Button::Update(uint32_t deltaTime) {
-	m_Text->m_AnchoredPosition = glm::i32vec2(m_AnchoredPosition.x, m_AnchoredPosition.y - m_Text->GetSize().y * 0.5f);
+	m_Text->m_AnchoredPosition = glm::i32vec2(m_AnchoredPosition.x, m_AnchoredPosition.y);
 
 	const float halfWidth = m_Size.x * 0.5f;
 	const float halfHeight = m_Size.y * 0.5f;
@@ -37,5 +37,5 @@ void od::UI::Button::Render() {
 }
 
 void od::UI::Button::SetText(std::string_view text) {
-	m_Text->SetText(text);
+	m_Text->m_Text = text;
 }

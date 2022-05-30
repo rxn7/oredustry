@@ -7,13 +7,14 @@
 namespace od {
 	class VertexArray {
 	public:
-		VertexArray(const std::vector<od::Vertex> &vertices);
-		VertexArray();
+		VertexArray(const std::vector<od::Vertex> &vertices, int32_t target);
+		VertexArray(int32_t vertexCount, int32_t target);
 		~VertexArray();
 		void Bind();
 		void Unbind();
 		void Render();
-		void SetVertices(const std::vector<od::Vertex> &vertices);
+		void SetData(const std::vector<od::Vertex> &vertices, int32_t target);
+		void SubData(const std::vector<od::Vertex> &vertices);
 
 	private:
 		void Init();

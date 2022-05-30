@@ -3,7 +3,7 @@
 #include "core/Game.h"
 
 Cursor::Cursor(float size) : 
-od::Sprite(od::Asset::Load<od::Texture>("res/cursor.png")) {
+od::Sprite(od::Asset::Load<od::Texture>("res/cursor.png")->GetGLTexture()) {
 	m_Size = {size, size};
 }
 

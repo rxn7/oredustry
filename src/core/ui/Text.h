@@ -2,34 +2,25 @@
 
 #include "UIElement.h"
 #include "core/Color.h"
+#include "core/TextAlign.h"
+#include "core/assets/Font.h"
 
-// TODO: Text rendering!!!
 namespace od::UI {
-	enum class TextAlign {
-		Left,
-		Center,
-		Right,
-	};
-
 	class Text : public UIElement {
 	public:
-		Text(const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color = od::Colors::WHITE, TextAlign align = TextAlign::Left, const Anchors &anchors = ANCHORS_CENTER); virtual ~Text();
+		Text(const std::shared_ptr<od::Font> &font, const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color = od::Colors::WHITE, TextAlignHorizontal alignH = TextAlignHorizontal::Left, TextAlignVertical alignV = TextAlignVertical::Top, const Anchors &anchors = ANCHORS_CENTER);
+		~Text();
+
 		void Render() override;
-		void SetText(std::string_view text);
-
-		inline glm::i32vec2 GetSize() const { return m_Size; }
-		// inline std::string_view GetText() const { return gltGetText(m_GltText); }
-
-	private:
-		void UpdateModelMatrix();
 
 	public:
-		TextAlign m_Align;
+		TextAlignHorizontal m_AlignHorizontal;
+		TextAlignVertical m_AlignVertical;
+		std::string m_Text;
 		od::Color m_Color;
-		float m_Scale;
 
 	private:
-		glm::f32mat4 m_ModelMatrix;
-		// GLTtext *m_GltText = nullptr;
+		float m_Scale;
+		std::shared_ptr<od::Font> m_Font;
 	};
 }

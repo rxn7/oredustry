@@ -17,10 +17,12 @@ static const std::string TEXTURES_TO_LOAD[] = {
 };
 
 Oredustry::Oredustry() : 
-m_Cursor(std::make_unique<Cursor>(50)),
+m_Cursor(std::make_unique<Cursor>(30)),
 od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
+
+	od::Asset::Load<od::Font>("res/font.ttf", 16);
 
 	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
@@ -40,16 +42,14 @@ void Oredustry::DrawDebug() {
 	std::stringstream ss;
 	ss << "==FRAME DEBUG INGO==\n" << "time: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\n";
 
-	OD_LOG_INFO(ss.str());
+	// OD_LOG_INFO(ss.str());
 
-	/*
-	m_DebugText->SetText(ss.str());
+	m_DebugText->m_Text = ss.str();
 	m_DebugText->Render();
-	*/
 }
 
 void Oredustry::Awake() {
-	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text({}, "Debug", 16, {0, 0, 0, 255}, od::UI::TextAlign::Left, ANCHORS_START));
+	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::Asset::GetAsset<od::Font>("res/font.ttf"), {0,0}, "Debug", 1, od::Colors::BLACK));
 	SetScene(std::make_unique<MainMenuScene>());
 }
 

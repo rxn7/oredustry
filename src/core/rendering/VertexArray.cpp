@@ -1,14 +1,15 @@
 #include "VertexArray.h"
 #include "core/Log.h"
 
-od::VertexArray::VertexArray(const std::vector<od::Vertex> &vertices) :
+od::VertexArray::VertexArray(const std::vector<od::Vertex> &vertices, int32_t target) :
 m_VertexCount(vertices.size()) {
 	Init();
-	glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(od::Vertex), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(od::Vertex), vertices.data(), target);
 }
 
-od::VertexArray::VertexArray() {
+od::VertexArray::VertexArray(int32_t vertexCount, int32_t target) {
 	Init();
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(od::Vertex), NULL, target);
 }
 
 void od::VertexArray::Init() {
@@ -25,9 +26,14 @@ void od::VertexArray::Init() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(od::Vertex), (void*)sizeof(glm::f32vec2));
 }
 
-void od::VertexArray::SetVertices(const std::vector<od::Vertex> &vertices) {
-	Bind(); m_VertexCount = vertices.size();
-	glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(od::Vertex), vertices.data(), GL_STATIC_DRAW);
+void od::VertexArray::SetData(const std::vector<od::Vertex> &vertices, int32_t target) {
+	m_VertexCount = vertices.size();
+	glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(od::Vertex), vertices.data(), target);
+}
+
+void od::VertexArray::SubData(const std::vector<od::Vertex> &vertices) {
+	m_VertexCount = vertices.size();
+	glBufferSubData(GL_ARRAY_BUFFER, 0, m_VertexCount * sizeof(od::Vertex), vertices.data());
 }
 
 od::VertexArray::~VertexArray() {
