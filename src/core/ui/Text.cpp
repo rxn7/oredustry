@@ -17,7 +17,7 @@ od::UI::Text::~Text() {
 void od::UI::Text::Render() {
 	ENSURE_VISIBLE
 
-	m_Size = od::Renderer::RenderText(m_Text, m_Font, m_AnchoredPosition, m_Color, m_Scale, m_AlignHorizontal, m_AlignVertical);
+	m_Size = od::Renderer::RenderText(m_Text, *m_Font, m_AnchoredPosition, m_Color, m_Scale, m_AlignHorizontal, m_AlignVertical);
 
 	od::UI::UIElement::Render();
 }

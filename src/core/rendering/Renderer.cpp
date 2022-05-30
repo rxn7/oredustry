@@ -28,7 +28,6 @@ static std::shared_ptr<od::Shader> s_ColorSwapShader;
 static std::shared_ptr<od::Shader> s_TextShader;
 
 static std::vector<std::shared_ptr<od::Shader>> m_Shaders;
-
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::f32vec3(position, 0.0f));
@@ -123,41 +122,12 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 }
 
 // TODO: Horizontal and vertical alignment
-glm::f32vec2 od::Renderer::RenderText(const std::string &text, const std::shared_ptr<od::Font> &font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
+// TODO: Batching
+glm::f32vec2 od::Renderer::RenderText(const std::string &text, const od::Font &font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	s_TextShader->Bind();
 	s_TextShader->SetUniformColor("u_Color", color);
 
-	glm::f32vec2 size = {0,0};
+	font.GetTexture().Bind();
 
-	float offsetX = position.x;
-	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
-		const Character &c = font->GetCharacter(*it);
-
-		float x = offsetX + c.bearing.x * scale;
-		float y = position.y - (c.size.y - c.bearing.y) * scale;
-		float w = c.size.x * scale;
-		float h = c.size.y * scale;
-
-		size.x += w;
-		size.y = h;
-
-		std::vector<od::Vertex> vertices = {
-			{ {x,     y + h},   {0.0f, 0.0f} },            
-			{ {x,     y},       {0.0f, 1.0f} },
-			{ {x + w, y},       {1.0f, 1.0f} },
-
-			{ {x,     y + h},   {0.0f, 0.0f} },
-			{ {x + w, y},       {1.0f, 1.0f} },
-			{ {x + w, y + h},   {1.0f, 0.0f} }    
-		};
-
-		c.texture->Bind();
-		s_GlyphVa->Bind();
-		s_GlyphVa->SubData(vertices);
-		s_GlyphVa->Render();
-
-		offsetX += (c.advance >> 6) * scale;
-	}
-
-	return size;
+	return {0,0};
 }

@@ -7,7 +7,6 @@
 
 namespace od {
 	struct Character {
-		std::shared_ptr<od::GLTexture> texture;
 		glm::i32vec2 size;
 		glm::i32vec2 bearing;
 		FT_Pos advance;
@@ -27,9 +26,12 @@ namespace od {
 
 			return m_Characters.at(0);
 		}
+
+		inline const od::GLTexture &GetTexture() const { return *m_Texture; }
 	
 	private:
 		mutable FT_Face m_Face;
+		std::unique_ptr<od::GLTexture> m_Texture;
 		std::map<unsigned char, Character> m_Characters;
 	};
 }
