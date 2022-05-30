@@ -9,7 +9,6 @@
 #include "core/shaders/TextureShader.h"
 #include "core/shaders/ColorSwapShader.h"
 #include "core/shaders/TextShader.h"
-
 static std::vector<od::Vertex> s_QuadVertices = {
 	{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
 	{ { 0.5f, -0.5f}, {1.0f, 0.0f} },

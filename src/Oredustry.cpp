@@ -17,7 +17,7 @@ static const std::string TEXTURES_TO_LOAD[] = {
 };
 
 Oredustry::Oredustry() : 
-m_Cursor(std::make_unique<Cursor>(50)),
+m_Cursor(std::make_unique<Cursor>(30)),
 od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
