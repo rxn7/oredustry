@@ -49,7 +49,9 @@ void Oredustry::DrawDebug() {
 }
 
 void Oredustry::Awake() {
-	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(od::Asset::GetAsset<od::Font>("res/font.ttf"), {0,0}, "Debug", 1, od::Colors::BLACK));
+	// FIXME: std::make_unique can't be used here for some reason?
+	m_DebugText = std::unique_ptr<od::UI::Text>(new od::UI::Text(*od::Asset::GetAsset<od::Font>("res/font.ttf"), {0,0}, "Debug", 1, od::Colors::BLACK));
+
 	SetScene(std::make_unique<MainMenuScene>());
 }
 

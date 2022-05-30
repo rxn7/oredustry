@@ -19,7 +19,7 @@ private:
 	void DrawCursor();
 
 private:
-	std::shared_ptr<od::UI::Text> m_DebugText;
+	std::unique_ptr<od::UI::Text> m_DebugText;
 	std::unique_ptr<Cursor> m_Cursor;
 	uint32_t m_DebugTextUpdateCounter = 0;
 };

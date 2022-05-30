@@ -2,7 +2,7 @@
 #include "core/Game.h"
 #include "core/rendering/Renderer.h"
 
-od::UI::Text::Text(const std::shared_ptr<od::Font> &font, const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color, TextAlignHorizontal alignH, TextAlignVertical alignV, const Anchors &anchors) :
+od::UI::Text::Text(const od::Font &font, const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color, TextAlignHorizontal alignH, TextAlignVertical alignV, const Anchors &anchors) :
 m_Font(font),
 m_AlignHorizontal(alignH),
 m_AlignVertical(alignV),
@@ -17,7 +17,7 @@ od::UI::Text::~Text() {
 void od::UI::Text::Render() {
 	ENSURE_VISIBLE
 
-	m_Size = od::Renderer::RenderText(m_Text, *m_Font, m_AnchoredPosition, m_Color, m_Scale, m_AlignHorizontal, m_AlignVertical);
+	m_Size = od::Renderer::RenderText(m_Text, m_Font, m_AnchoredPosition, m_Color, m_Scale, m_AlignHorizontal, m_AlignVertical);
 
 	od::UI::UIElement::Render();
 }

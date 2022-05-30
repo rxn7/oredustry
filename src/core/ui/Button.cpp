@@ -6,7 +6,7 @@
 
 od::UI::Button::Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
 m_ClickCallback(clickCallback),
-m_Text(new od::UI::Text(od::Asset::GetAsset<od::Font>("res/font.ttf"), position, text, 1, od::Colors::BLACK)),
+m_Text(new od::UI::Text(*od::Asset::GetAsset<od::Font>("res/font.ttf"), position, text, 1, od::Colors::BLACK)),
 od::UI::UIElement(position, size, anchors) {
 }
 

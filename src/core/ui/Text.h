@@ -8,7 +8,7 @@
 namespace od::UI {
 	class Text : public UIElement {
 	public:
-		Text(const std::shared_ptr<od::Font> &font, const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color = od::Colors::WHITE, TextAlignHorizontal alignH = TextAlignHorizontal::Left, TextAlignVertical alignV = TextAlignVertical::Top, const Anchors &anchors = ANCHORS_CENTER);
+		Text(const od::Font &font, const glm::i32vec2 &position, const std::string_view &text, float scale, const od::Color &color = od::Colors::WHITE, TextAlignHorizontal alignH = TextAlignHorizontal::Left, TextAlignVertical alignV = TextAlignVertical::Top, const Anchors &anchors = ANCHORS_CENTER);
 		~Text();
 
 		void Render() override;
@@ -21,6 +21,6 @@ namespace od::UI {
 
 	private:
 		float m_Scale;
-		std::shared_ptr<od::Font> m_Font;
+		const od::Font &m_Font;
 	};
 }

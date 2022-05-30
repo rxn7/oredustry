@@ -5,7 +5,7 @@
 #define MOVE_SPEED 0.0002f
 
 Player::Player() : od::Sprite(od::Asset::GetAsset<od::Texture>("res/player.png")->GetGLTexture()) {
-	std::shared_ptr<od::Texture> texture = od::Asset::GetAsset<od::Texture>("res/player.png");
+	od::Texture *texture = od::Asset::GetAsset<od::Texture>("res/player.png");
 	m_Size = { texture->GetWidth(), texture->GetHeight() };
 }
 
