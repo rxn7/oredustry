@@ -16,6 +16,7 @@ namespace od {
 		void ShutdownWithoutReason();
 		void SetScene(std::unique_ptr<od::Scene> scene);
 		void HandleWindowResize(int32_t width, int32_t height);
+		void TakeScreenshot(const std::string_view &path = "screenshot.png") const;
 
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
 		inline od::Window &GetWindow() const { return *m_Window; }
@@ -29,7 +30,7 @@ namespace od {
 	protected:
 		Game(const od::WindowParameters &params);
 		virtual void Awake() {}
-		virtual void Update(uint32_t deltaTime) {}
+		virtual void Update(uint32_t deltaTime);
 		virtual void DrawNuklear() {}
 		virtual void DrawUI() {}
 		virtual void Draw() {}

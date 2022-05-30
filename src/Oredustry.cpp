@@ -54,6 +54,8 @@ void Oredustry::Awake() {
 }
 
 void Oredustry::Update(uint32_t deltaTime) {
+	od::Game::Update(deltaTime);
+
 	if(od::Input::IsKeyJustPressed(GLFW_KEY_GRAVE_ACCENT))
 		m_DebugText->m_Visible ^= 1;
 

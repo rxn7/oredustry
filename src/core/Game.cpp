@@ -4,6 +4,9 @@
 #include "Log.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 static od::Game *s_Instance;
 
 static void s_CursorPosCallback(GLFWwindow *win, double x, double y);
@@ -114,6 +117,12 @@ void od::Game::Start() {
 	}
 }
 
+void od::Game::Update(uint32_t deltaTime) {
+	if(od::Input::IsKeyJustPressed(GLFW_KEY_F12)) {
+		TakeScreenshot();
+	}
+}
+
 void od::Game::UpdateProjections() {
 	float width = static_cast<float>(m_Window->GetWidth());
 	float height = static_cast<float>(m_Window->GetHeight());
@@ -147,6 +156,18 @@ void od::Game::CalculateDeltaTime() {
 
 	m_DeltaTime = std::chrono::duration_cast<std::chrono::microseconds>(m_FrameStartTimePoint - m_FrameEndTimePoint).count();
 	if(m_DeltaTime < 0) m_DeltaTime = 0; 
+}
+
+void od::Game::TakeScreenshot(const std::string_view &path) const {
+	uint8_t *pixels = new uint8_t[4 * m_Window->GetWidth() * m_Window->GetHeight()];
+	glReadPixels(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+	stbi_flip_vertically_on_write(true);
+	if(!stbi_write_png(path.data(), m_Window->GetWidth(), m_Window->GetHeight(), 4, pixels, m_Window->GetWidth() * 4)) {
+		OD_LOG_ERROR("Failed to save screenshot to file '" << path << "'");
+	}
+
+	delete[] pixels;
 }
 
 static void s_CursorPosCallback(GLFWwindow *win, double x, double y) {
