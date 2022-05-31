@@ -8,6 +8,7 @@ od::Font::Font(const std::string &path, int32_t size) : od::Asset(path) {
 	}
 
 	FT_Set_Pixel_Sizes(m_Face, 0, size);
+
 	// TODO: Create texture with all glyphs
 	m_Texture = std::make_unique<od::GLTexture>();
 }
