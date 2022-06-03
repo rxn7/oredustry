@@ -1,5 +1,6 @@
 #include "UIElement.h"
 #include "core/Game.h"
+#include "core/Log.h"
 
 od::UI::UIElement::UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors) : 
 m_Position(position), m_Size(size), m_Anchors(anchors) {

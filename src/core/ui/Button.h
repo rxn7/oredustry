@@ -10,14 +10,15 @@ namespace od::UI {
 
 	class Button : public UIElement {
 	public:
-		Button(std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchor = ANCHORS_CENTER);
+		Button(od::Font *font, std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchor = ANCHORS_CENTER);
 		void Render() override;
 		void Update(uint32_t deltaTime) override;
-		void SetText(std::string_view text);
 		inline bool IsHovered() const { return m_Hovered; }
+	public:
+		std::string m_Text;
 	private:
+		od::Font *m_Font;
 		ButtonClickCallback m_ClickCallback;
 		bool m_Hovered;
-		std::unique_ptr<od::UI::Text> m_Text;
 	};
 }

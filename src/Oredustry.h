@@ -15,7 +15,7 @@ public:
 	void DrawUI() override;
 
 private:
-	void DrawDebug();
+	void UpdateDebug(uint32_t deltaTime);
 	void DrawCursor();
 
 private:

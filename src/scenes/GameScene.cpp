@@ -9,7 +9,7 @@ m_Player(new Player()),
 m_PauseRect(new od::UI::ColorRect({0.5f, 0.5f, 0.5f, 0.6f}, {0,0}, {500,800}, ANCHORS_CENTER)),
 od::Scene({255,255,255,255}) {
 	m_PauseRect->m_Visible = false;
-	m_PauseRect->AddChildElement(std::shared_ptr<od::UI::Button>(new od::UI::Button("Exit", std::bind(&od::Game::ShutdownWithoutReason, od::Game::GetInstance()), {0, 20}, {150, 60}, {od::UI::Anchor::Center, od::UI::Anchor::End})));
+	m_PauseRect->AddChildElement(std::shared_ptr<od::UI::Button>(new od::UI::Button(od::Asset::GetAsset<od::Font>("res/FreeSans.ttf"), "Exit", std::bind(&od::Game::ShutdownWithoutReason, od::Game::GetInstance()), {0, 20}, {150, 60}, {od::UI::Anchor::Center, od::UI::Anchor::End})));
 	AddUiElement(m_PauseRect);
 }
 

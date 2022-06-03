@@ -10,11 +10,12 @@ namespace od {
 		glm::i32vec2 size;
 		glm::i32vec2 bearing;
 		FT_Pos advance;
+		std::unique_ptr<od::GLTexture> texture;
 	};
 
 	class Font : public od::Asset {
 	public:
-		Font(const std::string &path, int32_t size);
+		Font(const std::string &path, int32_t size, int32_t filter = GL_LINEAR);
 		virtual ~Font();
 
 		inline FT_Face &GetFace() const { return m_Face; }
@@ -26,12 +27,9 @@ namespace od {
 
 			return m_Characters.at(0);
 		}
-
-		inline const od::GLTexture &GetTexture() const { return *m_Texture; }
 	
 	private:
 		mutable FT_Face m_Face;
-		std::unique_ptr<od::GLTexture> m_Texture;
 		std::map<unsigned char, Character> m_Characters;
 	};
 }

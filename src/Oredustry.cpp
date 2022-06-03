@@ -22,7 +22,7 @@ od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
 
-	od::Asset::Load<od::Font>("res/font.ttf", 16);
+	od::Asset::Load<od::Font>("res/FreeSans.ttf", 24);
 
 	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
@@ -30,27 +30,25 @@ od::Game(WINDOW_PARAMS) {
 void Oredustry::OnShutdown() {
 }
 
-void Oredustry::DrawDebug() {
+void Oredustry::UpdateDebug(uint32_t deltaTime) {
 	if(!m_DebugText->m_Visible) return;
 
-	if(m_DebugTextUpdateCounter < 2000000) return;
+	m_DebugTextUpdateCounter += deltaTime;
+	if(m_DebugTextUpdateCounter < 200000) return;
 	m_DebugTextUpdateCounter = 0;
 
 	float deltaFloat = static_cast<std::chrono::duration<float, std::milli>>(m_FrameStartTimePoint - m_FrameEndTimePoint).count() / 1000.0f;
 	int32_t fps = static_cast<int32_t>(1.f / deltaFloat);
 
 	std::stringstream ss;
-	ss << "==FRAME DEBUG INGO==\n" << "time: " << m_DeltaTime << "μs\n" << "fps: " << fps << "\n";
-
-	// OD_LOG_INFO(ss.str());
+	ss << "==FRAME DEBUG INFO==\n" << "time: " << m_DeltaTime << "us\n" << "fps: " << fps << "\n";
 
 	m_DebugText->m_Text = ss.str();
-	m_DebugText->Render();
 }
 
 void Oredustry::Awake() {
-	m_DebugText = std::make_unique<od::UI::Text>(*od::Asset::GetAsset<od::Font>("res/font.ttf"), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK);
-
+	m_DebugText = std::make_unique<od::UI::Text>(od::Asset::GetAsset<od::Font>("res/FreeSans.ttf"), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
+	m_DebugText->m_AnchoredPosition = {0,0};
 	SetScene(std::make_unique<MainMenuScene>());
 }
 
@@ -60,10 +58,11 @@ void Oredustry::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyJustPressed(GLFW_KEY_GRAVE_ACCENT))
 		m_DebugText->m_Visible ^= 1;
 
-	m_DebugTextUpdateCounter += deltaTime;
+	UpdateDebug(deltaTime);
+
 }
 
 void Oredustry::DrawUI() {
-	DrawDebug();
+	m_DebugText->Render();
 	m_Cursor->Render();
 }

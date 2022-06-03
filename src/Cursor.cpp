@@ -21,5 +21,5 @@ void Cursor::Render() {
 	float halfSize = m_Size.x * 0.5f;
 	m_Position = {cursorPosition.x + halfSize, cursorPosition.y + halfSize};
 
-	od::Renderer::RenderQuadTextured(m_Position, m_Size, m_Texture, color, od::Renderer::TextureShaderType::ColorSwap);
+	od::Renderer::RenderQuadTextured(m_Position, m_Size, m_Texture.get(), color, od::Renderer::TextureShaderType::ColorSwap);
 }

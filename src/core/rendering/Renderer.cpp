@@ -85,6 +85,7 @@ void od::Renderer::BeginUI() {
 void od::Renderer::EndUI() {
 }
 
+// TODO: Instance rendering?
 void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
@@ -97,11 +98,9 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 	s_QuadVa->Render();
 }
 
-void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, const std::shared_ptr<od::GLTexture> &texture, const od::Color &color, TextureShaderType shaderType) {
+void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, TextureShaderType shaderType) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
-
-	texture->Bind();
 
 	od::Shader *shader;
 	switch(shaderType) {
@@ -113,6 +112,8 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 			return;
 	}
 
+	texture->Bind();
+
 	shader->Bind();
 	shader->SetUniformMat4("u_Model", model);
 	shader->SetUniformColor("u_Color", color);
@@ -121,13 +122,65 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	s_QuadVa->Render();
 }
 
-// TODO: Horizontal and vertical alignment
-// TODO: Batching
-glm::f32vec2 od::Renderer::RenderText(const std::string &text, const od::Font &font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
+void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
+	if(text.size() < 1) return;
+
+	s_GlyphVa->Bind();
 	s_TextShader->Bind();
 	s_TextShader->SetUniformColor("u_Color", color);
 
-	font.GetTexture().Bind();
+	// TODO: I dont think this is a good aproach of doing this
+	float totalW = 0;
+	float totalH = 0;
+	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
+		const od::Character &c = font->GetCharacter(*it);
+		totalW += c.size.x * scale;
+		float height = c.size.y * scale;
+		if(totalH < height) totalH = height;
+	}
 
-	return {0,0};
+	float x = position.x;
+	float y = position.y;
+
+	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
+		if(*it == '\n') {
+			x = position.x;
+			y += totalH * 1.5f;
+			continue;
+		}
+
+		const od::Character &c = font->GetCharacter(*it);
+		float w = c.size.x * scale;
+		float h = c.size.y * scale;
+		float xpos = x + c.bearing.x * scale - w*0.5f;
+		float ypos = y - (c.size.y - c.bearing.y) * scale;
+
+		switch(alignH) {
+			case TextAlignHorizontal::Left: break;
+			case TextAlignHorizontal::Right: xpos -= totalW; break;
+			case TextAlignHorizontal::Center: xpos -= totalW * 0.5f; break;
+		}
+
+		switch(alignV) {
+			case TextAlignVertical::Bottom: break;
+			case TextAlignVertical::Top: ypos += totalH; break;
+			case TextAlignVertical::Middle: ypos += totalH * 0.5f; break;
+		}
+
+		std::vector<od::Vertex> vertices = {
+			{ { xpos,     ypos - h, },   { 0.0f, 0.0f } },            
+			{ { xpos,     ypos,     },   { 0.0f, 1.0f } },
+			{ { xpos + w, ypos,     },   { 1.0f, 1.0f } },
+                                                 
+			{ { xpos,     ypos - h, },   { 0.0f, 0.0f } },
+			{ { xpos + w, ypos,     },   { 1.0f, 1.0f } },
+			{ { xpos + w, ypos - h, },   { 1.0f, 0.0f } }  
+		};
+
+		c.texture->Bind();
+		s_GlyphVa->SubData(vertices);
+		s_GlyphVa->Render();
+
+		x += (c.advance >> 6) * scale;
+	}
 }
