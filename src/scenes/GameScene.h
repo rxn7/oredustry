@@ -11,6 +11,7 @@ public:
 	void Draw() override;
 
 private:
+	void ExitToMenu();
 	void ExitGame();
 
 private:
