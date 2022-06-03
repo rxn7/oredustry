@@ -122,6 +122,7 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	s_QuadVa->Render();
 }
 
+// TODO: Horizontal centering isn't correct
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1) return;
 
@@ -152,8 +153,8 @@ void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm
 		const od::Character &c = font->GetCharacter(*it);
 		float w = c.size.x * scale;
 		float h = c.size.y * scale;
-		float xpos = x + c.bearing.x * scale - w*0.5f;
-		float ypos = y - (c.size.y - c.bearing.y) * scale;
+		float xpos = (x + c.bearing.x) * scale;
+		float ypos = y - (c.bearing.y - c.size.y) * scale;
 
 		switch(alignH) {
 			case TextAlignHorizontal::Left: break;
