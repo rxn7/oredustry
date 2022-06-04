@@ -10,8 +10,7 @@ od::Shader::Shader(const std::string_view &vertexSrc, const std::string_view &fr
 
 	glAttachShader(m_ID, fragmentShader);
 	glAttachShader(m_ID, vertexShader);
-
-	glLinkProgram(m_ID);
+glLinkProgram(m_ID);
 	CheckProgramError(GL_LINK_STATUS);
 
 	glValidateProgram(m_ID);
@@ -47,8 +46,11 @@ void od::Shader::SetUniformVec2(const std::string &name, const glm::f32vec2 &val
 }
 
 void od::Shader::SetUniformColor(const std::string &name, const od::Color &color) {
-	uint32_t location = glGetUniformLocation(m_ID, name.data());
-	glUniform4f(location, color.x, color.y, color.z, color.w);
+	glUniform4f(GetLocation(name), color.x, color.y, color.z, color.w);
+}
+
+void od::Shader::SetUniformFloat(const std::string &name, float value) {
+	glUniform1f(GetLocation(name), value);
 }
 
 void od::Shader::Bind() const {

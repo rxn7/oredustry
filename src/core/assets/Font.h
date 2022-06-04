@@ -19,17 +19,13 @@ namespace od {
 		virtual ~Font();
 
 		inline FT_Face &GetFace() const { return m_Face; }
-
-		inline const Character &GetCharacter(unsigned char c) const {
-			std::map<unsigned char, Character>::const_iterator it = m_Characters.find(c);
-			if(it != m_Characters.end())
-				return m_Characters.at(c); 
-
-			return m_Characters.at(0);
-		}
+		inline float GetHeight() const { return m_Height; }
+		float GetTextWidth(const std::string &text, float scale) const;
+		const Character &GetCharacter(unsigned char c) const;
 	
 	private:
 		mutable FT_Face m_Face;
 		std::map<unsigned char, Character> m_Characters;
+		float m_Height;
 	};
 }

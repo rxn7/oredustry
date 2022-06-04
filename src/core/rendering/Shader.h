@@ -13,6 +13,7 @@ namespace od {
 		void SetUniformMat4(const std::string &name, const glm::f32mat4 &value);
 		void SetUniformVec2(const std::string &name, const glm::f32vec2 &value);
 		void SetUniformColor(const std::string &name, const od::Color &color);
+		void SetUniformFloat(const std::string &name, float value);
 		void Bind() const;
 		void Unbind() const;
 		inline uint32_t GetID() const { return m_ID; }

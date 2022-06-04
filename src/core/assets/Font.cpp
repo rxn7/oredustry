@@ -24,10 +24,31 @@ od::Font::Font(const std::string &path, int32_t size, int32_t filter) : od::Asse
 			m_Face->glyph->advance.x,
 			std::make_unique<od::GLTexture>(m_Face->glyph->bitmap.buffer, m_Face->glyph->bitmap.width, m_Face->glyph->bitmap.rows, GL_RED, GL_RED, filter)
 		}});
+
+		if(m_Height < m_Face->glyph->bitmap.rows) m_Height = m_Face->glyph->bitmap.rows;
 	}
 
 	FT_Done_Face(m_Face);
 }
 
 od::Font::~Font() {
+}
+
+const od::Character &od::Font::GetCharacter(unsigned char c) const {
+	std::map<unsigned char, od::Character>::const_iterator it = m_Characters.find(c);
+	if(it != m_Characters.end())
+		return m_Characters.at(c); 
+
+	return m_Characters.at(0);
+}
+
+float od::Font::GetTextWidth(const std::string &text, float scale) const {
+	float width = 0.0f;
+	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
+		const od::Character &c = GetCharacter(*it);
+		// I dont know why, but for some reason it doesn't work without the `>> 6` ¯\_(ツ)_/¯
+		width += ((c.size.x + c.advance) >> 6) * scale;
+	}
+
+	return width;
 }
