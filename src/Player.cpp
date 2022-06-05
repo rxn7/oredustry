@@ -16,15 +16,14 @@ void Player::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyPressed(GLFW_KEY_D)) moveDir.x++;
 	if(od::Input::IsKeyPressed(GLFW_KEY_A)) moveDir.x--;
 
-	float moveDirLen = moveDir.length();
-	if(moveDirLen != 0) {
-		// For some reason using glm::normalize causes the moveDir to be {-nan, -nan}
-		// moveDir = glm::normalize(moveDir);
-		moveDir.x /= moveDirLen;
-		moveDir.y /= moveDirLen;
-	}
+	// TODO: What the hell? Checking if moveDir.length() != 0 doesn't work, glm::normalize still returns nan 
+	moveDir = glm::normalize(moveDir);
+	// TODO: Hacky fix for the problem above
+	if(isnanf(moveDir.x) || isnanf(moveDir.y))
+		moveDir = {0,0};
 
 	moveDir *= deltaTime * MOVE_SPEED;
+
 	m_Position += moveDir;
 
 	od::Game::GetInstance()->SetCameraPosition(m_Position);

@@ -1,6 +1,8 @@
 #include "Cursor.h"
 #include "core/rendering/Renderer.h"
 #include "core/Game.h"
+#include <sstream>
+#include "Oredustry.h"
 
 Cursor::Cursor(float size) : 
 od::Sprite(od::Asset::Load<od::Texture>("res/cursor.png")->GetGLTexture()) {
@@ -22,4 +24,10 @@ void Cursor::Render() {
 	m_Position = {cursorPosition.x + halfSize, cursorPosition.y + halfSize};
 
 	od::Renderer::RenderQuadTextured(m_Position, m_Size, m_Texture.get(), color, od::Renderer::TextureShaderType::ColorSwap);
+
+	if(Oredustry::GetInstance()->IsDebugOn()) {
+		std::stringstream cursorPositionSs;
+		cursorPositionSs << cursorPosition.x << ", " << cursorPosition.y;
+		od::Renderer::RenderText(cursorPositionSs.str(), od::Game::GetInstance()->GetFont(), m_Position + halfSize, od::Colors::BLACK, 1.f, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
+	}
 }

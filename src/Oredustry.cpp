@@ -16,9 +16,13 @@ static const std::string TEXTURES_TO_LOAD[] = {
 	"res/title.png",
 };
 
+Oredustry *Oredustry::s_Instance;
+
 Oredustry::Oredustry() : 
 m_Cursor(std::make_unique<Cursor>(30)),
 od::Game(WINDOW_PARAMS) {
+	s_Instance = this;
+
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
 
