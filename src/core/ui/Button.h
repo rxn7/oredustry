@@ -14,9 +14,10 @@ namespace od::UI {
 		void Render() override;
 		void Update(uint32_t deltaTime) override;
 		inline bool IsHovered() const { return m_Hovered; }
-	public:
-		std::string m_Text;
+		void SetText(const std::string_view &text);
+
 	private:
+		std::string m_Text;
 		od::Font *m_Font;
 		ButtonClickCallback m_ClickCallback;
 		bool m_Hovered;

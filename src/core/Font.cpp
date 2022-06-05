@@ -29,3 +29,8 @@ void od::Font::GetCharUV(char c, glm::f32vec2 &start, glm::f32vec2 &end) {
 	start = glm::f32vec2(charPosPix.x, charPosPix.y) / glm::f32vec2(m_Texture->GetWidth(), m_Texture->GetHeight());
 	end = start + m_CharSizeNorm;
 }
+
+// TODO: What about new lines? And non-renderable characters?
+float od::Font::GetTextWidth(uint32_t length, float scale) const {
+	return m_CharSize.x * length * scale * m_Size;
+}

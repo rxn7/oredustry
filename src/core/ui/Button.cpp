@@ -5,10 +5,10 @@
 #include "core/Input.h"
 
 od::UI::Button::Button(od::Font *font, std::string_view text, ButtonClickCallback clickCallback, const glm::i32vec2 &position, const glm::i32vec2 &size, Anchors anchors) :
-m_Text(text),
 m_Font(font),
 m_ClickCallback(clickCallback),
 od::UI::UIElement(position, size, anchors) {
+	SetText(text);
 }
 
 void od::UI::Button::Update(uint32_t deltaTime) {
@@ -20,6 +20,14 @@ void od::UI::Button::Update(uint32_t deltaTime) {
 
 	if(m_Hovered && od::Input::IsButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT))
 		m_ClickCallback();
+}
+
+void od::UI::Button::SetText(const std::string_view &text) {
+	m_Text = text;
+	float textWidth = m_Font->GetTextWidth(m_Text.size());
+
+	if(m_Size.x < textWidth)
+		m_Size.x = textWidth;
 }
 
 void od::UI::Button::Render() {

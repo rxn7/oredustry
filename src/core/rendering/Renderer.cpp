@@ -125,16 +125,18 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 // TODO: Center align each line individually
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;
-	scale *= font->GetSize();
 
 	s_GlyphVa->Bind();
 	s_TextShader->Bind();
 	s_TextShader->SetUniformColor("u_Color", color);
 	font->GetTexture().GetGLTexture()->Bind();
 
+	float textWidth = font->GetTextWidth(text.size(), scale);
+
+	scale *= font->GetSize();
+
 	float charWidth = font->GetCharWidth() * scale;
 	float charHeight = font->GetCharHeight() * scale;
-	float textWidth = charWidth * text.size(); // TODO: Ignore non-renderable characters
 	float x = position.x;
 	float y = position.y;
 
