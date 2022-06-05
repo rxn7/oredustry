@@ -33,12 +33,15 @@ void od::UI::Button::SetText(const std::string_view &text) {
 void od::UI::Button::Render() {
 	ENSURE_VISIBLE;
 
-	od::Color color;
-	if(IsHovered())
-		color = {0.6f, 0.6f, 0.6f, 1.0f};
-	else
-		color = {0.8f, 0.8f, 0.8f, 1.0f};
+	od::Color rectColor, textColor;
+	if(IsHovered()) {
+		rectColor = {0.6f, 0.6f, 0.6f, 1.0f};
+		textColor = {0.9f, 0.9f, 0.9f, 1.0f};
+	} else {
+		rectColor = {0.8f, 0.8f, 0.8f, 1.0f};
+		textColor = {0.0f, 0.0f, 0.0f, 1.0f};
+	}
 
-	od::Renderer::RenderQuad(m_AnchoredPosition, m_Size, color);
-	od::Renderer::RenderText(m_Text, m_Font, m_AnchoredPosition, od::Colors::BLACK, 1, od::TextAlignHorizontal::Center, od::TextAlignVertical::Middle);
+	od::Renderer::RenderQuad(m_AnchoredPosition, m_Size, rectColor);
+	od::Renderer::RenderText(m_Text, m_Font, m_AnchoredPosition, textColor, 1, od::TextAlignHorizontal::Center, od::TextAlignVertical::Middle);
 }
