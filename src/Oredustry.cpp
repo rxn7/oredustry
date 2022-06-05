@@ -44,7 +44,7 @@ void Oredustry::UpdateDebug(uint32_t deltaTime) {
 	int32_t fps = static_cast<int32_t>(1.f / deltaFloat);
 
 	std::stringstream ss;
-	ss << "frame time: " << m_DeltaTime << "us\n" << "fps: " << fps << "\n";
+	ss << "Press ~ to disable debug\n" << "frame time: " << m_DeltaTime << "us\n" << "fps: " << fps << "\n";
 
 	m_DebugText->m_Text = ss.str();
 }
