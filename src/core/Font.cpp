@@ -6,7 +6,6 @@
 #define COLS 18
 #define ROWS 7
 
-// TODO(optimization): Pack all glyph into a single texture
 od::Font::Font(const std::string &path, int32_t filter, float size) : m_Size(size) {
 	m_Texture = od::Asset::Load<od::Texture>(path);
 	m_CharSize = { (m_Texture->GetWidth()-1) / COLS, (m_Texture->GetHeight()-1) / ROWS };
