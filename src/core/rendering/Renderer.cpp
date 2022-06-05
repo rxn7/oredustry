@@ -120,74 +120,75 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	shader->SetUniformColor("u_Color", color);
 
 	s_QuadVa->Bind();
-	s_QuadVa->Render();
-}
+	s_QuadVa->Render(); }
 
-// TODO: Horizontal centering isn't correct
+// TODO: Center align each line individually
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
-	if(text.size() < 1) return;
+	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;
+	scale *= font->GetSize();
 
 	s_GlyphVa->Bind();
 	s_TextShader->Bind();
 	s_TextShader->SetUniformColor("u_Color", color);
+	font->GetTexture().GetGLTexture()->Bind();
 
-	float textWidth = font->GetTextWidth(text, scale);
+	float charWidth = font->GetCharWidth() * scale;
+	float charHeight = font->GetCharHeight() * scale;
+	float textWidth = charWidth * text.size(); // TODO: Ignore non-renderable characters
 	float x = position.x;
 	float y = position.y;
 
+	switch(alignH) {
+		case od::TextAlignHorizontal::Left:
+			break;
+
+		case od::TextAlignHorizontal::Center:
+			x -= textWidth * 0.5f;
+			break;
+
+		case od::TextAlignHorizontal::Right:
+			x -= textWidth;
+			break;
+	}
+
+	switch(alignV) {
+		case od::TextAlignVertical::Bottom:
+			break;
+
+		case od::TextAlignVertical::Middle:
+			y += charHeight * 0.5f;
+			break;
+
+		case od::TextAlignVertical::Top:
+			y += charHeight;
+			break;
+	}
+
+	std::vector<od::Vertex> vertices;
 	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
 		if(*it == '\n') {
 			x = position.x;
-			y += font->GetHeight() * 1.5f;
+			y += font->GetCharHeight() * 2.f;
 			continue;
 		}
 
-		const od::Character &c = font->GetCharacter(*it);
-		float xpos = (x + c.bearing.x) * scale;
-		float ypos = y - (c.bearing.y - c.size.y) * scale;
+		if(*it < 32 || *it > 126)
+			continue;
 
-		switch(alignH) {
-			case TextAlignHorizontal::Left:
-				break;
+		glm::f32vec2 uvStart, uvEnd;
+		font->GetCharUV(*it, uvStart, uvEnd);
 
-			case TextAlignHorizontal::Right: 
-				xpos -= textWidth;
-				break;
+		vertices.push_back({{x, y-charHeight},			uvStart});
+		vertices.push_back({{x, y},		 		{uvStart.x, uvEnd.y}});
+		vertices.push_back({{x+charWidth, y},			uvEnd});
 
-			case TextAlignHorizontal::Center:
-				xpos -= textWidth * 0.5f;
-				break;
-		}
+		vertices.push_back({{x, y-charHeight},			uvStart});
+		vertices.push_back({{x+charWidth, y},			uvEnd});
+		vertices.push_back({{x+charWidth, y-charHeight},	{uvEnd.x, uvStart.y}});
 
-		switch(alignV) {
-			case TextAlignVertical::Bottom:
-				break;
-
-			case TextAlignVertical::Top:
-				ypos += font->GetHeight();
-				break;
-
-			case TextAlignVertical::Middle:
-				ypos += font->GetHeight() * 0.5f;
-				break;
-		}
-
-		float w = c.size.x * scale;
-		float h = c.size.y * scale;
-		std::vector<od::Vertex> vertices = {
-			{ { xpos, ypos-h, },   { 0.0f, 0.0f } },            
-			{ { xpos, ypos,   },   { 0.0f, 1.0f } },
-			{ { xpos+w, ypos,   },   { 1.0f, 1.0f } },
-                                                 
-			{ { xpos, ypos-h, },   { 0.0f, 0.0f } },
-			{ { xpos+w, ypos,   },   { 1.0f, 1.0f } },
-			{ { xpos+w, ypos-h, },   { 1.0f, 0.0f } }  
-		};
-
-		c.texture->Bind();
-		s_GlyphVa->SubData(vertices);
-		s_GlyphVa->Render();
-
-		x += (c.advance >> 6) * scale;
+		x += charWidth;
 	}
+
+	s_GlyphVa->SetData(vertices, GL_DYNAMIC_DRAW);
+	s_GlyphVa->Render();
 }

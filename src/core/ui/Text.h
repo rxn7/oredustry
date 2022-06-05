@@ -3,7 +3,7 @@
 #include "UIElement.h"
 #include "core/Color.h"
 #include "core/TextAlign.h"
-#include "core/assets/Font.h"
+#include "core/Font.h"
 
 namespace od::UI {
 	class Text : public UIElement {

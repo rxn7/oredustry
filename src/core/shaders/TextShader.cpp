@@ -1,5 +1,4 @@
 #include "TextShader.h"
-
 const std::string od::Shaders::TextShader::VertexSrc = R"(
 #version 330 core
 
@@ -27,7 +26,7 @@ uniform vec4 u_Color;
 uniform sampler2D u_Texture;
 
 void main() {
-	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(u_Texture, v_TexCoord).r);
-	f_Color = vec4(u_Color) * sampled;
+	vec4 sampled = vec4(1.0f, 1.0f, 1.0f, texture(u_Texture, v_TexCoord).r);
+	f_Color = u_Color * sampled;
 }
 )";

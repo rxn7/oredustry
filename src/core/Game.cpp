@@ -29,9 +29,6 @@ od::Game::Game(const od::WindowParameters &params) {
 	if(glewInit() != GLEW_OK)
 		Shutdown(true, "Failed to initialize GLEW");
 
-	if(FT_Init_FreeType(&m_Ft) != 0)
-		Shutdown(true, "Failed to initialize FreeType");
-
 	glClearColor(0, 0, 0, 255);
 
 	od::Input::Init();
@@ -61,7 +58,6 @@ void od::Game::Shutdown(bool error, std::string_view reason) {
 	m_Scene.reset();
 
 	glfwTerminate();
-	FT_Done_FreeType(m_Ft);
 
 	exit(error);
 }

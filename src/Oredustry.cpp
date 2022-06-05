@@ -22,9 +22,8 @@ od::Game(WINDOW_PARAMS) {
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
 
-	od::Asset::Load<od::Font>("res/FreeSans.ttf", 24);
-
 	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	m_Font = std::make_unique<od::Font>("res/font.png", GL_NEAREST);
 }
 
 void Oredustry::OnShutdown() {
@@ -47,7 +46,7 @@ void Oredustry::UpdateDebug(uint32_t deltaTime) {
 }
 
 void Oredustry::Awake() {
-	m_DebugText = std::make_unique<od::UI::Text>(od::Asset::GetAsset<od::Font>("res/FreeSans.ttf"), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
+	m_DebugText = std::make_unique<od::UI::Text>(m_Font.get(), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
 	m_DebugText->m_AnchoredPosition = {0,0};
 	SetScene(std::make_unique<MainMenuScene>());
 }

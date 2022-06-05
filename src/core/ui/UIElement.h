@@ -7,6 +7,7 @@
 
 #define ENSURE_VISIBLE if(!m_Visible) return;
 
+// TODO: Scale UI with the screen, keep aspect ratio
 namespace od::UI {
 	class UIElement {
 	public:
