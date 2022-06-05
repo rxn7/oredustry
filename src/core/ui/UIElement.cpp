@@ -5,7 +5,6 @@
 od::UI::UIElement::UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors) : 
 m_Position(position), m_Size(size), m_Anchors(anchors) {
 }
-
 void od::UI::UIElement::UpdateAnchoredPosition() {
 	float width = od::Game::GetInstance()->GetWindow().GetStartWidth();
 	float height = od::Game::GetInstance()->GetWindow().GetStartHeight();
@@ -74,6 +73,7 @@ void od::UI::UIElement::AddChildElement(const std::shared_ptr<od::UI::UIElement>
 }
 
 void od::UI::UIElement::UpdateChildren(uint32_t deltaTime) {
+	ENSURE_VISIBLE;
 	for(std::shared_ptr<UIElement> element : m_Children)
 		element->Update(deltaTime);
 }

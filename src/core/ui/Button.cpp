@@ -12,13 +12,15 @@ od::UI::UIElement(position, size, anchors) {
 }
 
 void od::UI::Button::Update(uint32_t deltaTime) {
+	ENSURE_VISIBLE;
+
 	const float halfWidth = m_Size.x * 0.5f;
 	const float halfHeight = m_Size.y * 0.5f;
 
 	glm::i32vec2 cursorPosition = od::Game::GetInstance()->GetCursorPosition();
 	m_Hovered = cursorPosition.x >= m_AnchoredPosition.x - halfWidth && cursorPosition.x <= m_AnchoredPosition.x + halfWidth && cursorPosition.y >= m_AnchoredPosition.y - halfHeight && cursorPosition.y <= m_AnchoredPosition.y + halfHeight;
 
-	if(m_Hovered && od::Input::IsButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT))
+	if(m_Hovered && od::Input::IsButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT)) 
 		m_ClickCallback();
 }
 
