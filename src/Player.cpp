@@ -1,12 +1,13 @@
 #include "Player.h"
 #include "core/Input.h"
 #include "core/Game.h"
+#include "core/rendering/Renderer.h"
+#include "Oredustry.h"
 
 #define MOVE_SPEED 0.0002f
 
 Player::Player() : od::Sprite(od::Asset::GetAsset<od::Texture>("res/player.png")->GetGLTexture()) {
-	od::Texture *texture = od::Asset::GetAsset<od::Texture>("res/player.png");
-	m_Size = { texture->GetWidth(), texture->GetHeight() };
+	od::Texture *texture = od::Asset::GetAsset<od::Texture>("res/player.png"); m_Size = { texture->GetWidth(), texture->GetHeight() };
 }
 
 void Player::Update(uint32_t deltaTime) {
@@ -27,4 +28,9 @@ void Player::Update(uint32_t deltaTime) {
 	m_Position += moveDir;
 
 	od::Game::GetInstance()->SetCameraPosition(m_Position);
+}
+
+void Player::Render() {
+	od::Sprite::Render();
+	od::Renderer::RenderText("Player", Oredustry::GetInstance()->GetFont(), m_Position - glm::f32vec2{0, m_Size.y * 0.65f}, od::Colors::BLACK, 0.7f, od::TextAlignHorizontal::Center, od::TextAlignVertical::Middle);
 }

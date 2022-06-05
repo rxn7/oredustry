@@ -5,6 +5,9 @@
 #include "core/assets/Texture.h"
 #include "Cursor.h"
 
+// TODO: Tilemaps
+// TODO: Spritesheet animations
+
 class Oredustry : public od::Game {
 public:
 	Oredustry();

@@ -29,6 +29,8 @@ static od::Shader *s_TextShader;
 
 static std::vector<std::unique_ptr<od::Shader>> m_Shaders;
 
+uint32_t od::Renderer::drawCalls = 0;
+
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::f32vec3(position, 0.0f));
@@ -67,6 +69,8 @@ void od::Renderer::Init() {
 }
 
 void od::Renderer::Begin2D() {
+	od::Renderer::drawCalls = 0;
+
 	for(const std::unique_ptr<od::Shader> &shader : m_Shaders) {
 		shader->Bind();
 		shader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetProjection());
@@ -97,6 +101,8 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 
 	s_QuadVa->Bind();
 	s_QuadVa->Render();
+
+	++drawCalls;
 }
 
 void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, TextureShaderType shaderType) {
@@ -120,7 +126,10 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	shader->SetUniformColor("u_Color", color);
 
 	s_QuadVa->Bind();
-	s_QuadVa->Render(); }
+	s_QuadVa->Render();
+
+	++drawCalls;
+}
 
 // TODO: Center align each line individually
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
@@ -190,6 +199,8 @@ void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm
 
 		x += charWidth;
 	}
+
+	++drawCalls;
 
 	s_GlyphVa->SetData(vertices, GL_DYNAMIC_DRAW);
 	s_GlyphVa->Render();

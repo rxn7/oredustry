@@ -6,5 +6,6 @@
 class Player : public od::Sprite {
 public:
 	Player();
-	void Update(uint32_t deltaTime);
+	void Update(uint32_t deltaTime) override;
+	void Render() override;
 };
