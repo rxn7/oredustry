@@ -27,42 +27,13 @@ od::Game(WINDOW_PARAMS) {
 		od::Asset::Load<od::Texture>(texture);
 
 	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	m_Font = std::make_unique<od::Font>("res/font.png", GL_NEAREST);
 }
 
-void Oredustry::UpdateDebug(uint32_t deltaTime) {
-	if(!m_DebugText->m_Visible) return;
-
-	float deltaFloat = static_cast<std::chrono::duration<float, std::milli>>(m_FrameStartTimePoint - m_FrameEndTimePoint).count() / 1000.0f;
-	int32_t fps = static_cast<int32_t>(1.f / deltaFloat);
-
-	std::stringstream ss;
-	ss 	<< "Press ~ to disable debug\n"
-		<< "frame time: " << deltaTime << "us\n"
-		<< "fps: " << fps << "\n"
-		<< "draw calls: " << od::Renderer::drawCalls;
-
-	m_DebugText->m_Text = ss.str();
-}
-
-void Oredustry::Awake() {
-	m_DebugText = std::make_unique<od::UI::Text>(m_Font.get(), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
-	m_DebugText->m_AnchoredPosition = {0,0};
+void Oredustry::Ready() {
 	SetScene(std::make_unique<MainMenuScene>());
 }
 
-void Oredustry::Update(uint32_t deltaTime) {
-	od::Game::Update(deltaTime);
-
-	if(od::Input::IsKeyJustPressed(GLFW_KEY_GRAVE_ACCENT))
-		m_DebugText->m_Visible ^= 1;
-}
-
-void Oredustry::Tick(uint32_t deltaTime) {
-	UpdateDebug(deltaTime);
-}
-
 void Oredustry::RenderUI() {
-	m_DebugText->Render();
+	od::Game::RenderUI();
 	m_Cursor->Render();
 }

@@ -17,9 +17,9 @@ void Player::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyPressed(GLFW_KEY_D)) moveDir.x++;
 	if(od::Input::IsKeyPressed(GLFW_KEY_A)) moveDir.x--;
 
-	// TODO: What the hell? Checking if moveDir.length() != 0 doesn't work, glm::normalize still returns nan 
+	// TODO: What the hell? Checking if moveDir.length() != 0 doesn't work, glm::normalize still returns {-nan, -nan} sometimes
 	moveDir = glm::normalize(moveDir);
-	// TODO: Hacky fix for the problem above
+	// NOTE: Hacky fix for the problem above
 	if(isnanf(moveDir.x) || isnanf(moveDir.y))
 		moveDir = {0,0};
 

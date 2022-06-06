@@ -1,5 +1,6 @@
 #include "Input.h"
-#include "core/Game.h"
+#include "Log.h"
+#include "Game.h"
 
 static std::array<bool, GLFW_KEY_LAST> s_Keyboard;
 static std::array<bool, GLFW_KEY_LAST> s_OldKeyboard;
