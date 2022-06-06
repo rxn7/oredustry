@@ -48,7 +48,8 @@ namespace od {
 		void UpdateProjections();
 		void UpdateViewport();
 		void HandleTick(uint32_t deltaTime);
-		void HandleUpdate(uint32_t deltaTime); void HandleRender2D();
+		void HandleUpdate(uint32_t deltaTime); 
+		void HandleRender2D();
 		void HandleRenderUI();
 		void SwapScenes();
 		uint32_t CalculateDeltaTime();
