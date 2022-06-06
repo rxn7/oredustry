@@ -6,9 +6,9 @@
 #include "core/Log.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "core/shaders/ColorShader.h"
-#include "core/shaders/TextureShader.h"
 #include "core/shaders/ColorSwapShader.h"
-#include "core/shaders/TextShader.h"
+#include "core/shaders/GlyphShader.h"
+#include "core/shaders/TextureShader.h"
 
 static std::unique_ptr<od::VertexArray> s_QuadVa;
 static std::unique_ptr<od::VertexArray> s_GlyphVa;
@@ -52,7 +52,7 @@ void od::Renderer::Init() {
 	s_ColorSwapShader = new od::Shader(od::Shaders::ColorSwapShader::VertexSrc, od::Shaders::ColorSwapShader::FragmentSrc);
 	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_ColorSwapShader));
 
-	s_TextShader = new od::Shader(od::Shaders::TextShader::VertexSrc, od::Shaders::TextShader::FragmentSrc);
+	s_TextShader = new od::Shader(od::Shaders::GlyphShader::VertexSrc, od::Shaders::GlyphShader::FragmentSrc);
 	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_TextShader));
 
 	{
@@ -92,7 +92,7 @@ void od::Renderer::BeginUI() {
 void od::Renderer::EndUI() {
 }
 
-// TODO: Batched rendering would be helpful here
+// TODO: Batched rendering!
 void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
@@ -105,6 +105,7 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 	s_QuadVa->Render();
 }
 
+// TODO: Batched rendering!
 void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, TextureShaderType shaderType) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
@@ -130,6 +131,7 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 }
 
 // TODO: Center align each line individually
+// TODO: Batched rendering!
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;
 

@@ -20,6 +20,7 @@ namespace od {
 		void HandleWindowResize(int32_t width, int32_t height);
 		void TakeScreenshot(const std::string_view &path = "screenshot.png") const;
 
+		glm::f32vec2 GetWorldCursorPosition();
 		inline glm::i32vec2 GetCursorPosition() { return m_CursorPosition; }
 		inline od::Window &GetWindow() const { return *m_Window; }
 		inline const glm::mat4 &GetProjection() const { return m_Projection; }

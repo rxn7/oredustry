@@ -40,9 +40,10 @@ od::Game::Game(const od::WindowParameters &params) {
 	SetCursorPosition({mx, my});
 
 	m_Font = std::make_unique<od::Font>("res/font.png", GL_NEAREST);
-
 	m_DebugText = std::make_unique<od::UI::Text>(m_Font.get(), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
 	m_DebugText->m_AnchoredPosition = {0,0};
+	
+	srand(time(0));
 }
 
 od::Game *od::Game::GetInstance() {
@@ -181,6 +182,15 @@ void od::Game::UpdateProjections() {
 
 	m_Projection = glm::ortho(m_CameraPosition.x - halfWidth, m_CameraPosition.x + halfWidth, m_CameraPosition.y + halfHeight, m_CameraPosition.y - halfHeight, 0.0f, 1.0f);
 	m_UIProjection = glm::ortho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
+}
+
+glm::f32vec2 od::Game::GetWorldCursorPosition() {
+	float width = static_cast<float>(m_Window->GetWidth());
+	float height = static_cast<float>(m_Window->GetHeight());
+	float halfWidth = width * 0.5f;
+	float halfHeight = height * 0.5f;
+
+	return {m_CursorPosition.x + m_CameraPosition.x - halfWidth, m_CursorPosition.y + m_CameraPosition.y - halfHeight};
 }
 
 void od::Game::UpdateViewport() {
