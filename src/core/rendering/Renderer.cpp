@@ -90,7 +90,7 @@ void od::Renderer::BeginUI() {
 void od::Renderer::EndUI() {
 }
 
-// TODO: Instance rendering?
+// TODO: Batched rendering would be helpful here
 void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
