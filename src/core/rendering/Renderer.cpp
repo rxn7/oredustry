@@ -103,8 +103,6 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 
 	s_QuadVa->Bind();
 	s_QuadVa->Render();
-
-	++drawCalls;
 }
 
 void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, TextureShaderType shaderType) {
@@ -129,8 +127,6 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 
 	s_QuadVa->Bind();
 	s_QuadVa->Render();
-
-	++drawCalls;
 }
 
 // TODO: Center align each line individually
@@ -201,8 +197,6 @@ void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm
 
 		x += charWidth;
 	}
-
-	++drawCalls;
 
 	s_GlyphVa->SetData(vertices, GL_DYNAMIC_DRAW);
 	s_GlyphVa->Render();

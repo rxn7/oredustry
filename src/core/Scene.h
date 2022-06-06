@@ -12,8 +12,9 @@ namespace od {
 		virtual ~Scene() {}
 		virtual void Awake();
 		virtual void Update(uint32_t frameDelta);
-		virtual void Draw();
-		virtual void DrawUI();
+		virtual void Tick() {}
+		virtual void Render2D();
+		virtual void RenderUI();
 		void AddUiElement(std::shared_ptr<od::UI::UIElement> uiElement);
 		void AddEntity(std::shared_ptr<od::Entity> ent);
 

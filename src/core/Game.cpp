@@ -4,11 +4,11 @@
 #include "Log.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+static constexpr uint32_t TICK_INTERVAL = 1.0f/30*1000000; // 30 ticks per second
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 static od::Game *s_Instance;
-
 static void s_CursorPosCallback(GLFWwindow *win, double x, double y);
 
 od::Game::Game(const od::WindowParameters &params) {
@@ -44,6 +44,71 @@ od::Game *od::Game::GetInstance() {
 	return s_Instance;
 }
 
+void od::Game::Start() {
+	Awake();
+
+	while(!glfwWindowShouldClose(m_Window->GetGLFWWindow())) {
+		uint32_t deltaTime = CalculateDeltaTime();
+		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_FrameStartTimePoint - m_StartTimePoint).count();
+		SwapScenes();
+		glfwPollEvents();
+
+		HandleUpdate(deltaTime);
+		HandleTick(deltaTime);
+
+		UpdateProjections();
+
+		glClear(GL_COLOR_BUFFER_BIT);
+		HandleRender2D();
+		HandleRenderUI();
+
+		od::Input::EndFrame();
+		glfwSwapBuffers(m_Window->GetGLFWWindow());
+	}
+}
+
+void od::Game::Update(uint32_t deltaTime) {
+	if(od::Input::IsKeyJustPressed(GLFW_KEY_F12))
+		TakeScreenshot();
+}
+
+void od::Game::HandleTick(uint32_t deltaTime) {
+	m_TickTimer += deltaTime;
+	if(m_TickTimer >= TICK_INTERVAL) {
+		m_TickTimer = 0;
+
+		Tick(deltaTime);
+		if(m_Scene)
+			m_Scene->Tick();
+	}
+}
+
+void od::Game::HandleUpdate(uint32_t deltaTime) {
+	Update(deltaTime);	
+	if(m_Scene)
+		m_Scene->Update(deltaTime);
+}
+
+void od::Game::HandleRender2D() {
+	od::Renderer::Begin2D();
+
+	if(m_Scene)
+		m_Scene->Render2D();
+	Render2D();
+
+	od::Renderer::End2D();
+}
+
+void od::Game::HandleRenderUI() {
+	od::Renderer::BeginUI();
+
+	if(m_Scene)
+		m_Scene->RenderUI();
+	RenderUI();
+
+	od::Renderer::EndUI();
+}
+
 void od::Game::Shutdown(bool error, std::string_view reason) {
 	if(reason != "") {
 		if(error)	OD_LOG_ERROR("Quitting, error: " << reason);
@@ -76,49 +141,6 @@ void od::Game::HandleWindowResize(int32_t width, int32_t height) {
 		element->UpdateAnchoredPosition();
 }
 
-void od::Game::Start() {
-	Awake();
-
-	while(!glfwWindowShouldClose(m_Window->GetGLFWWindow())) {
-		CalculateDeltaTime();
-		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_FrameStartTimePoint - m_StartTimePoint).count();
-		SwapScenes();
-
-		glfwPollEvents();
-
-		// Update
-		Update(m_DeltaTime);	
-		if(m_Scene)
-			m_Scene->Update(m_DeltaTime);
-
-		UpdateProjections();
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		// 2D Rendering
-		od::Renderer::Begin2D();
-		if(m_Scene)
-			m_Scene->Draw();
-		Draw();
-		od::Renderer::End2D();
-
-		// UI Rendering
-		od::Renderer::BeginUI();
-		if(m_Scene)
-			m_Scene->DrawUI();
-		DrawUI();
-		od::Renderer::EndUI();
-
-		od::Input::EndFrame();
-		glfwSwapBuffers(m_Window->GetGLFWWindow());
-	}
-}
-
-void od::Game::Update(uint32_t deltaTime) {
-	if(od::Input::IsKeyJustPressed(GLFW_KEY_F12)) {
-		TakeScreenshot();
-	}
-}
-
 void od::Game::UpdateProjections() {
 	float width = static_cast<float>(m_Window->GetWidth());
 	float height = static_cast<float>(m_Window->GetHeight());
@@ -139,19 +161,20 @@ void od::Game::SwapScenes() {
 	m_Scene = std::move(m_NextScene);
 	m_Scene->Awake();
 
-	glClearColor(m_Scene->m_ClearColor.r, m_Scene->m_ClearColor.g, m_Scene->m_ClearColor.b, 1.0f);
+	glClearColor(m_Scene->m_ClearColor.r / 255.0f, m_Scene->m_ClearColor.g / 255.0f, m_Scene->m_ClearColor.b / 255.0f, 1.0f);
 }
 
-void od::Game::CalculateDeltaTime() {
+uint32_t od::Game::CalculateDeltaTime() {
 	if(m_TimeSinceStart != 0)
 		m_FrameEndTimePoint = m_FrameStartTimePoint;
 	else
 		m_FrameEndTimePoint = std::chrono::high_resolution_clock::now();
-
 	m_FrameStartTimePoint = std::chrono::high_resolution_clock::now();
 
-	m_DeltaTime = std::chrono::duration_cast<std::chrono::microseconds>(m_FrameStartTimePoint - m_FrameEndTimePoint).count();
-	if(m_DeltaTime < 0) m_DeltaTime = 0; 
+	uint32_t deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(m_FrameStartTimePoint - m_FrameEndTimePoint).count();
+	if(deltaTime < 0) deltaTime = 0; 
+
+	return deltaTime;
 }
 
 void od::Game::TakeScreenshot(const std::string_view &path) const {

@@ -28,14 +28,14 @@ void od::Scene::Update(uint32_t deltaTime) {
 	}
 }
 
-void od::Scene::DrawUI() {
+void od::Scene::RenderUI() {
 	for(auto &uiElement : m_UiElements) {
 		uiElement->Render();
 		uiElement->RenderChildren();
 	}
 }
 
-void od::Scene::Draw() {
+void od::Scene::Render2D() {
 	for(auto &entity : m_Entities) 
 		entity->Render();
 }

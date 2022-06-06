@@ -1,5 +1,6 @@
 #include "VertexArray.h"
 #include "core/Log.h"
+#include "core/rendering/Renderer.h"
 
 od::VertexArray::VertexArray(const std::vector<od::Vertex> &vertices, int32_t target) :
 m_VertexCount(vertices.size()) {
@@ -51,4 +52,5 @@ void od::VertexArray::Unbind() {
 
 void od::VertexArray::Render() {
 	glDrawArrays(GL_TRIANGLES, 0, m_VertexCount);
+	od::Renderer::drawCalls++;
 }

@@ -8,7 +8,7 @@ class GameScene : public od::Scene {
 public:
 	GameScene();
 	void Update(uint32_t deltaTime) override;
-	void Draw() override;
+	void Render2D() override;
 
 private:
 	void ExitToMenu();

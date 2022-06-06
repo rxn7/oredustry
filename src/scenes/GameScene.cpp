@@ -27,7 +27,7 @@ void GameScene::Update(uint32_t deltaTime) {
 	m_Player->Update(deltaTime);
 }
 
-void GameScene::Draw() {
+void GameScene::Render2D() {
 	// Reference object
 	od::Renderer::RenderQuad({0,0}, {50,50}, {255, 0, 255, 255});
 	od::Renderer::RenderText("Reference Object", Oredustry::GetInstance()->GetFont(), {0,0}, {50, 200, 164, 255}, 1.0f);

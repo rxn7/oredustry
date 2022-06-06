@@ -24,6 +24,7 @@ namespace od {
 		inline const glm::mat4 &GetProjection() const { return m_Projection; }
 		inline const glm::mat4 &GetUIProjection() const { return m_UIProjection; }
 		inline od::Font *GetFont() const { return m_Font.get(); }
+		inline uint32_t GetTimeSinceStartMs() const { return m_TimeSinceStart; }
 		inline void SetCursorPosition(const glm::f32vec2 &pos) { m_CursorPosition = pos; }
 		inline void SetCameraPosition(const glm::f32vec2 &pos) { m_CameraPosition = pos; }
 		inline void MoveCamera(const glm::f32vec2 &offset) { m_CameraPosition += offset; }
@@ -31,27 +32,35 @@ namespace od {
 	protected:
 		Game(const od::WindowParameters &params);
 		virtual void Awake() {}
+
+		// NOTE: deltaTime argument doesn't refer to time between ticks, but time between frames!
+		virtual void Tick(uint32_t deltaTime) {}
+
 		virtual void Update(uint32_t deltaTime);
-		virtual void DrawNuklear() {}
-		virtual void DrawUI() {}
-		virtual void Draw() {}
+		virtual void Render2D() {}
+		virtual void RenderUI() {}
 		virtual void OnShutdown() {}
 
 	private:
 		void UpdateProjections();
 		void UpdateViewport();
+		void HandleTick(uint32_t deltaTime);
+		void HandleUpdate(uint32_t deltaTime);
+		void HandleRender2D();
+		void HandleRenderUI();
 		void SwapScenes();
-		void CalculateDeltaTime();
+		uint32_t CalculateDeltaTime();
 
 	protected:
 		std::unique_ptr<od::Font> m_Font;
-		uint32_t m_TimeSinceStart = 0, m_DeltaTime = 0;
 		TimePoint m_StartTimePoint, m_FrameStartTimePoint, m_FrameEndTimePoint;
 		std::unique_ptr<od::Window> m_Window;
 		glm::f32vec2 m_CameraPosition{0,0};
 		glm::i32vec2 m_CursorPosition{0,0};
 
 	private:
+		uint32_t m_TimeSinceStart = 0;
+		uint32_t m_TickTimer=0;
 		glm::mat4 m_Projection;
 		glm::mat4 m_UIProjection;
 		std::unique_ptr<od::Scene> m_NextScene, m_Scene;
