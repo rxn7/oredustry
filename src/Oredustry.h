@@ -6,6 +6,7 @@
 #include "Cursor.h"
 
 // TODO: Tilemaps
+// TODO: Camera class
 // TODO: Spritesheet animations
 // TODO: Profiling!!!!!
 
