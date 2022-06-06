@@ -21,8 +21,8 @@ const std::string od::Shaders::ColorShader::FragmentSrc = R"(
 #version 330 core
 
 in vec2 v_TexCoord;
-out vec4 f_Color;
 
+out vec4 f_Color;
 uniform vec4 u_Color;
 
 void main() {

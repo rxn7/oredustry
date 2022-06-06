@@ -10,15 +10,6 @@
 #include "core/shaders/ColorSwapShader.h"
 #include "core/shaders/TextShader.h"
 
-static std::vector<od::Vertex> s_QuadVertices = {
-	{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
-	{ { 0.5f, -0.5f}, {1.0f, 0.0f} },
-	{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
-	{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
-	{ {-0.5f,  0.5f}, {0.0f, 1.0f} },
-	{ {-0.5f, -0.5f}, {0.0f, 0.0f} }
-};
-
 static std::unique_ptr<od::VertexArray> s_QuadVa;
 static std::unique_ptr<od::VertexArray> s_GlyphVa;
 
@@ -64,7 +55,18 @@ void od::Renderer::Init() {
 	s_TextShader = new od::Shader(od::Shaders::TextShader::VertexSrc, od::Shaders::TextShader::FragmentSrc);
 	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_TextShader));
 
-	s_QuadVa = std::make_unique<od::VertexArray>(s_QuadVertices, GL_STATIC_DRAW);
+	{
+		static std::vector<od::Vertex> verts = {
+			{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
+			{ { 0.5f, -0.5f}, {1.0f, 0.0f} },
+			{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
+			{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
+			{ {-0.5f,  0.5f}, {0.0f, 1.0f} },
+			{ {-0.5f, -0.5f}, {0.0f, 0.0f} }
+		};
+		s_QuadVa = std::make_unique<od::VertexArray>(verts, GL_STATIC_DRAW);
+	}
+
 	s_GlyphVa = std::make_unique<od::VertexArray>(6, GL_DYNAMIC_DRAW);
 }
 

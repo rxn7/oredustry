@@ -7,7 +7,7 @@
 
 GameScene::GameScene() :
 m_Player(new Player()),
-m_PauseRect(new od::UI::ColorRect({0.5f, 0.5f, 0.5f, 0.6f}, {0,0}, {500,700}, ANCHORS_CENTER)),
+m_PauseRect(new od::UI::ColorRect({200, 200, 200, 128}, {0,0}, {500,700}, ANCHORS_CENTER)),
 od::Scene({255,255,255,255}) {
 	m_PauseRect->m_Visible = false;
 	od::Font *font = od::Game::GetInstance()->GetFont();
@@ -29,7 +29,8 @@ void GameScene::Update(uint32_t deltaTime) {
 
 void GameScene::Draw() {
 	// Reference object
-	od::Renderer::RenderQuad({0,0}, {50,50}, {0.5f, 0.2f, 0.9f, 1.0f});
+	od::Renderer::RenderQuad({0,0}, {50,50}, {255, 0, 255, 255});
+	od::Renderer::RenderText("Reference Object", Oredustry::GetInstance()->GetFont(), {0,0}, {50, 200, 164, 255}, 1.0f);
 
 	m_Player->Render();
 }

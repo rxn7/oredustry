@@ -9,8 +9,6 @@ od::UI::UIElement(position, size, anchors) {
 
 void od::UI::Image::Render() {
 	ENSURE_VISIBLE;
-
-	od::Renderer::RenderQuadTextured(m_AnchoredPosition, m_Size, m_Texture.get(), {1.0f, 1.0f, 1.0f, 1.0f});
-
+	od::Renderer::RenderQuadTextured(m_AnchoredPosition, m_Size, m_Texture.get(), od::Colors::WHITE);
 	od::UI::UIElement::Render();
 }

@@ -14,10 +14,10 @@ void Cursor::Render() {
 	const od::Window &window = od::Game::GetInstance()->GetWindow();
 
 	od::Color color = {
-		static_cast<float>(cursorPosition.x) / static_cast<float>(window.GetWidth()),
-		static_cast<float>(cursorPosition.y) / static_cast<float>(window.GetHeight()),
-		1.f - static_cast<float>(cursorPosition.y) / static_cast<float>(window.GetHeight()),
-		1.0f
+		static_cast<float>(cursorPosition.x) / static_cast<float>(window.GetWidth()) * 255,
+		static_cast<float>(cursorPosition.y) / static_cast<float>(window.GetHeight()) * 255,
+		1.f - static_cast<float>(cursorPosition.y) / static_cast<float>(window.GetHeight()) * 255,
+		255
 	};
 
 	float halfSize = m_Size.x * 0.5f;

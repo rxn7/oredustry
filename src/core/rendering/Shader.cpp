@@ -46,7 +46,7 @@ void od::Shader::SetUniformVec2(const std::string &name, const glm::f32vec2 &val
 }
 
 void od::Shader::SetUniformColor(const std::string &name, const od::Color &color) {
-	glUniform4f(GetLocation(name), color.x, color.y, color.z, color.w);
+	glUniform4f(GetLocation(name), static_cast<float>(color.r) / 255.f, static_cast<float>(color.g / 255.f), static_cast<float>(color.b) / 255.f, static_cast<float>(color.a) / 255.f);
 }
 
 void od::Shader::SetUniformFloat(const std::string &name, float value) {

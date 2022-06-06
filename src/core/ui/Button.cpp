@@ -37,11 +37,11 @@ void od::UI::Button::Render() {
 
 	od::Color rectColor, textColor;
 	if(IsHovered()) {
-		rectColor = {0.6f, 0.6f, 0.6f, 1.0f};
-		textColor = {0.9f, 0.9f, 0.9f, 1.0f};
+		rectColor = {200, 200, 200, 255};
+		textColor = {240, 240, 240, 255};
 	} else {
-		rectColor = {0.8f, 0.8f, 0.8f, 1.0f};
-		textColor = {0.0f, 0.0f, 0.0f, 1.0f};
+		rectColor = {180, 180, 180, 255};
+		textColor = {0, 0, 0, 255};
 	}
 
 	od::Renderer::RenderQuad(m_AnchoredPosition, m_Size, rectColor);
