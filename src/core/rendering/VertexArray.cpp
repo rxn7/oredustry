@@ -21,10 +21,13 @@ void od::VertexArray::Init() {
 	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof(od::Vertex), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof(od::Vertex), (void*)offsetof(od::Vertex, position));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(od::Vertex), (void*)sizeof(glm::f32vec2));
+	glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(od::Vertex), (void*)offsetof(od::Vertex, texCoord));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, true, sizeof(od::Vertex), (void*)offsetof(od::Vertex, color));
 }
 
 void od::VertexArray::SetData(const std::vector<od::Vertex> &vertices, int32_t target) {
