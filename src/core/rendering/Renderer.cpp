@@ -10,7 +10,6 @@
 #include "core/shaders/GlyphShader.h"
 #include "core/shaders/TextureShader.h"
 
-
 static od::Shader *s_ColorShader;
 static od::Shader *s_TextureShader;
 static od::Shader *s_ColorSwapShader;
@@ -20,14 +19,11 @@ static std::vector<std::unique_ptr<od::Shader>> m_Shaders;
 
 static std::unique_ptr<od::VertexArray> s_TexturedQuadVa;
 
-static std::unique_ptr<od::VertexArray> s_GlyphVa;
+static std::unique_ptr<od::VertexArray> s_Va;
 static std::vector<od::Vertex> s_GlyphVertices;
-
-static std::unique_ptr<od::VertexArray> s_QuadVa;
 static std::vector<od::Vertex> s_QuadVertices;
 
 uint32_t od::Renderer::drawCalls = 0;
-
 void od::Renderer::Init() {
 	OD_LOG_INFO("Renderer info:" 
 		<< "\nOpenGL Vendor: "		<< glGetString(GL_VENDOR)
@@ -69,8 +65,7 @@ void od::Renderer::Init() {
 		s_TexturedQuadVa = std::make_unique<od::VertexArray>(verts, GL_STATIC_DRAW);
 	}
 
-	s_QuadVa = std::make_unique<od::VertexArray>(0, GL_DYNAMIC_DRAW);
-	s_GlyphVa = std::make_unique<od::VertexArray>(0, GL_DYNAMIC_DRAW);
+	s_Va = std::make_unique<od::VertexArray>(10000, GL_DYNAMIC_DRAW);
 }
 
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
@@ -82,18 +77,18 @@ static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position,
 static void s_RenderGlyphs() {
 	od::Game::GetInstance()->GetFont()->GetTexture().GetGLTexture()->Bind();
 	s_GlyphShader->Bind();
-	s_GlyphVa->Bind();
-	s_GlyphVa->SetData(s_GlyphVertices, GL_DYNAMIC_DRAW);
-	s_GlyphVa->Render();
+	s_Va->Bind();
+	s_Va->SetData(s_GlyphVertices, GL_DYNAMIC_DRAW);
+	s_Va->Render();
 
 	s_GlyphVertices.clear();
 }
 
 static void s_RenderQuads() {
 	s_ColorShader->Bind();
-	s_QuadVa->Bind();
-	s_QuadVa->SetData(s_QuadVertices, GL_DYNAMIC_DRAW);
-	s_QuadVa->Render();
+	s_Va->Bind();
+	s_Va->SetData(s_QuadVertices, GL_DYNAMIC_DRAW);
+	s_Va->Render();
 
 	s_QuadVertices.clear();
 }
@@ -131,12 +126,13 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 	float halfWidth = size.x * 0.5f;
 	float halfHeight = size.y * 0.5f;
 
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2(), color);
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y - halfHeight}, glm::f32vec2(), color);
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2(), color);
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2(), color);
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y + halfHeight}, glm::f32vec2(), color);
-	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2(), color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2{0.0f, 0.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y - halfHeight}, glm::f32vec2{1.0f, 0.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2{1.0f, 1.0f}, color);
+
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2{1.0f, 1.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y + halfHeight}, glm::f32vec2{0.0f, 1.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2{0.0f, 0.0f}, color);
 }
 
 // TODO: Batched rendering!
@@ -163,6 +159,7 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	s_TexturedQuadVa->Bind();
 	s_TexturedQuadVa->Render();
 }
+
 // TODO: Center align each line individually
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;

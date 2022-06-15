@@ -1,4 +1,5 @@
 #include "GlyphShader.h"
+
 const std::string od::Shaders::GlyphShader::VertexSrc = R"(
 #version 330 core
 
