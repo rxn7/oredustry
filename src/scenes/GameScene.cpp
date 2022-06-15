@@ -28,7 +28,8 @@ void GameScene::Update(uint32_t deltaTime) {
 		m_PauseRect->m_Visible ^= 1;
 
 	if(od::Input::IsKeyJustPressed(GLFW_KEY_R))
-		SpawnRandomOre();
+		for(uint8_t i=0; i<20; ++i)
+			SpawnRandomOre();
 
 	if(m_PauseRect->m_Visible)
 		return;
@@ -51,6 +52,9 @@ void GameScene::Update(uint32_t deltaTime) {
 	od::Entity::DeleteDestroyedEntitiesFromVector<Ore>(m_Ores);
 
 	m_Player->Update(deltaTime);
+}
+
+void GameScene::Tick() {
 }
 
 void GameScene::Render2D() {

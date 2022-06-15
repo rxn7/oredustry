@@ -10,24 +10,20 @@
 #include "core/shaders/GlyphShader.h"
 #include "core/shaders/TextureShader.h"
 
-static std::unique_ptr<od::VertexArray> s_QuadVa;
-static std::unique_ptr<od::VertexArray> s_GlyphVa;
-
 static od::Shader *s_ColorShader;
 static od::Shader *s_TextureShader;
 static od::Shader *s_ColorSwapShader;
-static od::Shader *s_TextShader;
+static od::Shader *s_GlyphShader;
 
 static std::vector<std::unique_ptr<od::Shader>> m_Shaders;
 
+static std::unique_ptr<od::VertexArray> s_TexturedQuadVa;
+
+static std::unique_ptr<od::VertexArray> s_Va;
+static std::vector<od::Vertex> s_GlyphVertices;
+static std::vector<od::Vertex> s_QuadVertices;
+
 uint32_t od::Renderer::drawCalls = 0;
-
-static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::f32vec3(position, 0.0f));
-	model = glm::scale(model, glm::f32vec3(scale, 1.0f));
-}
-
 void od::Renderer::Init() {
 	OD_LOG_INFO("Renderer info:" 
 		<< "\nOpenGL Vendor: "		<< glGetString(GL_VENDOR)
@@ -52,23 +48,51 @@ void od::Renderer::Init() {
 	s_ColorSwapShader = new od::Shader(od::Shaders::ColorSwapShader::VertexSrc, od::Shaders::ColorSwapShader::FragmentSrc);
 	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_ColorSwapShader));
 
-	s_TextShader = new od::Shader(od::Shaders::GlyphShader::VertexSrc, od::Shaders::GlyphShader::FragmentSrc);
-	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_TextShader));
+	s_GlyphShader = new od::Shader(od::Shaders::GlyphShader::VertexSrc, od::Shaders::GlyphShader::FragmentSrc);
+	m_Shaders.push_back(std::unique_ptr<od::Shader>(s_GlyphShader));
 
-	{
-		static std::vector<od::Vertex> verts = {
-			{ {-0.5f, -0.5f}, {0.0f, 0.0f} },
-			{ { 0.5f, -0.5f}, {1.0f, 0.0f} },
-			{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
-			{ { 0.5f,  0.5f}, {1.0f, 1.0f} },
-			{ {-0.5f,  0.5f}, {0.0f, 1.0f} },
-			{ {-0.5f, -0.5f}, {0.0f, 0.0f} }
+	{	
+		// TODO: Batching
+		std::vector<od::Vertex> verts = {
+			{ {-0.5f, -0.5f}, {0.0f, 0.0f}, od::Colors::WHITE},
+			{ { 0.5f, -0.5f}, {1.0f, 0.0f}, od::Colors::WHITE},
+			{ { 0.5f,  0.5f}, {1.0f, 1.0f}, od::Colors::WHITE},
+			{ { 0.5f,  0.5f}, {1.0f, 1.0f}, od::Colors::WHITE},
+			{ {-0.5f,  0.5f}, {0.0f, 1.0f}, od::Colors::WHITE},
+			{ {-0.5f, -0.5f}, {0.0f, 0.0f}, od::Colors::WHITE}
 		};
-		s_QuadVa = std::make_unique<od::VertexArray>(verts, GL_STATIC_DRAW);
+
+		s_TexturedQuadVa = std::make_unique<od::VertexArray>(verts, GL_STATIC_DRAW);
 	}
 
-	s_GlyphVa = std::make_unique<od::VertexArray>(6, GL_DYNAMIC_DRAW);
+	s_Va = std::make_unique<od::VertexArray>(10000, GL_DYNAMIC_DRAW);
 }
+
+static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::f32vec3(position, 0.0f));
+	model = glm::scale(model, glm::f32vec3(scale, 1.0f));
+}
+
+static void s_RenderGlyphs() {
+	od::Game::GetInstance()->GetFont()->GetTexture().GetGLTexture()->Bind();
+	s_GlyphShader->Bind();
+	s_Va->Bind();
+	s_Va->SetData(s_GlyphVertices, GL_DYNAMIC_DRAW);
+	s_Va->Render();
+
+	s_GlyphVertices.clear();
+}
+
+static void s_RenderQuads() {
+	s_ColorShader->Bind();
+	s_Va->Bind();
+	s_Va->SetData(s_QuadVertices, GL_DYNAMIC_DRAW);
+	s_Va->Render();
+
+	s_QuadVertices.clear();
+}
+
 
 void od::Renderer::Begin2D() {
 	od::Renderer::drawCalls = 0;
@@ -80,6 +104,8 @@ void od::Renderer::Begin2D() {
 }
 
 void od::Renderer::End2D() {
+	s_RenderQuads();
+	s_RenderGlyphs();
 }
 
 void od::Renderer::BeginUI() {
@@ -90,19 +116,23 @@ void od::Renderer::BeginUI() {
 }
 
 void od::Renderer::EndUI() {
+	s_RenderQuads();
+	s_RenderGlyphs();
 }
 
 // TODO: Batched rendering!
+// TODO: This doesn't work for some reason
 void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &size, const od::Color &color) {
-	glm::f32mat4 model = glm::mat4(1);
-	CreateModelMatrix(model, position, size);
+	float halfWidth = size.x * 0.5f;
+	float halfHeight = size.y * 0.5f;
 
-	s_ColorShader->Bind();
-	s_ColorShader->SetUniformMat4("u_Model", model);
-	s_ColorShader->SetUniformColor("u_Color", color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2{0.0f, 0.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y - halfHeight}, glm::f32vec2{1.0f, 0.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2{1.0f, 1.0f}, color);
 
-	s_QuadVa->Bind();
-	s_QuadVa->Render();
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x + halfWidth, position.y + halfHeight}, glm::f32vec2{1.0f, 1.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y + halfHeight}, glm::f32vec2{0.0f, 1.0f}, color);
+	s_QuadVertices.emplace_back(glm::f32vec2{position.x - halfWidth, position.y - halfHeight}, glm::f32vec2{0.0f, 0.0f}, color);
 }
 
 // TODO: Batched rendering!
@@ -126,19 +156,13 @@ void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f
 	shader->SetUniformMat4("u_Model", model);
 	shader->SetUniformColor("u_Color", color);
 
-	s_QuadVa->Bind();
-	s_QuadVa->Render();
+	s_TexturedQuadVa->Bind();
+	s_TexturedQuadVa->Render();
 }
 
 // TODO: Center align each line individually
-// TODO: Batched rendering!
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;
-
-	s_GlyphVa->Bind();
-	s_TextShader->Bind();
-	s_TextShader->SetUniformColor("u_Color", color);
-	font->GetTexture().GetGLTexture()->Bind();
 
 	float textWidth = font->GetTextWidth(text.size(), scale);
 
@@ -175,7 +199,6 @@ void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm
 			break;
 	}
 
-	std::vector<od::Vertex> vertices;
 	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
 		if(*it == '\n') {
 			x = position.x;
@@ -189,17 +212,13 @@ void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm
 		glm::f32vec2 uvStart, uvEnd;
 		font->GetCharUV(*it, uvStart, uvEnd);
 
-		vertices.push_back({{x, y-charHeight},			uvStart});
-		vertices.push_back({{x, y},		 		{uvStart.x, uvEnd.y}});
-		vertices.push_back({{x+charWidth, y},			uvEnd});
-
-		vertices.push_back({{x, y-charHeight},			uvStart});
-		vertices.push_back({{x+charWidth, y},			uvEnd});
-		vertices.push_back({{x+charWidth, y-charHeight},	{uvEnd.x, uvStart.y}});
+		s_GlyphVertices.emplace_back(glm::f32vec2{x, y-charHeight},			uvStart, color);
+		s_GlyphVertices.emplace_back(glm::f32vec2{x, y},		 		glm::f32vec2{uvStart.x, uvEnd.y}, color);
+		s_GlyphVertices.emplace_back(glm::f32vec2{x+charWidth, y},			uvEnd, color);
+		s_GlyphVertices.emplace_back(glm::f32vec2{x, y-charHeight},			uvStart, color);
+		s_GlyphVertices.emplace_back(glm::f32vec2{x+charWidth, y},			uvEnd, color);
+		s_GlyphVertices.emplace_back(glm::f32vec2{x+charWidth, y-charHeight},		glm::f32vec2{uvEnd.x, uvStart.y}, color);
 
 		x += charWidth;
 	}
-
-	s_GlyphVa->SetData(vertices, GL_DYNAMIC_DRAW);
-	s_GlyphVa->Render();
 }
