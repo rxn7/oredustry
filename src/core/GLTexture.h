@@ -11,6 +11,7 @@ namespace od {
 
 		void SetData(uint8_t *pixels, uint32_t width, uint32_t height, int32_t internalFormat, int32_t format);
 		void Bind() const;
+		void Unbind() const;
 
 	private:
 		void Init(int32_t filter);

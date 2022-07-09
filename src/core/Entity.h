@@ -14,7 +14,7 @@ namespace od {
 		inline void Destroy() { m_IsQueuedForDestruction = true; }
 		
 		template<typename T>
-		static void DeleteDestroyedEntitiesFromVector(std::vector<T> &ents) {
+		static void DeleteDestroyedEntities(std::vector<T> &ents) {
 			static_assert(std::is_base_of<od::Entity, T>(), "DeleteDestroyedEntities: T isn't derived from od::Entity!");
 
 			typename std::vector<T>::iterator it = ents.begin();

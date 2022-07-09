@@ -49,7 +49,7 @@ void GameScene::Update(uint32_t deltaTime) {
 		}
 	}
 
-	od::Entity::DeleteDestroyedEntitiesFromVector<Ore>(m_Ores);
+	od::Entity::DeleteDestroyedEntities<Ore>(m_Ores);
 
 	m_Player->Update(deltaTime);
 }

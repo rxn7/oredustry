@@ -29,3 +29,7 @@ void od::GLTexture::SetData(uint8_t *pixels, uint32_t width, uint32_t height, in
 void od::GLTexture::Bind() const {
 	glBindTexture(GL_TEXTURE_2D, m_ID);
 }
+
+void od::GLTexture::Unbind() const {
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
