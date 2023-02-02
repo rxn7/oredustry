@@ -1,5 +1,5 @@
-#/bin/sh
+#!/usr/bin/env bash
 
-pushd bin/linux>/dev/null
+pushd bin/linux > /dev/null 2>&1
 ./oredustry
-popd>/dev/null
+popd > /dev/null 2>&1
