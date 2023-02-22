@@ -1,6 +1,5 @@
 #include "Font.h"
 #include "core/Game.h"
-#include "stb_image_write.h"
 
 // TODO: More modular font system
 #define COLS 18
