@@ -43,15 +43,15 @@ namespace od {
 		virtual void Render2D() {}
 		virtual void RenderUI();
 		virtual void OnShutdown() {}
+		virtual void HandleTick(uint32_t deltaTime);
+		virtual void HandleUpdate(uint32_t deltaTime); 
+		virtual void HandleRender2D();
+		virtual void HandleRenderUI();
 
 	private:
 		void UpdateDebug(uint32_t deltaTime);
 		void UpdateProjections();
 		void UpdateViewport();
-		void HandleTick(uint32_t deltaTime);
-		void HandleUpdate(uint32_t deltaTime); 
-		void HandleRender2D();
-		void HandleRenderUI();
 		void SwapScenes();
 		uint32_t CalculateDeltaTime();
 

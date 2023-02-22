@@ -4,6 +4,8 @@
 #include "core/Scene.h"
 #include "core/ui/ColorRect.h"
 #include "Ore.h"
+#include "core/ui/Text.h"
+#include <cstdint>
 
 class GameScene : public od::Scene {
 public:
@@ -20,6 +22,8 @@ private:
 private:
 	std::unique_ptr<Player> m_Player;
 	std::shared_ptr<od::UI::ColorRect> m_PauseRect;
+	std::shared_ptr<od::UI::Text> m_ScoreText;
 	std::vector<Ore> m_Ores;
+	uint32_t m_Score = 0;
 	bool m_Paused;
 };

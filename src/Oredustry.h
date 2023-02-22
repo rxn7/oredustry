@@ -14,8 +14,10 @@ public:
 	Oredustry();
 
 	void Ready() override;
-	void RenderUI() override;
 	inline static Oredustry *GetInstance() { return s_Instance; }
+
+protected:
+	void HandleRenderUI() override;
 
 private:
 	std::unique_ptr<Cursor> m_Cursor;

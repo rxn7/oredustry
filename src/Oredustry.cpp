@@ -34,7 +34,7 @@ void Oredustry::Ready() {
 	SetScene(std::make_unique<MainMenuScene>());
 }
 
-void Oredustry::RenderUI() {
-	od::Game::RenderUI();
+void Oredustry::HandleRenderUI() {
+	od::Game::HandleRenderUI();
 	m_Cursor->Render();
 }

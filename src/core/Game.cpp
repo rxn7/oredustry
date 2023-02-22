@@ -159,7 +159,8 @@ void od::Game::UpdateDebug(uint32_t deltaTime) {
 		<< "frame time: " << deltaTime << "us\n"
 		<< "fps: " << fps << "\n"
 		<< "draw calls: " << od::Renderer::drawCalls << "\n"
-		<< "time: " << GetTimeSinceStartMs() / 1000.0f << "s";
+		<< "time: " << GetTimeSinceStartMs() / 1000.0f << "s\n"
+		<< "cur pos: " << m_CursorPosition.x << " " << m_CursorPosition.y;
 
 	m_DebugText->m_Text = ss.str();
 }
