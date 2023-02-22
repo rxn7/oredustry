@@ -14,6 +14,7 @@ static const std::string TEXTURES_TO_LOAD[] = {
 	"res/player.png",
 	"res/logo.png",
 	"res/title.png",
+	"res/ore.png",
 };
 
 Oredustry *Oredustry::s_Instance;

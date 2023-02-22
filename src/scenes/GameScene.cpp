@@ -58,10 +58,6 @@ void GameScene::Tick() {
 }
 
 void GameScene::Render2D() {
-	// Reference object
-	od::Renderer::RenderQuad({0,0}, {50,50}, {255, 0, 255, 255});
-	od::Renderer::RenderText("Reference Object", Oredustry::GetInstance()->GetFont(), {0,0}, {50, 200, 164, 255}, 1.0f);
-
 	for(Ore &ore : m_Ores)
 		ore.Render();
 
@@ -73,5 +69,5 @@ void GameScene::ExitToMenu() {
 }
 
 void GameScene::SpawnRandomOre() {
-	m_Ores.emplace_back(100, glm::f32vec2(rand() % 1000 - 500, rand() % 1000 - 500));
+	m_Ores.emplace_back(100, m_Player->GetPosition() - glm::f32vec2(rand() % 1000 - 500, rand() % 1000 - 500));
 }

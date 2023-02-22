@@ -15,5 +15,5 @@ private:
 private:
 	uint16_t m_MaxHealth;
 	uint16_t m_Health = 100;
-	od::Color m_Color;
+	od::Color m_Color = od::Colors::WHITE;
 };
