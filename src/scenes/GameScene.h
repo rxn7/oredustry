@@ -17,7 +17,7 @@ public:
 private:
 	void ExitToMenu();
 	void ExitGame();
-	void SpawnRandomOre();
+	void SpawnOres();
 
 private:
 	std::unique_ptr<Player> m_Player;

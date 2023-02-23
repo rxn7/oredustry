@@ -9,6 +9,7 @@
 #include "core/rendering/Renderer.h"
 #include "MainMenuScene.h"
 #include "core/ui/Text.h"
+#include <glm/fwd.hpp>
 
 GameScene::GameScene() :
 m_Player(new Player()),
@@ -25,8 +26,7 @@ od::Scene({255,255,255,255}) {
 
 	AddUiElement(m_ScoreText);
 
-	for(uint8_t i=0; i<10; ++i)
-		SpawnRandomOre();
+	SpawnOres();
 }
 
 void GameScene::Update(uint32_t deltaTime) {
@@ -39,7 +39,7 @@ void GameScene::Update(uint32_t deltaTime) {
 		return;
 
 	if(od::Input::IsButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		glm::f32vec2 cursorPos = od::Game::GetInstance()->GetWorldCursorPosition();
+		const glm::f32vec2 cursorPos = od::Game::GetInstance()->GetWorldCursorPosition();
 		for(std::vector<Ore>::reverse_iterator it = m_Ores.rbegin(); it != m_Ores.rend(); ++it) {
 			Ore &ore = *it;
 			glm::f32vec2 orePos = ore.GetPosition();
@@ -57,12 +57,25 @@ void GameScene::Update(uint32_t deltaTime) {
 	}
 
 	od::Entity::DeleteDestroyedEntities<Ore>(m_Ores);
-
 	if(m_Ores.size() == 0)
-		for(uint8_t i=0; i<20; ++i)
-			SpawnRandomOre();
+		SpawnOres();
 
 	m_Player->Update(deltaTime);
+}
+
+void GameScene::SpawnOres() {
+	const glm::f32vec2 playerPos = m_Player->GetPosition();
+
+	for(int32_t x = -5; x <= 5; ++x) {
+		for(int32_t y = -5; y <= 5; ++y) {
+			// 10% chance to spawn
+			if(rand() % 10 != 0)
+				continue;
+
+			glm::f32vec2 pos = playerPos - glm::f32vec2(x * Ore::SIZE.x, y * Ore::SIZE.y);
+			m_Ores.emplace_back(100, pos);
+		}
+	}
 }
 
 void GameScene::Tick() {
@@ -77,8 +90,4 @@ void GameScene::Render2D() {
 
 void GameScene::ExitToMenu() {
 	od::Game::GetInstance()->SetScene(std::make_unique<MainMenuScene>());
-}
-
-void GameScene::SpawnRandomOre() {
-	m_Ores.emplace_back(100, glm::f32vec2(Ore::SIZE.x * (rand() % 10 - 5), Ore::SIZE.y * (rand() % 10 - 5)));
 }
