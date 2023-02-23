@@ -13,6 +13,10 @@ void Cursor::Render() {
 	glm::i32vec2 cursorPosition = od::Game::GetInstance()->GetCursorPosition();
 	const od::Window &window = od::Game::GetInstance()->GetWindow();
 
+	// Avoid division by 0 errors
+	if(cursorPosition.x <= 0 || cursorPosition.y <= 0 || window.GetWidth() <= 0 || window.GetHeight() <= 0)
+		return;
+
 	od::Color color = {
 		static_cast<float>(cursorPosition.x) / static_cast<float>(window.GetWidth()) * 255,
 		static_cast<float>(cursorPosition.y) / static_cast<float>(window.GetHeight()) * 255,
