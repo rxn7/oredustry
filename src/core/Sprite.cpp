@@ -9,5 +9,5 @@ od::Entity(position) {
 }
 
 void od::Sprite::Render() {
-	od::Renderer::RenderQuadTextured(m_Position, m_Size, m_Texture.get(), m_Color);
+	od::Renderer::RenderTexture(m_Position, m_Size, m_Texture.get(), m_Color);
 }

@@ -3,6 +3,7 @@
 #include "core/Entity.h"
 #include "core/Color.h"
 #include "core/GLTexture.h"
+#include <glm/fwd.hpp>
 
 class Ore : public od::Entity {
 public:
@@ -11,7 +12,7 @@ public:
 	void Render() override;
 
 private:
-	void UpdateColor();
+	void RenderDestroyTexture();
 
 public:
 	static constexpr glm::f32vec2 SIZE = {50, 50};
@@ -19,5 +20,5 @@ public:
 private:
 	uint16_t m_MaxHealth;
 	uint16_t m_Health = 100;
-	od::Color m_Color = od::Colors::WHITE;
+	uint8_t m_DestroyStageFrame = 0;
 };

@@ -1,5 +1,7 @@
 #include "Oredustry.h"
+#include "core/Asset.h"
 #include "core/Input.h"
+#include "core/assets/TextureAtlas.h"
 #include "core/rendering/Renderer.h"
 #include "scenes/MainMenuScene.h"
 
@@ -26,6 +28,8 @@ od::Game(WINDOW_PARAMS) {
 
 	for(const std::string &texture : TEXTURES_TO_LOAD)
 		od::Asset::Load<od::Texture>(texture);
+
+	od::Asset::Load<od::TextureAtlas>("res/destroy.png", 10);
 
 	glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }

@@ -10,14 +10,16 @@
 #include "core/shaders/ColorShader.h"
 #include "core/shaders/ColorSwapShader.h"
 #include "core/shaders/GlyphShader.h"
+#include "core/shaders/TextureAtlasShader.h"
 #include "core/shaders/TextureShader.h"
 
-static od::Shader *s_ColorShader;
-static od::Shader *s_TextureShader;
-static od::Shader *s_ColorSwapShader;
-static od::Shader *s_GlyphShader;
+static std::vector<od::Shader*> s_Shaders;
 
-static std::vector<std::unique_ptr<od::Shader>> s_Shaders;
+std::shared_ptr<od::Shader> od::Renderer::ColorShader;
+std::shared_ptr<od::Shader> od::Renderer::TextureShader;
+std::shared_ptr<od::Shader> od::Renderer::TextureAtlasShader;
+std::shared_ptr<od::Shader> od::Renderer::ColorSwapShader;
+std::shared_ptr<od::Shader> od::Renderer::GlyphShader;
 
 static std::unique_ptr<od::QuadRenderBatch> s_QuadRenderBatch;
 static std::unique_ptr<od::QuadRenderBatch> s_GlyphRenderBatch;
@@ -40,17 +42,20 @@ void od::Renderer::Init() {
 
 	s_Shaders.clear();
 
-	s_ColorShader = new od::Shader(od::Shaders::ColorShader::VertexSrc, od::Shaders::ColorShader::FragmentSrc);
-	s_Shaders.push_back(std::unique_ptr<od::Shader>(s_ColorShader));
+	ColorShader = std::make_shared<od::Shader>(od::Shaders::ColorShader::VertexSrc, od::Shaders::ColorShader::FragmentSrc);
+	s_Shaders.push_back(ColorShader.get());
 
-	s_TextureShader = new od::Shader(od::Shaders::TextureShader::VertexSrc, od::Shaders::TextureShader::FragmentSrc);
-	s_Shaders.push_back(std::unique_ptr<od::Shader>(s_TextureShader));
+	TextureShader = std::make_shared<od::Shader>(od::Shaders::TextureShader::VertexSrc, od::Shaders::TextureShader::FragmentSrc);
+	s_Shaders.push_back(TextureShader.get());
 
-	s_ColorSwapShader = new od::Shader(od::Shaders::ColorSwapShader::VertexSrc, od::Shaders::ColorSwapShader::FragmentSrc);
-	s_Shaders.push_back(std::unique_ptr<od::Shader>(s_ColorSwapShader));
+	ColorSwapShader = std::make_shared<od::Shader>(od::Shaders::ColorSwapShader::VertexSrc, od::Shaders::ColorSwapShader::FragmentSrc);
+	s_Shaders.push_back(ColorSwapShader.get());
 
-	s_GlyphShader = new od::Shader(od::Shaders::GlyphShader::VertexSrc, od::Shaders::GlyphShader::FragmentSrc);
-	s_Shaders.push_back(std::unique_ptr<od::Shader>(s_GlyphShader));
+	GlyphShader = std::make_shared<od::Shader>(od::Shaders::GlyphShader::VertexSrc, od::Shaders::GlyphShader::FragmentSrc);
+	s_Shaders.push_back(GlyphShader.get());
+
+	TextureAtlasShader = std::make_shared<od::Shader>(od::Shaders::TextureAtlasShader::VertexSrc, od::Shaders::TextureAtlasShader::FragmentSrc);
+	s_Shaders.push_back(TextureAtlasShader.get());
 
 	{	
 		// TODO: Batching
@@ -66,8 +71,8 @@ void od::Renderer::Init() {
 		s_TexturedQuadVa = std::make_unique<od::VertexArray>(verts, elements, GL_STATIC_DRAW);
 	}
 
-	s_QuadRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 500, s_ColorShader);
-	s_GlyphRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 10000, s_GlyphShader);
+	s_QuadRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 500, ColorShader.get());
+	s_GlyphRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 10000, GlyphShader.get());
 }
 
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
@@ -79,7 +84,7 @@ static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position,
 void od::Renderer::Begin2D() {
 	od::Renderer::drawCalls = 0;
 
-	for(const std::unique_ptr<od::Shader> &shader : s_Shaders) {
+	for(od::Shader *shader : s_Shaders) {
 		shader->Bind();
 		shader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetProjection());
 	}
@@ -93,7 +98,7 @@ void od::Renderer::End2D() {
 }
 
 void od::Renderer::BeginUI() {
-	for(const std::unique_ptr<od::Shader> &shader : s_Shaders) {
+	for(od::Shader *shader : s_Shaders) {
 		shader->Bind();
 		shader->SetUniformMat4("u_Projection", od::Game::GetInstance()->GetUIProjection());
 	}
@@ -116,26 +121,35 @@ void od::Renderer::RenderQuad(const glm::f32vec2 &position, const glm::f32vec2 &
 	s_QuadRenderBatch->AddQuad(position, size, color);
 }
 
-// TODO: Batched rendering!
-void od::Renderer::RenderQuadTextured(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, TextureShaderType shaderType) {
+void od::Renderer::RenderTexture(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color) {
+	RenderTexture(position, size, texture, color, TextureShader.get());
+}
+
+void od::Renderer::RenderTexture(const glm::f32vec2 &position, const glm::f32vec2 &size, od::GLTexture *texture, const od::Color &color, Shader *shader) {
 	glm::f32mat4 model = glm::mat4(1);
 	CreateModelMatrix(model, position, size);
-
-	od::Shader *shader;
-	switch(shaderType) {
-		case TextureShaderType::Normal:		shader = s_TextureShader;	break;
-		case TextureShaderType::ColorSwap:	shader = s_ColorSwapShader;	break;				
-
-		default:
-			OD_LOG_ERROR("od::Renderer::RenderQuadTextured: Invalid TextureShaderType!");
-			return;
-	}
 
 	texture->Bind();
 
 	shader->Bind();
 	shader->SetUniformMat4("u_Model", model);
 	shader->SetUniformColor("u_Color", color);
+
+	s_TexturedQuadVa->Bind();
+	s_TexturedQuadVa->Render();
+}
+
+void od::Renderer::RenderTextureAtlas(const glm::f32vec2 &position, const glm::f32vec2 &size, uint16_t frame, od::TextureAtlas *textureAtlas, const od::Color &color) {
+	glm::f32mat4 model = glm::mat4(1);
+	CreateModelMatrix(model, position, size);
+
+	textureAtlas->GetGLTexture()->Bind();
+
+	TextureAtlasShader->Bind();
+	TextureAtlasShader->SetUniformMat4("u_Model", model);
+	TextureAtlasShader->SetUniformColor("u_Color", color);
+	TextureAtlasShader->SetUniformFloat("u_FrameSize", textureAtlas->GetNormalizedFrameSize());
+	TextureAtlasShader->SetUniformInt("u_Frame", frame);
 
 	s_TexturedQuadVa->Bind();
 	s_TexturedQuadVa->Render();

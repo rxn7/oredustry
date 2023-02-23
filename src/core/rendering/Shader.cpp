@@ -10,7 +10,7 @@ od::Shader::Shader(const std::string_view &vertexSrc, const std::string_view &fr
 
 	glAttachShader(m_ID, fragmentShader);
 	glAttachShader(m_ID, vertexShader);
-glLinkProgram(m_ID);
+	glLinkProgram(m_ID);
 	CheckProgramError(GL_LINK_STATUS);
 
 	glValidateProgram(m_ID);
@@ -51,6 +51,10 @@ void od::Shader::SetUniformColor(const std::string &name, const od::Color &color
 
 void od::Shader::SetUniformFloat(const std::string &name, float value) {
 	glUniform1f(GetLocation(name), value);
+}
+
+void od::Shader::SetUniformInt(const std::string &name, int value) {
+	glUniform1i(GetLocation(name), value);
 }
 
 void od::Shader::Bind() const {
