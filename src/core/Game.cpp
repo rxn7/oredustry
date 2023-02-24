@@ -56,6 +56,7 @@ void od::Game::Start() {
 	while(!glfwWindowShouldClose(m_Window->GetGLFWWindow())) {
 		uint32_t deltaTime = CalculateDeltaTime();
 		m_TimeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(m_FrameStartTimePoint - m_StartTimePoint).count();
+
 		SwapScenes();
 		glfwPollEvents();
 
@@ -202,6 +203,8 @@ void od::Game::SwapScenes() {
 	if(m_NextScene.get() == nullptr) return;
 
 	m_Scene = std::move(m_NextScene);
+	m_NextScene.reset();
+
 	m_Scene->Awake();
 
 	glClearColor(m_Scene->m_ClearColor.r / 255.0f, m_Scene->m_ClearColor.g / 255.0f, m_Scene->m_ClearColor.b / 255.0f, 1.0f);
