@@ -29,12 +29,12 @@ void Ore::Init() {
 		s_DestroyTextureAtlas = od::Asset::Get<od::TextureAtlas>(DESTROY_TEXTURE_ATLAS_UID);
 
 	if(!s_OreTextureRenderBatch) {
-		s_OreTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 50, od::Renderer::TextureShader.get(), s_Texture);
+		s_OreTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 1000, od::Renderer::TextureShader.get(), s_Texture);
 		od::Renderer::AddBatch(s_OreTextureRenderBatch.get());
 	}
 
 	if(!s_DestroyTextureRenderBatch) {
-		s_DestroyTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 50, od::Renderer::TextureShader.get(), s_DestroyTextureAtlas->GetGLTexture());
+		s_DestroyTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 1000, od::Renderer::TextureShader.get(), s_DestroyTextureAtlas->GetGLTexture());
 		od::Renderer::AddBatch(s_DestroyTextureRenderBatch.get());
 	}
 }

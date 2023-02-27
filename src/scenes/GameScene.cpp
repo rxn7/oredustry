@@ -68,8 +68,8 @@ void GameScene::Update(uint32_t deltaTime) {
 void GameScene::SpawnOres() {
 	const glm::f32vec2 playerPos = m_Player->GetPosition();
 
-	for(int32_t x = -5; x <= 5; ++x) {
-		for(int32_t y = -5; y <= 5; ++y) {
+	for(int32_t x = -10; x <= 10; ++x) {
+		for(int32_t y = -10; y <= 10; ++y) {
 			// 10% chance to spawn
 			if(rand() % 10 != 0)
 				continue;
