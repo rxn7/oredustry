@@ -8,7 +8,7 @@
 namespace od {
 	class Font {
 	public:
-		Font(const std::string &path, int32_t filter = GL_LINEAR, float size=2);
+		Font(od::Texture *texture, int32_t filter = GL_LINEAR, float size=2);
 		virtual ~Font();
 		void GetCharUV(char c, glm::f32vec2 &start, glm::f32vec2 &end);
 		inline const od::Texture &GetTexture() const { return *m_Texture; }

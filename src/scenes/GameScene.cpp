@@ -16,6 +16,8 @@ m_Player(new Player()),
 m_PauseRect(new od::UI::ColorRect({200, 200, 200, 128}, {0,0}, {500,700}, ANCHORS_CENTER)),
 m_ScoreText(new od::UI::Text(od::Game::GetInstance()->GetFont(), {0,0}, "Score: 0", 1.0f, od::Colors::BLACK, od::TextAlignHorizontal::Center, od::TextAlignVertical::Top, {od::UI::Anchor::Center, od::UI::Anchor::Start})),
 od::Scene({255,255,255,255}) {
+	Ore::Init();
+
 	m_PauseRect->m_Visible = false;
 
 	od::Font *font = od::Game::GetInstance()->GetFont();

@@ -6,6 +6,7 @@
 #include "core/Color.h"
 #include "core/TextAlign.h"
 #include "core/assets/TextureAtlas.h"
+#include "core/rendering/RenderBatch.h"
 #include "core/rendering/Shader.h"
 
 namespace od::Renderer {
@@ -15,7 +16,8 @@ namespace od::Renderer {
 	extern std::shared_ptr<od::Shader> ColorSwapShader;
 	extern std::shared_ptr<od::Shader> GlyphShader;
 
-	void Init();
+	void Init(od::Font *font);
+	void AddBatch(od::RenderBatch *batch);
 
 	void Begin2D();
 	void End2D();

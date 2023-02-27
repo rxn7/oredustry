@@ -2,12 +2,12 @@
 
 #include "Shader.h"
 #include "VertexArray.h"
-
+#include "core/GLTexture.h"
 
 namespace od {
 	class RenderBatch {
 		public:
-			RenderBatch(uint8_t zIndex, Shader *shader, uint32_t maxVertices = 1000, uint32_t maxElements = 2000);
+			RenderBatch(uint8_t zIndex, Shader *shader, GLTexture *texture = nullptr, uint32_t maxVertices = 1000, uint32_t maxElements = 2000);
 			void Render();
 			bool CanFit(uint32_t vertexCount, uint32_t elementCount) const;
 
@@ -26,5 +26,6 @@ namespace od {
 			std::vector<od::Vertex> m_Vertices;	
 			std::vector<uint16_t> m_Elements;
 			Shader *m_Shader;
+			GLTexture *m_Texture;
 	};
 }

@@ -30,7 +30,6 @@ namespace od {
 
 		virtual void Awake() {}
 		virtual void Update(uint32_t deltaTime) {}
-		virtual void Render() {}
 
 	protected:
 		bool m_IsQueuedForDestruction = false;

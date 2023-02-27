@@ -11,10 +11,10 @@ namespace od {
 
 		inline int32_t GetWidth() const { return m_Width; }
 		inline int32_t GetHeight() const { return m_Height; }
-		inline std::shared_ptr<GLTexture> GetGLTexture() const { return m_GLTexture; }
+		inline GLTexture *GetGLTexture() const { return m_GLTexture.get(); }
 
 	private:
 		int32_t m_Width, m_Height;
-		std::shared_ptr<GLTexture> m_GLTexture;
+		std::unique_ptr<GLTexture> m_GLTexture;
 	};
 }

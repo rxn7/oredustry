@@ -1,11 +1,12 @@
 #include "Cursor.h"
+#include "AssetUIDs.h"
 #include "core/rendering/Renderer.h"
 #include "core/Game.h"
 #include <sstream>
 #include "Oredustry.h"
 
 Cursor::Cursor(float size) : 
-od::Sprite(od::Asset::Load<od::Texture>("res/cursor.png")->GetGLTexture()) {
+od::Sprite(od::Asset::Get<od::Texture>(CURSOR_TEXTURE_UID)->GetGLTexture()) {
 	m_Size = {size, size};
 }
 
@@ -27,5 +28,5 @@ void Cursor::Render() {
 	float halfSize = m_Size.x * 0.5f;
 	m_Position = {cursorPosition.x + halfSize, cursorPosition.y + halfSize};
 
-	od::Renderer::RenderTexture(m_Position, m_Size, m_Texture.get(), color, od::Renderer::ColorSwapShader.get());
+	od::Renderer::RenderTexture(m_Position, m_Size, m_Texture, color, od::Renderer::ColorSwapShader.get());
 }

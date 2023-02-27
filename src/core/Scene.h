@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include "core/Renderable.h"
 #include "ui/UIElement.h"
 #include "Entity.h"
 #include "core/Color.h"

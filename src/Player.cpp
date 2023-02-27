@@ -6,8 +6,8 @@
 
 #define MOVE_SPEED 0.0002f
 
-Player::Player() : od::Sprite(od::Asset::GetAsset<od::Texture>("res/player.png")->GetGLTexture()) {
-	od::Texture *texture = od::Asset::GetAsset<od::Texture>("res/player.png"); 
+Player::Player() : od::Sprite(od::Asset::Get<od::Texture>("player")->GetGLTexture()) {
+	od::Texture *texture = od::Asset::Get<od::Texture>("player"); 
 	m_Size = { texture->GetWidth(), texture->GetHeight() };
 }
 

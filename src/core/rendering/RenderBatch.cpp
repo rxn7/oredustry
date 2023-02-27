@@ -1,11 +1,14 @@
 #include "RenderBatch.h"
+#include "core/GLTexture.h"
 #include "core/Log.h"
+#include <glm/fwd.hpp>
 
-od::RenderBatch::RenderBatch(uint8_t zIndex, Shader *shader, uint32_t maxVertices, uint32_t maxElements)
+od::RenderBatch::RenderBatch(uint8_t zIndex, Shader *shader, GLTexture *texture, uint32_t maxVertices, uint32_t maxElements)
 : m_Zindex(zIndex),
 m_MaxVertices(maxVertices),
 m_MaxElements(maxElements),
 m_Shader(shader),
+m_Texture(texture),
 m_Va(maxVertices, maxElements, GL_DYNAMIC_DRAW) {
 	m_Vertices.reserve(maxVertices);
 	m_Elements.reserve(maxElements);
@@ -22,12 +25,15 @@ void od::RenderBatch::Render() {
 	while(m_Elements.size() > m_MaxElements)
 		m_Elements.pop_back();
 	
+	if(m_Texture != nullptr)
+		m_Texture->Bind();
+
 	m_Shader->Bind();
+	m_Shader->SetUniformMat4("u_Model", glm::f32mat4(1.0f));
 	m_Va.Bind();
 	m_Va.SubData(m_Vertices, m_Elements);
 	m_Va.Render();
 
-	// TODO: Clear the vectors only when the batch is dirty
 	m_Elements.clear();
 	m_Vertices.clear();
 }

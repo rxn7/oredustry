@@ -14,6 +14,6 @@ od::Texture::Texture(const std::string &path, uint32_t filter) : od::Asset(path)
 	}
 
 	int32_t internalFormat = channels == 4 ? GL_RGBA : GL_RGB;
-	m_GLTexture = std::make_shared<od::GLTexture>(img, m_Width, m_Height, internalFormat, internalFormat, filter);
+	m_GLTexture = std::make_unique<od::GLTexture>(img, m_Width, m_Height, internalFormat, internalFormat, filter);
 	stbi_image_free(img);
 }

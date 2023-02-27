@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Input.h"
+#include "core/Asset.h"
 #include "rendering/Renderer.h"
 #include "Log.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,17 +33,13 @@ od::Game::Game(const od::WindowParameters &params) {
 	glClearColor(0, 0, 0, 255);
 
 	od::Input::Init();
-	od::Renderer::Init();
+	// od::Renderer::Init();
 
 	// Set initial cursor position
 	double mx, my;
 	glfwGetCursorPos(m_Window->GetGLFWWindow(), &mx, &my);
 	SetCursorPosition({mx, my});
 
-	m_Font = std::make_unique<od::Font>("res/font.png", GL_NEAREST);
-	m_DebugText = std::make_unique<od::UI::Text>(m_Font.get(), glm::f32vec2{0,0}, "Debug", 1, od::Colors::BLACK, od::TextAlignHorizontal::Left, od::TextAlignVertical::Top);
-	m_DebugText->m_AnchoredPosition = {0,0};
-	
 	srand(time(0));
 }
 
@@ -74,20 +71,9 @@ void od::Game::Start() {
 	}
 }
 
-void od::Game::Tick(uint32_t deltaTime) {
-	UpdateDebug(deltaTime);
-}
-
 void od::Game::Update(uint32_t deltaTime) {
 	if(od::Input::IsKeyJustPressed(GLFW_KEY_F12))
 		TakeScreenshot();
-
-	if(od::Input::IsKeyJustPressed(GLFW_KEY_GRAVE_ACCENT))
-		m_DebugText->m_Visible ^= 1;
-}
-
-void od::Game::RenderUI() {
-	m_DebugText->Render();
 }
 
 void od::Game::HandleTick(uint32_t deltaTime) {
@@ -147,23 +133,6 @@ void od::Game::Shutdown(bool error, std::string_view reason) {
 
 void od::Game::ShutdownWithoutReason() {
 	Shutdown(false);
-}
-
-void od::Game::UpdateDebug(uint32_t deltaTime) {
-	if(!m_DebugText->m_Visible) return;
-
-	float deltaFloat = static_cast<std::chrono::duration<float, std::milli>>(m_FrameStartTimePoint - m_FrameEndTimePoint).count() / 1000.0f;
-	int32_t fps = static_cast<int32_t>(1.f / deltaFloat);
-
-	std::stringstream ss;
-	ss 	<< "Press ~ to disable debug\n"
-		<< "frame time: " << deltaTime << "us\n"
-		<< "fps: " << fps << "\n"
-		<< "draw calls: " << od::Renderer::drawCalls << "\n"
-		<< "time: " << GetTimeSinceStartMs() / 1000.0f << "s\n"
-		<< "cur pos: " << m_CursorPosition.x << " " << m_CursorPosition.y;
-
-	m_DebugText->m_Text = ss.str();
 }
 
 void od::Game::SetScene(std::unique_ptr<od::Scene> scene) {

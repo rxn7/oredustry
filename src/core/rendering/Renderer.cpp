@@ -1,12 +1,17 @@
+#include "core/Font.h"
 #include "core/Game.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "VertexArray.h"
+#include "core/Renderable.h"
 #include "core/assets/Texture.h"
 #include "core/Log.h"
+#include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
+#include <set>
 #include <memory>
 #include "core/rendering/QuadRenderBatch.h"
+#include "core/rendering/RenderBatch.h"
 #include "core/shaders/ColorShader.h"
 #include "core/shaders/ColorSwapShader.h"
 #include "core/shaders/GlyphShader.h"
@@ -21,13 +26,14 @@ std::shared_ptr<od::Shader> od::Renderer::TextureAtlasShader;
 std::shared_ptr<od::Shader> od::Renderer::ColorSwapShader;
 std::shared_ptr<od::Shader> od::Renderer::GlyphShader;
 
+static std::vector<od::RenderBatch*> s_Batches;
 static std::unique_ptr<od::QuadRenderBatch> s_QuadRenderBatch;
 static std::unique_ptr<od::QuadRenderBatch> s_GlyphRenderBatch;
 
 static std::unique_ptr<od::VertexArray> s_TexturedQuadVa;
 
 uint32_t od::Renderer::drawCalls = 0;
-void od::Renderer::Init() {
+void od::Renderer::Init(od::Font *font) {
 	OD_LOG_INFO("Renderer info:" 
 		<< "\nOpenGL Vendor: "		<< glGetString(GL_VENDOR)
 		<< "\nOpenGL Renderer: "	<< glGetString(GL_RENDERER)
@@ -72,7 +78,10 @@ void od::Renderer::Init() {
 	}
 
 	s_QuadRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 500, ColorShader.get());
-	s_GlyphRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 10000, GlyphShader.get());
+	AddBatch(s_QuadRenderBatch.get());
+
+	s_GlyphRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 10000, GlyphShader.get(), font->GetTexture().GetGLTexture());
+	AddBatch(s_GlyphRenderBatch.get());
 }
 
 static void CreateModelMatrix(glm::f32mat4 &model, const glm::f32vec2 &position, const glm::f32vec2 &scale) {
@@ -91,10 +100,8 @@ void od::Renderer::Begin2D() {
 }
 
 void od::Renderer::End2D() {
-	s_QuadRenderBatch->Render();
-
-	od::Game::GetInstance()->GetFont()->GetTexture().GetGLTexture()->Bind();
-	s_GlyphRenderBatch->Render();
+	for(od::RenderBatch *batch : s_Batches)
+		batch->Render();
 }
 
 void od::Renderer::BeginUI() {
@@ -105,10 +112,12 @@ void od::Renderer::BeginUI() {
 }
 
 void od::Renderer::EndUI() {
-	s_QuadRenderBatch->Render();
+	for(od::RenderBatch *batch : s_Batches)
+		batch->Render();
+}
 
-	od::Game::GetInstance()->GetFont()->GetTexture().GetGLTexture()->Bind();
-	s_GlyphRenderBatch->Render();
+void od::Renderer::AddBatch(od::RenderBatch *batch) {
+	s_Batches.push_back(batch);
 }
 
 // TODO: Create batch for each requested z-index
@@ -159,12 +168,12 @@ void od::Renderer::RenderTextureAtlas(const glm::f32vec2 &position, const glm::f
 void od::Renderer::RenderText(const std::string &text, od::Font *font, const glm::f32vec2 &position, const od::Color &color, float scale, od::TextAlignHorizontal alignH, od::TextAlignVertical alignV) {
 	if(text.size() < 1 || scale == 0 || !font || color.a == 0) return;
 
-	float textWidth = font->GetTextWidth(text.size(), scale);
+	const float textWidth = font->GetTextWidth(text.size(), scale);
 
 	scale *= font->GetSize();
 
-	float charWidth = font->GetCharWidth() * scale;
-	float charHeight = font->GetCharHeight() * scale;
+	const float charWidth = font->GetCharWidth() * scale;
+	const float charHeight = font->GetCharHeight() * scale;
 	float x = position.x;
 	float y = position.y;
 

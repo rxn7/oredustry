@@ -13,41 +13,42 @@ namespace od {
 		inline const std::string GetPath() const { return m_Path; }
 		
 		template<typename T, typename... Args>
-		static T *Load(Args &&...args) {
+		static T *Load(const std::string &unique_id, Args &&...args) {
 			static_assert(std::is_base_of<od::Asset, T>(), "od::Asset::Load<T>: T isn't derived from od::Asset");
 			
-			std::shared_ptr<T> asset = std::make_shared<T>(args...);
+			const std::shared_ptr<T> asset = std::make_shared<T>(args...);
 
-			std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(asset->GetPath());
+			const std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(unique_id);
 			if(it != s_Assets.end()) {
-				OD_LOG_ERROR("od::Asset::Load<T>: Asset with path '" << asset->GetPath() << "' is already loaded!");
+				OD_LOG_ERROR("od::Asset::Load<T>: Asset with UID '" << unique_id << "' is already loaded!");
 				return nullptr;
 			}
 
-			s_Assets.insert({asset->GetPath(), asset});
+			s_Assets.insert({unique_id, asset});
 			return asset.get();
 		}
 
 		template<typename T>
-		inline static T *GetAsset(const std::string_view &path) {
-			static_assert(std::is_base_of<od::Asset, T>(), "od::Asset::GetAsset<T>: T isn't derived from od::Asset");
+		inline static T *Get(const std::string &unique_id) {
+			static_assert(std::is_base_of<od::Asset, T>(), "od::Asset::Get<T>: T isn't derived from od::Asset");
 
-			std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(std::string(path));
+			const std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(unique_id);
 			if(it != s_Assets.end())
 				return (T*)it->second.get();
 
+			OD_LOG_ERROR("od::Asset::Get<T>: Failed to find asset with UID '" << unique_id << '\'');
 			return nullptr;
 		}
 
 		template<typename T>
-		inline static void UnloadAsset(const std::string_view &path) {
-			static_assert(std::is_base_of<od::Asset, T>(), "od::Asset::UnloadAsset<T>: T isn't derived from od::Asset");
+		inline static void Unload(const std::string &unique_id) {
+			static_assert(std::is_base_of<od::Asset, T>(), "od::Asset::Unload<T>: T isn't derived from od::Asset");
 			
-			std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(std::string(path));
+			const std::unordered_map<std::string, std::shared_ptr<od::Asset>>::iterator it = s_Assets.find(unique_id);
 			if(it != s_Assets.end())
 				s_Assets.erase(it);
 			else 
-				OD_LOG_ERROR("Failed to unload asset '" << path << "', the asset isn't present in s_Assets");
+				OD_LOG_ERROR("Failed to unload asset of UID '" << unique_id << "', the asset isn't present in s_Assets");
 		}
 
 	protected:

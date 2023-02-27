@@ -27,7 +27,6 @@ namespace od {
 		inline const glm::mat4 &GetUIProjection() const { return m_UIProjection; }
 		inline od::Font *GetFont() const { return m_Font.get(); }
 		inline uint32_t GetTimeSinceStartMs() const { return m_TimeSinceStart; }
-		inline bool IsDebugOn() const { return m_DebugText->m_Visible; }
 		inline void SetCursorPosition(const glm::f32vec2 &pos) { m_CursorPosition = pos; }
 		inline void SetCameraPosition(const glm::f32vec2 &pos) { m_CameraPosition = pos; }
 		inline void MoveCamera(const glm::f32vec2 &offset) { m_CameraPosition += offset; }
@@ -37,11 +36,11 @@ namespace od {
 		virtual void Ready() {}
 
 		// NOTE: deltaTime argument doesn't refer to time between ticks, but time between frames!
-		virtual void Tick(uint32_t deltaTime);
+		virtual void Tick(uint32_t deltaTime) {}
 
 		virtual void Update(uint32_t deltaTime);
 		virtual void Render2D() {}
-		virtual void RenderUI();
+		virtual void RenderUI() {}
 		virtual void OnShutdown() {}
 		virtual void HandleTick(uint32_t deltaTime);
 		virtual void HandleUpdate(uint32_t deltaTime); 
@@ -49,7 +48,6 @@ namespace od {
 		virtual void HandleRenderUI();
 
 	private:
-		void UpdateDebug(uint32_t deltaTime);
 		void UpdateProjections();
 		void UpdateViewport();
 		void SwapScenes();
@@ -63,7 +61,6 @@ namespace od {
 		glm::i32vec2 m_CursorPosition{0,0};
 
 	private:
-		std::unique_ptr<od::UI::Text> m_DebugText;
 		uint32_t m_TimeSinceStart = 0;
 		uint32_t m_TickTimer=0;
 		glm::mat4 m_Projection;

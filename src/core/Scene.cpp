@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "core/Renderable.h"
 
 od::Scene::Scene(const od::Color &clearColor) : m_ClearColor(clearColor) {
 }
@@ -36,6 +37,7 @@ void od::Scene::RenderUI() {
 }
 
 void od::Scene::Render2D() {
-	for(auto &entity : m_Entities) 
-		entity->Render();
+	for(auto &entity : m_Entities)
+		if(od::Renderable *renderable = dynamic_cast<od::Renderable*>(entity.get()))
+			renderable->Render();
 }

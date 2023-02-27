@@ -4,18 +4,18 @@
 #include <array>
 #include "../Libs.h"
 #include "Anchor.h"
+#include "core/Renderable.h"
 
 #define ENSURE_VISIBLE if(!m_Visible) return;
 
 // TODO: Scale UI with the screen, keep aspect ratio
 namespace od::UI {
-	class UIElement {
+	class UIElement : public od::Renderable {
 	public:
 		UIElement(const glm::i32vec2 &position, const glm::i32vec2 &size, const Anchors &anchors);
 		void UpdateAnchoredPosition();
 		void AddChildElement(const std::shared_ptr<od::UI::UIElement> &element);
 		virtual void Awake() {}
-		virtual void Render() {}
 		virtual void Update(uint32_t deltaTime) {}
 		void UpdateChildren(uint32_t deltaTime);
 		void RenderChildren();
