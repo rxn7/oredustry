@@ -29,12 +29,12 @@ void Ore::Init() {
 		s_DestroyTextureAtlas = od::Asset::Get<od::TextureAtlas>(DESTROY_TEXTURE_ATLAS_UID);
 
 	if(!s_OreTextureRenderBatch) {
-		s_OreTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 1000, od::Renderer::TextureShader.get(), s_Texture);
+		s_OreTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 100, od::Renderer::TextureShader.get(), s_Texture);
 		od::Renderer::AddBatch(s_OreTextureRenderBatch.get());
 	}
 
 	if(!s_DestroyTextureRenderBatch) {
-		s_DestroyTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 1000, od::Renderer::TextureShader.get(), s_DestroyTextureAtlas->GetGLTexture());
+		s_DestroyTextureRenderBatch = std::make_unique<od::QuadRenderBatch>(0, 100, od::Renderer::TextureShader.get(), s_DestroyTextureAtlas->GetGLTexture());
 		od::Renderer::AddBatch(s_DestroyTextureRenderBatch.get());
 	}
 }
@@ -42,6 +42,15 @@ void Ore::Init() {
 void Ore::Hit(uint16_t damage) {
 	m_Health -= damage;
 	m_DestroyStageFrame = (1.0f - (static_cast<float>(m_Health) / static_cast<float>(m_MaxHealth))) * s_DestroyTextureAtlas->GetFrameCount();
+
+	const float normalizedFrameSize = s_DestroyTextureAtlas->GetNormalizedFrameSize();
+
+	m_DestroyTextureUVs = {
+		glm::f32vec2(normalizedFrameSize * m_DestroyStageFrame, 0),
+		glm::f32vec2(normalizedFrameSize * m_DestroyStageFrame, 1),
+		glm::f32vec2(normalizedFrameSize * (m_DestroyStageFrame+1), 1),
+		glm::f32vec2(normalizedFrameSize * (m_DestroyStageFrame+1), 0),
+	};
 
 	if(m_Health <= 0) {
 		m_Health = 0;
@@ -53,15 +62,6 @@ void Ore::Render() {
 	s_OreTextureRenderBatch->AddQuad(m_Position, Ore::SIZE, od::Colors::WHITE);
 	
 	if(m_Health != m_MaxHealth) {
-		const float normalizedFrameSize = s_DestroyTextureAtlas->GetNormalizedFrameSize();
-
-		std::array<glm::f32vec2, 4> uvs = {
-			glm::f32vec2(normalizedFrameSize * m_DestroyStageFrame, 0),
-			glm::f32vec2(normalizedFrameSize * m_DestroyStageFrame, 1),
-			glm::f32vec2(normalizedFrameSize * (m_DestroyStageFrame+1), 1),
-			glm::f32vec2(normalizedFrameSize * (m_DestroyStageFrame+1), 0),
-		};
-
-		s_DestroyTextureRenderBatch->AddQuad(m_Position, Ore::SIZE, od::Colors::WHITE, uvs);
+		s_DestroyTextureRenderBatch->AddQuad(m_Position, Ore::SIZE, od::Colors::WHITE, m_DestroyTextureUVs);
 	}
 }

@@ -22,4 +22,5 @@ private:
 	uint16_t m_MaxHealth;
 	uint16_t m_Health = 100;
 	uint8_t m_DestroyStageFrame = 0;
+	std::array<glm::f32vec2, 4> m_DestroyTextureUVs;
 };
